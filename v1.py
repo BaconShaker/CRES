@@ -270,7 +270,7 @@ def add_location(cols, *args):
 
 
 # ------------------------------------------------------------------------
-def link_build(locfile, stops, *args):
+def link_build(locfile, route, *args):
 	
 
 	os.system('clear')
@@ -280,21 +280,31 @@ def link_build(locfile, stops, *args):
 	#places.insert(0, "Industrial Council of Nearwest Chicago Incubator")
 
 	# Need to get stops to be a leg[start ,stop]
+	beg = [ loc[2] for loc in route ]
+	end = [ loc[2] for loc in route ]
 
+	beg.pop()
+	end.pop(0)
+	print beg, end
+	
+	legs = zip(beg, end)
 
 
 
 	
-	print "Here are the legs of the route you planned route: (make it so you can change a leg)"
+	print "Here are the legs of the route you planned: (make it so you can change a leg)"
 	print ""
 	print ""
 	# print beg
 	# print end
-	print tabulate(stops, headers = ['Leg #','FROM --> TO', ""]) 
+	print tabulate(legs, headers = ['Leg #','FROM -->', "TO"]) 
 	print ""
 	print ""
-	print "stops: " 
-	print stops
+	print "starts: " , beg
+
+	print "stops: ", end
+	print ""
+	print "legs: ", legs
 
 # Takes two ints as input, looks up those indicise and makes a complete trip from 1 -> 2
 
@@ -302,30 +312,37 @@ def link_build(locfile, stops, *args):
 	middle = "&destination="
 	appendix = "&departure_time=now&key="
 
+	links = []
+	hockey = 0 # This is just a counter
 
-	start = str(list_of_locations[stops[0][2] - 1 ].waypoint()  )
-	destination = str(list_of_locations[stops[1][2] - 1 ].waypoint()  )
-	link = prefix + start + middle + destination + appendix
-	
+	for leg in legs:
+		print "leg: " , leg
 
+		start = str(   list_of_locations[ leg[0] - 1 ] .waypoint()  )
+		destination = str(   list_of_locations[leg[1] - 1 ].waypoint()  )
+		link = prefix + start + middle + destination + appendix
+		links.append(link)
+		hockey += 1
 
+	# print "links: ", links
 
-
-
-	# Open LINK and return mapinfo
-	handle = urllib2.urlopen(link)
-	handle2 = handle.read()
 	mapinfo = []
-	mapinfo.append(json.loads(str(handle2)))
+	
+	for link in links:
+		# Open LINK and return mapinfo
+		handle = urllib2.urlopen(link)
+		handle2 = handle.read()
+		
+		mapinfo.append(json.loads(str(handle2)))
 
-	handle.close()
+		handle.close()
 
 
-
+	# print mapinfo
 	return mapinfo
 	
 
-
+# This bad boy handles the directions' parsing fron json to readable text. 
 def directions(mapinfo):
 
 	directions = {
@@ -358,8 +375,7 @@ def directions(mapinfo):
 
 			# print str(turn) + "	" + words + " (" + to_go + ")"
 
-		# for jedi in display:
-		# 	print display[jedi]
+		
 		
 		tabs = ["Turn", "Distance", "Instruction"]
 
