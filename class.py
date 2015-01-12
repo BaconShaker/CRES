@@ -4,7 +4,7 @@ from tabulate import tabulate
 import os.path
 from datetime import datetime
 import urllib2
-
+# this can be deleted
 
 locfile = "/Users/AsianCheddar/Desktop/Python/location_list.csv"
 opener = open(locfile)
