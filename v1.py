@@ -6,8 +6,30 @@
 # running the add stats (location_mod2.py) program at each location.   
 
 
+# 		Get directions to specific place
+# 		Build a Route by hand 
+# 			Return directions
+# 			Provide method for inputting heights while on Route 
+# 		Make_Route by distance calculator
+# 		See Stats for each restaurant
+# 			Duration since last pickup
+# 				Time of year 
+# 			Height since last pickup
+# 			Score
+# 			Difficulty/Collectability
+# 		Compare Stats for all locations
+# 		Edit location info
+
+# When the usr is on a route, provide 
+# 	directions
+# 	stat update raw_input
+
+# Update a master file on the server every ___ days
+
 
 import csv 
+import sys 
+import operator # This is for what? Something in the arrange_locations() def
 import os.path
 from datetime import datetime
 import urllib
@@ -18,6 +40,9 @@ from tabulate import tabulate
 import json
 
 
+# This is a feeble attempt to figure out which computer I'm on
+# The goal here is to get this program to work on any computer easily given 
+# the files are all on the cloud somewhere. 
 
 # Get all the files
 # this_path = os.system('pwd')
@@ -38,6 +63,47 @@ import json
 locfile = "/Users/AsianCheddar/Desktop/Python/location_list.csv"
 # print locfile
 	# Mike:
+
+# Need to rearange the csv file here before anything else needs it!
+
+def arrange_locations(sheet):
+	if os.path.exists(sheet):
+		print "Path works!" 
+		change = open(locfile)
+		data = csv.DictReader( change , dialect = 'excel')
+
+		
+		sorted_list = sorted(data, key = lambda row: row['Name'] )
+		print "Sorted list: ",  sorted_list
+
+
+		print ""
+		print ""
+
+		
+		new_file = open( '/Users/AsianCheddar/Desktop/Python/location_list.csv', 'wb')
+		writer = csv.DictWriter(new_file, fieldnames = data.fieldnames)
+		writer.writeheader()
+		for row in sorted_list:
+			print "Row: " , row
+			print ""
+			
+			writer.writerow(row)
+
+
+		# Works for the most part, just need to get it to delete the old rows before replacing them with the new ones
+		# Then need to check if it works with the directions
+		change.close()
+		new_file.close()
+
+
+	else: 
+		print "The file you were looking for in " + sheet 
+		print "Does not exist"
+		print ""
+		print ""
+
+arrange_locations(locfile)
 
 # Settings: 
 spacing = 2
@@ -84,8 +150,6 @@ for place in handle:
 
 
 
-
-
 main_menu = [
 	"DEFAULT",
 	"Add Location", 
@@ -102,32 +166,30 @@ main_menu = [
 new_oil = {
 	"":"",
 }
+
+
 # open files and set global dicts, lists and strings to manipulate later
 read_locations = open(locfile)
+
+
 # read_pickups =  open(pickups)
 locations = csv.DictReader(read_locations, dialect = 'excel', skipinitialspace = True)
 location_stats = locations.fieldnames
 
-name_list = ["End Route"  ]
+
+
+name_list = [  ]
 for location in locations:
 	name_list.append(location['Name'])
+	# name_list.sort()
+	# sorts the names just fine, but the indicies don't change so you make the wrong choices... 
+name_list.insert(0 , "End Route")
+
 
 
 # Set up functions, all inputs are assuming the var_file has already been opened:
 # ie, input=header, when header=csvread()...
 
-def check_sheet_exists(sheet):
-	if os.path.exists(sheet):
-		# print "Path works!" 
-		print sheet 
-		# print ""
-		# print ""
-
-	else: 
-		print "The file you were looking for in " + sheet 
-		print "Does not exist"
-		print ""
-		print ""
 
 
 
@@ -272,7 +334,6 @@ def add_location(cols, *args):
 # ------------------------------------------------------------------------
 def link_build(locfile, route, *args):
 	
-
 	os.system('clear')
 	
 	# Need to add ICNC to places... CHeater.
@@ -289,7 +350,6 @@ def link_build(locfile, route, *args):
 
 	legs = zip(beg, end)
 
-
 	name1 = [ loc[1] for loc in route ]
 	name2 = [ loc[1] for loc in route ]
 
@@ -299,11 +359,6 @@ def link_build(locfile, route, *args):
 	legs2 = zip(name1, name2)
 
 	print 'legs2: ', legs2
-	
-
-
-
-
 	
 	print "Here are the legs of the route you planned: (make it so you can change a leg)"
 	print ""
@@ -331,7 +386,7 @@ def link_build(locfile, route, *args):
 	for leg in legs:
 		print "leg: " , leg
 
-		start = str(   list_of_locations[ leg[0] - 1 ] .waypoint()  )
+		start = str(   list_of_locations[ leg[0] - 1 ].waypoint()  )
 		destination = str(   list_of_locations[leg[1] - 1 ].waypoint()  )
 		link = prefix + start + middle + destination + appendix
 		links.append(link)
@@ -444,7 +499,7 @@ def directions(mapinfo, flightplan):
 
 
 
-def build_route(hfi):
+def build_route(not_used):
 	point = 0
 	add_waypoint = 0
 	waypoints = []
@@ -468,43 +523,17 @@ def build_route(hfi):
 			add_waypoint = 0
 			point += 1
 
-		
-		# print ""
-		# print "You have " + str(len(waypoints) + 1) + " waypoints."
-		# print "Would you like to add another waypoint?"
-		# print '[BLANK] = yes ; [ANYTHING] = no' 
-		# print ""
-		# if raw_input() != "":
-		# 	add_waypoint = 1
-		# else:
-		# 	add_waypoint = 0
 	return final_route
 
 	
 
 
 
-# 		Get directions to specific place
-# 		Build a Route by hand
-# 			Return directions
-# 			Provide method for inputting heights while on Route 
-# 		Make_Route by distance calculator
-# 		See Stats for each restaurant
-# 			Duration since last pickup
-# 				Time of year 
-# 			Height since last pickup
-# 			Score
-# 			Difficulty/Collectability
-# 		Compare Stats for all locations
-# 		Edit location info
+# -----------------------------------------------------------------------------------------------------------------
+# First, make sure the csv file exists, read it then make sure it's arranged in alphabetical order before moving forward
+# If possible, try to keep "ICNC" the top location. 
 
-# When the usr is on a route, provide 
-# 	directions
-# 	stat update raw_input
-
-# Update a master file on the server every ___ days
-
-
+# arrange_locations(locfile)
 
 # THIS IS WHERE THE MAGIC HAPPENS!!!
 before = "Hello, here is a list of what I can do..."
