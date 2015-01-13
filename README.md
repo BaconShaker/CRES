@@ -7,8 +7,10 @@ v1.py is the latest and greatest version of the CRES program. It should be able 
 
  add locations to csv files specified by locfile, 
 
-give directions between two places. Still need to get it to do waypooints though. 
+ Give directions according to the route_build menu. Still need to insert pickups.py to record the volume at each pickup. 
 
+
+Still need to create csv system to track individual pickup statistics. 
 
 
 
