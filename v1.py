@@ -72,30 +72,21 @@ def arrange_locations(sheet):
 		change = open(locfile)
 		data = csv.DictReader( change , dialect = 'excel')
 
-		
 		sorted_list = sorted(data, key = lambda row: row['Name'] )
-		print "Sorted list: ",  sorted_list
 
-
-		print ""
-		print ""
-
+		# print "Sorted list: ",  sorted_list
 		
 		new_file = open( '/Users/AsianCheddar/Desktop/Python/location_list.csv', 'wb')
 		writer = csv.DictWriter(new_file, fieldnames = data.fieldnames)
 		writer.writeheader()
 		for row in sorted_list:
-			print "Row: " , row
-			print ""
-			
+			# print "Row: " , row
 			writer.writerow(row)
-
 
 		# Works for the most part, just need to get it to delete the old rows before replacing them with the new ones
 		# Then need to check if it works with the directions
 		change.close()
 		new_file.close()
-
 
 	else: 
 		print "The file you were looking for in " + sheet 
@@ -155,11 +146,12 @@ main_menu = [
 	"Add Location", 
 	"Edit Location info",
 	"Delete Location",
-	"Get Directions to specific location",
+	"Set up Route; Get Directions",
 	"Build Route by hand", 
 	"Do a Pickup/Run route?",
 	"Use Dist_calc to build a Route",
 	"See Stats",
+	"List",
 ]
 
 # Set up oil as DictReader
@@ -482,7 +474,8 @@ def directions(mapinfo, flightplan):
 		# print "time together: " , time_together
 		print ""
 
-
+		print 'Use leg_distance to calculate fuel surcharge'
+		print ""
 		ref = tabulate( zip([leg_distance], [leg_time]), headers = ["Leg Distance", "Travel Time"] , tablefmt = 'grid')
 		print ref
 		# print flightplan
@@ -565,6 +558,10 @@ elif choice[0] == 4:
 	leg =  link_build(locfile, route)
 	directions(leg, route)
 
+elif choice[0] == 9:
+	print "Here's a list! "
+	the_list = [location.info() for location in list_of_locations[0]]
+	print the_list
 
 
 
