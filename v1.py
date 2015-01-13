@@ -286,8 +286,21 @@ def link_build(locfile, route, *args):
 	beg.pop()
 	end.pop(0)
 	print beg, end
-	
+
 	legs = zip(beg, end)
+
+
+	name1 = [ loc[1] for loc in route ]
+	name2 = [ loc[1] for loc in route ]
+
+	name1.pop()
+	name2.pop(0)
+
+	legs2 = zip(name1, name2)
+
+	print 'legs2: ', legs2
+	
+
 
 
 
@@ -297,7 +310,7 @@ def link_build(locfile, route, *args):
 	print ""
 	# print beg
 	# print end
-	print tabulate(legs, headers = ['Leg #','FROM -->', "TO"]) 
+	print tabulate(legs2, headers = ['FROM -->', "TO"]) 
 	print ""
 	print ""
 	print "starts: " , beg
@@ -325,9 +338,9 @@ def link_build(locfile, route, *args):
 		hockey += 1
 
 	# print "links: ", links
-
+	print ""
 	mapinfo = []
-	
+
 	for link in links:
 		# Open LINK and return mapinfo
 		handle = urllib2.urlopen(link)
@@ -343,20 +356,21 @@ def link_build(locfile, route, *args):
 	
 
 # This bad boy handles the directions' parsing fron json to readable text. 
-def directions(mapinfo):
+def directions(mapinfo, flightplan):
 
 	directions = {
 		"" : ""
 	}
-	for pam in mapinfo:
-		steps = pam["routes"][0]['legs'][0]['steps']
-		print ""
 
-		leg_distance = pam["routes"][0]['legs'][0]['distance']['text']
-		leg_time = pam["routes"][0]['legs'][0]['duration']['text']
-		print "Distance: " + leg_distance
-		print "Travel Time: " + leg_time
-		print ""
+	start_address = [ pam["routes"][0]['legs'][0]['start_address'] for pam in mapinfo ]
+	end_address = [pam["routes"][0]['legs'][0]['end_address'] for pam in mapinfo ]
+
+	rob = 0     # Just an old fashioned counter... Counts for each waypoint. 0 is START
+
+
+	for pam in mapinfo:
+		# print "\n" * 5
+		steps = pam["routes"][0]['legs'][0]['steps']
 
 		display = []
 		turn = 0
@@ -369,6 +383,7 @@ def directions(mapinfo):
 			words = words.replace( '</b>' , ' ')
 			words = words.replace( '<div style="font-size:0.9em">' , '')
 			words = words.replace( '</div>' , ' ' )
+
 			display.append([turn,  to_go, words])
 
 
@@ -376,14 +391,56 @@ def directions(mapinfo):
 			# print str(turn) + "	" + words + " (" + to_go + ")"
 
 		
-		
+		# Display each leg's directions in a spreadsheet
 		tabs = ["Turn", "Distance", "Instruction"]
-
 		tab = tabulate(display, headers = tabs)
+		# print tab
+		# MOved that down a few lines so I could make the output look pretty
+		
 
+		start_name = flightplan[rob][1]
+		end_name = flightplan[rob + 1][1]
+
+
+		# Make a better display for the to and from on each directions section
+		# print flightplan
+		# quick = tabulate( [ start_address[rob], end_address[rob] ] , headers = [ str(start_name), str(end_name) ] )
+		# print quick
+		print "****************************************************************************"
+		print "****************************************************************************"
+		print ""
+		print "			THIS IS WAYPOINT #" , rob + 1  
+		print '\n' * 3
+
+		print 'Starting at: ' , start_name
+		print '             ' , start_address[rob]
+		print ""
 		print tab
 		print ""
-		print "Add in 'you have arrived @' markers?"
+		print 'Ending at :  ' , end_name
+		print '             ' , end_address[rob]
+
+		# This block converts time and dist json to strings for a clean tabulate below
+		leg_distance = pam["routes"][0]['legs'][0]['distance']['text']
+		leg_time = pam["routes"][0]['legs'][0]['duration']['text']
+		# print "dist_together: " , dist_together
+		# print "time together: " , time_together
+		print ""
+
+
+		ref = tabulate( zip([leg_distance], [leg_time]), headers = ["Leg Distance", "Travel Time"] , tablefmt = 'grid')
+		print ref
+		# print flightplan
+		# print 'Address: ', start_address[rob]
+		# print "End address: ", end_address[rob]
+
+
+		rob += 1
+		print ""
+		print 'This is where the loop for doing a pickup should go.'
+		print "\n" * 3
+
+		
 
 
 
@@ -401,7 +458,7 @@ def build_route(hfi):
 		if crust[0] == 0:
 			
 			for index, way in enumerate(waypoints):
-				final_route.append([index + 1, way[1], way[0]])
+				final_route.append( [index + 1, way[1], way[0] ])
 
 			print "End of the loop"
 			add_waypoint = 1
@@ -477,7 +534,7 @@ elif choice[0] == 4:
 	# save it to leg then pass json to directions which just tabulates 
 	# and makes it pretty lookin
 	leg =  link_build(locfile, route)
-	directions(leg)
+	directions(leg, route)
 
 
 
