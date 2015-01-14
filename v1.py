@@ -131,8 +131,7 @@ class location(object):
 		destination = destination.replace(' ' , '%20')
 		return destination
 
-	def list_names(self):
-
+	def list_name(self):
 		return self.name.replace("\xe2\x80\x99", "'")
 
 
@@ -510,9 +509,6 @@ def directions(mapinfo, flightplan):
 		print "\n" * 3
 
 		
-
-
-
 def build_route(not_used):
 	point = 0
 	add_waypoint = 0
@@ -550,10 +546,11 @@ def build_route(not_used):
 # arrange_locations(locfile)
 
 # THIS IS WHERE THE MAGIC HAPPENS!!!
+default = 6
 before = "Hello, here is a list of what I can do..."
-after = "Select a number from the list above. [BLANK] will quit."
+after = "Select a number from the list above. DEFAULT: [" + str(default) + "] " + main_menu[default]
 
-choice = what_to_do(main_menu, before, after, 4)
+choice = what_to_do(main_menu, before, after, default)
 
 print str(choice) + " IS what you picked"
 
@@ -585,11 +582,15 @@ elif choice[0] == 9:
 
 	print  "There are" , rocks , "locations in the location_list." , '\n'
 
-	loc1 = [list_of_locations[i].list_names() for i in range(rocks)]
+	loc1 = [list_of_locations[i].list_name() for i in range(rocks)]
 	loc2 = [i for i in enumerate(loc1)]
 	contents = tabulate(loc2, headers = ['#', 'Location'])
 	print contents , '\n'
 
+elif choice[0] == 6:
+	print "Ace"
+	# This section should simulate a pickup and add the resuts to the corresponding location file
+	
 
 
 
