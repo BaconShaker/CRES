@@ -60,7 +60,7 @@ import json
 # locfile = this_path + "/location_list.csv"
 
 # pickups = "/home/robby/Desktop/Python/pickups.csv"
-locfile = /home/robby/Desktop/Python/location_list.csv 
+locfile = '/home/robby/Desktop/Python/location_list.csv' 
 # locfile = "/Users/AsianCheddar/Desktop/Python/location_list.csv" #mac
 # print locfile
 	# Mike:
@@ -77,7 +77,7 @@ def arrange_locations(sheet):
 
 		# print "Sorted list: ",  sorted_list
 		
-		new_file = open( '/Users/AsianCheddar/Desktop/Python/location_list.csv', 'wb')
+		new_file = open( locfile , 'wb')
 		writer = csv.DictWriter(new_file, fieldnames = data.fieldnames)
 		writer.writeheader()
 		for row in sorted_list:
