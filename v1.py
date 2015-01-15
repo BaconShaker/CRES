@@ -131,14 +131,34 @@ class location(object):
 		destination = destination.replace(' ' , '%20')
 		return destination
 
+	def list_name(self):
+		return self.name.replace("\xe2\x80\x99", "'")
+
+
+	
+
+
+	# Make a pickup and add input to that location's csv file
+# class pickup(object):
+# 	def __init__(self, location, gallons, leftover, pounds, score, date, time):
+# 		self.location = location
+# 		self.gallons = gallons
+# 		self.leftover = leftover
+# 		self.pounds = pounds
+# 		self.score = score
+# 		self.date = date
+# 		self.time = time
+
+# 	def info(self):
+
+
+
 # Set up a list of locations to use in the tabs
 list_of_locations = {}
 count = 0 
 for place in handle:
 	list_of_locations[count] = location(place["Name"], place["Street Address"], place["City"], place["State"], place["Zip"], place["Contact_Person"], place["Distance"])
 	count = count + 1
-
-
 
 
 main_menu = [
@@ -489,9 +509,6 @@ def directions(mapinfo, flightplan):
 		print "\n" * 3
 
 		
-
-
-
 def build_route(not_used):
 	point = 0
 	add_waypoint = 0
@@ -529,10 +546,11 @@ def build_route(not_used):
 # arrange_locations(locfile)
 
 # THIS IS WHERE THE MAGIC HAPPENS!!!
+default = 6
 before = "Hello, here is a list of what I can do..."
-after = "Select a number from the list above. [BLANK] will quit."
+after = "Select a number from the list above. DEFAULT: [" + str(default) + "] " + main_menu[default]
 
-choice = what_to_do(main_menu, before, after, 4)
+choice = what_to_do(main_menu, before, after, default)
 
 print str(choice) + " IS what you picked"
 
@@ -559,10 +577,20 @@ elif choice[0] == 4:
 	directions(leg, route)
 
 elif choice[0] == 9:
-	print "Here's a list! "
-	the_list = [location.info() for location in list_of_locations[0]]
-	print the_list
+	print "\n", "Here's a list, like you asked! " , '\n'
+	rocks = len(list_of_locations)
 
+	print  "There are" , rocks , "locations in the location_list." , '\n'
+
+	loc1 = [list_of_locations[i].list_name() for i in range(rocks)]
+	loc2 = [i for i in enumerate(loc1)]
+	contents = tabulate(loc2, headers = ['#', 'Location'])
+	print contents , '\n'
+
+elif choice[0] == 6:
+	print "Ace"
+	# This section should simulate a pickup and add the resuts to the corresponding location file
+	
 
 
 
