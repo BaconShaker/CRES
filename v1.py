@@ -60,7 +60,8 @@ import json
 # locfile = this_path + "/location_list.csv"
 
 # pickups = "/home/robby/Desktop/Python/pickups.csv"
-locfile = "/Users/AsianCheddar/Desktop/Python/location_list.csv"
+locfile = /home/robby/Desktop/Python/location_list.csv 
+# locfile = "/Users/AsianCheddar/Desktop/Python/location_list.csv" #mac
 # print locfile
 	# Mike:
 
