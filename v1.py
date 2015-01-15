@@ -60,7 +60,21 @@ import json
 # locfile = this_path + "/location_list.csv"
 
 # pickups = "/home/robby/Desktop/Python/pickups.csv"
-locfile = '/home/robby/Desktop/Python/location_list.csv' 
+if sys.platform.startswith('darwin'):
+	print ""
+	print "This is not a Linux, it's a Mac so you're going to get lost on the keyboard."
+	print "It would be cool if you could actually specify if it's Robby or Mike too\n"
+
+	locfile = "/Users/AsianCheddar/Desktop/Python/location_list.csv" #mac
+	print "Locfile: ", locfile, '\n'
+
+elif sys.platform.startswith('linux'):
+	print ""
+	print 'This is a Linux\n'
+	locfile = '/home/robby/Desktop/Python/location_list.csv' 
+	print "Locfile: ", locfile, '\n'
+
+# locfile = '/home/robby/Desktop/Python/location_list.csv' 
 # locfile = "/Users/AsianCheddar/Desktop/Python/location_list.csv" #mac
 # print locfile
 	# Mike:
