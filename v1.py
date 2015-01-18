@@ -19,7 +19,6 @@
 # 			Difficulty/Collectability
 # 		Compare Stats for all locations
 # 		Edit location info
-
 # When the usr is on a route, provide 
 # 	directions
 # 	stat update raw_input
@@ -65,13 +64,13 @@ if sys.platform.startswith('darwin'):
 	print "This is not a Linux, it's a Mac so you're going to get lost on the keyboard."
 	print "It would be cool if you could actually specify if it's Robby or Mike too\n"
 
-	locfile = "/Users/AsianCheddar/Desktop/Python/location_list.csv" #mac
+	locfile = os.path.expanduser( "~/Desktop/Python/location_list.csv" )  #mac
 	print "Locfile: ", locfile, '\n'
 
 elif sys.platform.startswith('linux'):
 	print ""
 	print 'This is a Linux\n'
-	locfile = '/home/robby/Desktop/Python/location_list.csv' 
+	locfile = os.path.expanduser( '~/Locations/location_list.csv')
 	print "Locfile: ", locfile, '\n'
 
 # locfile = '/home/robby/Desktop/Python/location_list.csv' 
@@ -228,20 +227,9 @@ name_list.insert(0 , "End Route")
 # ------------------------------------------------------------------------
 
 # Start by asking what usr wants to do.
+# Returns a number corresponding to the response ability[index] in the list below. 
 def what_to_do(abilities, before, after, default_choice, *args):
 	os.system('clear')
-# Returns a number corresponding to the response ability[index] in the list below. 
-
-
-	# abilities = [ HAS BEEN MOVED TO GLOBAL
-	# 	"Add Location", 
-	# 	"Edit Location info",
-	# 	"Delete Location",
-	# 	"Get Directions to specific location", 
-	# 	"Build Route by hand", 
-	# 	"Use Dist_calc to build a Route",
-	# 	"See Stats",
-	# 	]
 
 	looper = 0
 	while looper == 0:
@@ -281,9 +269,6 @@ def what_to_do(abilities, before, after, default_choice, *args):
 			response = [ int(choice), word] 
 			return response
 			looper = looper + 1
-			
-
-
 
 # ------------------------------------------------------------------------
 def add_location(cols, *args):
@@ -401,7 +386,7 @@ def link_build(locfile, route, *args):
 	print ""
 	print "legs: ", legs
 
-# Takes two ints as input, looks up those indicise and makes a complete trip from 1 -> 2
+	# Takes two ints as input, looks up those indicise and makes a complete trip from 1 -> 2
 
 	prefix = "https://maps.googleapis.com/maps/api/directions/json?origin=" 
 	middle = "&destination="
