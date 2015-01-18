@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import cv2
 import sys
 
@@ -26,6 +27,8 @@ print "Found {0} faces!".format(len(faces))
 # Draw a rectangle around the faces
 for (x, y, w, h) in faces:
     cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+
+
 
 cv2.imshow("Faces found", image)
 cv2.waitKey(0)
