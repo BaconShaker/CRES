@@ -116,6 +116,24 @@ def what_to_do(choices, before, after, default_choice, *args):
 			looper = looper + 1
 
 
+class restaurant(object):
+	def __init__(self, name, address, city, state, zip_code, contact_person, phone_num ):
+		self.name = name
+		self.address = address
+		self.city = city
+		self.state = state
+		self.zip_code = zip_code
+		self.contact_person = contact_person
+		self.phone_num = phone_num
+
+	# Make a function that shows the header(s) of the csv's
+
+	# Going to need to read the names of the CSV's then add it to the Restaurant Object
+	# Also going to need to opn each file to get the actual information to add it to the Object
+
+	def add_restaurant(self):
+		# Should probably check if the file exists already... I'll come back to this. 
+		print sheets
 
 
 
@@ -132,6 +150,21 @@ def what_to_do(choices, before, after, default_choice, *args):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Let us start the Program here, methinks
 main_menu = [ 
 	'List Restaurants',
 	'Exit',
@@ -141,4 +174,4 @@ main1 = "This is a list of what this program can currently do:"
 main2 = "Looking to add more now so hold tight... \n"
 pick = what_to_do(main_menu, main1, main2, 0)
 
-
+restaurant.add_restaurant(3)
