@@ -64,7 +64,7 @@ if sys.platform.startswith('darwin'):
 	print "This is not a Linux, it's a Mac so you're going to get lost on the keyboard."
 	print "It would be cool if you could actually specify if it's Robby or Mike too\n"
 
-	locfile = os.path.expanduser( "~/Desktop/Python/location_list.csv" )  #mac
+	locfile = os.path.expanduser( '~/Gdrive/cres_sheets/location_list.csv')  #mac
 	print "Locfile: ", locfile, '\n'
 
 elif sys.platform.startswith('linux'):
@@ -89,7 +89,7 @@ def arrange_locations(sheet):
 		sorted_list = sorted(data, key = lambda row: row['Name'] )
 
 		# print "Sorted list: ",  sorted_list
-		
+		# nfile = os.path.expanduser( '~/Gdrive/CRES/location_list.csv')
 		new_file = open( locfile , 'wb')
 		writer = csv.DictWriter(new_file, fieldnames = data.fieldnames)
 		writer.writeheader()
