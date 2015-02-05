@@ -52,7 +52,7 @@ if sys.platform.startswith('darwin'):
 	print "This is not a Linux, it's a Mac so you're going to get lost on the keyboard."
 	print "It would be cool if you could actually specify if it's Robby or Mike too\n"
 
-	locfile = os.path.expanduser( "~/Desktop/Python/location_list.csv" )  #mac
+	locfile = os.path.expanduser( "~/GDrive/cres_sheets" )  #mac
 	print "Locfile: ", locfile, '\n'
 
 elif sys.platform.startswith('linux'):
@@ -70,9 +70,16 @@ elif sys.platform.startswith('linux'):
 # locations = [location for location in locfile]
 # print locations
 
-sheets = [ f for f in listdir(locfile) if isfile(join(locfile,f)) ]
+# sheets is a list of files in locfile
+sheets = [ f for f in listdir(locfile)   ] 
 
-print "Unsorted: ", sheets
+
+print "Unsorted: ", sheets, '\n'
+
+# Use the .remove here to get rid of entries we don't want to make the list. 
+sheets.remove('.DS_Store')
+sheets.remove('master.csv')
+print "Censored: ", sheets, '\n'
 sheets.sort()
 print "Sorted: ", sheets, "\n"
 
@@ -115,32 +122,78 @@ def what_to_do(choices, before, after, default_choice, *args):
 			return response
 			looper = looper + 1
 
+# -----------------------------------------------------------------
 
 class restaurant(object):
-	def __init__(self, name, address, city, state, zip_code, contact_person, phone_num ):
-		self.name = name
-		self.address = address
-		self.city = city
-		self.state = state
-		self.zip_code = zip_code
-		self.contact_person = contact_person
-		self.phone_num = phone_num
+	def __init__(self, master, **kwargs):
+		self.name = master['Name']
+		self.address = master['Address']
+		self.city = master['City']
+		self.state = master['State']
+		self.zip_code = master['Zip']
+		self.contact_person = master['Contact_Person']
+		self.phone_num = master['Phone_Number']
 
 	# Make a function that shows the header(s) of the csv's
 
 	# Going to need to read the names of the CSV's then add it to the Restaurant Object
 	# Also going to need to opn each file to get the actual information to add it to the Object
 
-	def add_restaurant(self):
+	def get_names(self):
 		# Should probably check if the file exists already... I'll come back to this. 
-		print sheets
+
+		pass
+
+
+# -----------------------------------------------------------------
 
 
 
+def make_locations(locfile):
+
+	# Here is the list that controls the headers on the pickup_files
+	pickup_heads = [ 'Date' , 'Collected' ]
+
+	# Open the master file and get the nicknames. The Nicknames will become the individual
+	# filenames for the pickup files. 
+
+	apple = open(locfile + '/master.csv')
+	oranges = csv.DictReader(apple, dialect = 'excel', skipinitialspace = True)
+
+	nicknames = [x['Nickname'] for x in oranges]
+
+	for nick in nicknames:
+		pickup_file = locfile + '/' + nick + '.csv'
+		if os.path.exists(pickup_file):
+			print "there's a file for: " , nick
+		else:
+			print "There is no '" ,  pickup_file   , "' we should make one!\n" 
+			to_make = open( pickup_file, 'a' )
+			writer = csv.DictWriter(to_make, fieldnames = pickup_heads )
+			writer.writeheader()
+			to_make.close() 
+
+	apple.close()
+
+
+# -----------------------------------------------------------------
 
 
 
+def class_loader(master_dir):
+	
 
+	
+	handler = open(master_dir + '/master.csv')
+	master_read = csv.DictReader( handler )
+	
+	print sheets
+	for location in master_read:
+		pass
+		
+
+
+	handler.close()
 
 
 
@@ -165,6 +218,10 @@ class restaurant(object):
 
 
 # Let us start the Program here, methinks
+# Load the restaurants into the class. 
+make_locations(locfile)
+class_loader(locfile)
+
 main_menu = [ 
 	'List Restaurants',
 	'Exit',
@@ -174,4 +231,9 @@ main1 = "This is a list of what this program can currently do:"
 main2 = "Looking to add more now so hold tight... \n"
 pick = what_to_do(main_menu, main1, main2, 0)
 
-restaurant.add_restaurant(3)
+if pick == 0:
+	pass
+elif pick == 1:
+	pass
+
+
