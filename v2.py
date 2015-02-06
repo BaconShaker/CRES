@@ -37,6 +37,7 @@ import os
 from os import listdir
 from tabulate import tabulate
 import json
+from collections import defaultdict
 
 
 
@@ -124,7 +125,7 @@ def what_to_do(choices, before, after, default_choice, *args):
 
 # -----------------------------------------------------------------
 
-class restaurant(object):
+class Restaurant(object):
 	def __init__(self, master, **kwargs):
 		self.name = master['Name']
 		self.address = master['Address']
@@ -160,19 +161,20 @@ def make_locations(locfile):
 	apple = open(locfile + '/master.csv')
 	oranges = csv.DictReader(apple, dialect = 'excel', skipinitialspace = True)
 
-	nicknames = [x['Nickname'] for x in oranges]
+	nicknames = [x['Name'] for x in oranges]
 
 	for nick in nicknames:
 		pickup_file = locfile + '/' + nick + '.csv'
 		if os.path.exists(pickup_file):
 			print "there's a file for: " , nick
+
 		else:
 			print "There is no '" ,  pickup_file   , "' we should make one!\n" 
 			to_make = open( pickup_file, 'a' )
 			writer = csv.DictWriter(to_make, fieldnames = pickup_heads )
 			writer.writeheader()
 			to_make.close() 
-
+	return nicknames
 	apple.close()
 
 
@@ -182,23 +184,35 @@ def make_locations(locfile):
 
 def class_loader(master_dir):
 	
-
+	projects = defaultdict(dict)
 	
 	handler = open(master_dir + '/master.csv')
 	master_read = csv.DictReader( handler )
 	
-	print sheets
-	for location in master_read:
-		pass
-		
+	headers = master_read.fieldnames
+	for rowdict in master_read:
+		if None in rowdict:
+			del rowdict[None]
+		name = rowdict.pop("Name")
+		address = rowdict.pop('Street Address')
+		projects[name][address] = rowdict
 
-
+	return projects
 	handler.close()
 
 
 
 
+# -----------------------------------------------------------------
 
+def display_names(master_dir):
+	names = []
+	with open(master_dir + '/master.csv') as fp:
+		reader = csv.DictReader(fp, dialect = 'excel', skipinitialspace = True)
+
+		# for row in reader:
+
+	return names
 
 
 
@@ -219,8 +233,13 @@ def class_loader(master_dir):
 
 # Let us start the Program here, methinks
 # Load the restaurants into the class. 
-make_locations(locfile)
-class_loader(locfile)
+name_list = make_locations(locfile)
+
+
+# robby = class_loader(locfile)
+# print robby['Erie Cafe']['536 W. Erie Street']
+
+
 
 main_menu = [ 
 	'List Restaurants',
@@ -231,8 +250,14 @@ main1 = "This is a list of what this program can currently do:"
 main2 = "Looking to add more now so hold tight... \n"
 pick = what_to_do(main_menu, main1, main2, 0)
 
-if pick == 0:
-	pass
+
+# re if pick below, 
+# 	[0] is the number input from the prompt,
+# 	[1] should be the string in 'word' from the list 
+
+
+if pick[0] == 0:
+	print name_list
 elif pick == 1:
 	pass
 
