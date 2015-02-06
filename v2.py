@@ -98,6 +98,7 @@ def what_to_do(choices, before, after, default_choice, *args):
 		count = 0
 		counter = [0,]
 		for choice in choices:
+			choice = choice.decode('utf-8')
 			print "		" + str(count) + "	" + str(choice)
 			counter.append(int(count))
 			count = count + 1
@@ -118,14 +119,14 @@ def what_to_do(choices, before, after, default_choice, *args):
 			# choice = choice + 0   # I think this can be deleted
 			word =  choices[int(selection)]
 			print "You picked: [" + str(selection) + "]  " + str(word)
-			word = word.replace("\xe2\x80\x99" , "'")
+			# word = word.replace("\xe2\x80\x99" , "'")
 			response = [ int(selection), word] 
 			return response
 			looper = looper + 1
 
 # -----------------------------------------------------------------
 
-class Restaurant(object):
+class Restaurant:
 	def __init__(self, master, **kwargs):
 		self.name = master['Name']
 		self.address = master['Address']
@@ -205,28 +206,40 @@ def class_loader(master_dir):
 
 # -----------------------------------------------------------------
 
-def display_names(master_dir):
-	names = []
-	with open(master_dir + '/master.csv') as fp:
-		reader = csv.DictReader(fp, dialect = 'excel', skipinitialspace = True)
+# Looks up all the .csv files in cres_sheets, strips the extensions 
+# and compares the names to the choice made.
 
-		# for row in reader:
+# Need to make the individual .csv's have the same headers and get imputs
+# from pickups.py. 
+def show_details(location, locfile):
+	print location[1]
+	
+	fo = open(locfile + '/' + location[1] + '.csv' )
+	fr = csv.DictReader(fo, dialect = 'excel', skipinitialspace = True)
 
-	return names
-
-
-
-
-
-
-
+	for row in fr:
+		print row
 
 
 
 
 
+# -----------------------------------------------------------------
 
 
+
+
+def run_pickups():
+	
+
+
+	pass
+
+
+
+
+
+# -----------------------------------------------------------------
 
 
 
@@ -234,7 +247,8 @@ def display_names(master_dir):
 # Let us start the Program here, methinks
 # Load the restaurants into the class. 
 name_list = make_locations(locfile)
-
+name_list = [name.decode('utf-8') for name in name_list]
+print name_list
 
 # robby = class_loader(locfile)
 # print robby['Erie Cafe']['536 W. Erie Street']
@@ -242,13 +256,14 @@ name_list = make_locations(locfile)
 
 
 main_menu = [ 
-	'List Restaurants',
 	'Exit',
+	'List Restaurants',
+	'Run a pickup',
 	]	
 
 main1 = "This is a list of what this program can currently do:"
 main2 = "Looking to add more now so hold tight... \n"
-pick = what_to_do(main_menu, main1, main2, 0)
+main_menu_choice = what_to_do(main_menu, main1, main2, 0)
 
 
 # re if pick below, 
@@ -256,9 +271,26 @@ pick = what_to_do(main_menu, main1, main2, 0)
 # 	[1] should be the string in 'word' from the list 
 
 
-if pick[0] == 0:
-	print name_list
-elif pick == 1:
-	pass
+if main_menu_choice[0] == main_menu.index('List Restaurants'):
+
+	default_choice = 0
+	top = "Here's a list of current clients. Choose a number to see individual details."
+	bottom = "Be cool Bitch!  ...   I said, be cool!"
+	
+	location_choice = what_to_do(name_list, top, bottom, default_choice)
+
+	show_details(location_choice, locfile)
+
+
+elif main_menu_choice[0] == main_menu.index('Run a pickup'):
+
+	print '\n\nThis is going to run a pickup!'
+	print '\n' * 10
+
+	pickups = []
+	pickups.insert( 0, run_pickups() )
+
+
+	
 
 
