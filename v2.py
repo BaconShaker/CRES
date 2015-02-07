@@ -229,11 +229,224 @@ def show_details(location, locfile):
 
 
 
-def run_pickups():
+def run_pickups(spike):
+	diesel = 'http://www.eia.gov/dnav/pet/pet_pri_gnd_dcus_r20_w.htm'
+	ams = 'http://www.ams.usda.gov/mnreports/nw_ls442.txt'
+
+	# File paths to look for:
+	# Robby:
+	pickups = "/Users/AsianCheddar/Desktop/Python/pickups.csv"
+	locfile = "/Users/AsianCheddar/Desktop/Python/location_list.csv"
+	# Mike:
+
+	# Settings: 
+	spacing = 2 # Gets used as an int later
+	spacing = int(spacing)
+
+	# Functions:
+
+	def inches_cubed_to_gallons(inches3):
+		inches3 = float(inches3) * 0.0043290
+		return inches3
+
+	def height_to_volume(height): 
+		# Takes Height measured from bottom of tank to top of liquid and returns volume
+		# dimensions of bin are: 36H x 28W x 48L
+		h = 36
+		w = 28
+		l = 48
+		volume = height * w * l
+		gallons = inches_cubed_to_gallons(volume)
+		return gallons
+
+	def gallons_to_pounds(gallons):
+		#weight of vegetable oil is 7.75lbs per gallon
+		lbs = gallons * 7.75
+		return lbs
+
+	def price_lookup(pounds, ams):
+		# Need to get work on this parser.  
+
+		print ""
+		print "Price_lookup():" # Input gallons or inches?
+		print ""
+		response = urllib2.urlopen(ams)
+		# response = urllib2.urlopen('http://www.ams.usda.gov/mnreports/nw_ls442.txt')
+		soup = BeautifulSoup(response)
+		# page = response.readline()
+		text = soup.get_text()
+		print text[301:475]
+		print ""
+		# soup.prettify(formatter= 'html')
+
+		# total = pounds * price
+		# return total
+		response.close()
+
+	# GETS price from "diesel"
+	def	get_a(grip):
+		diesel = urllib2.urlopen(grip)
+		soup = BeautifulSoup(diesel)
+		# links = soup.find_all( "Current2")
+		print "This is the price of Fuel today according to: ", diesel
+		soup.prettify()
+		data = soup.find_all('td' , 'Current2')
+		length = len(data)
+		# print data[13]
+		temp = str(data[13])
+		print temp
+		price = temp[32:36]
+		return price
+
+		diesel.close()
+
+
+
+	#---------------------------------------------------------------------------------------
+	# First, clear the screen.
+
+	os.system('clear')
+
+
+	# Check if files are there
+
 	
 
 
-	pass
+	# Define locations
+
+	sheets_two = [ sheet.replace( '.csv' , '' ) for sheet in sheets ]
+
+	# Prompt for inputs (Loation, Height on Arrival, Height on Departure)
+	 
+	location_input = what_to_do(sheets_two, "Where would you like to run a pickup for?", 'Thank you!', 0)
+
+	# Verify that the input val is in the locations['names']
+
+
+	inputs = {
+		"location" : location_input[1],
+	}
+	print "\n" * spacing
+
+	print "Height on Arrivial: [INCHES]\n"
+	harrival = raw_input()
+	inputs['h1'] = float(harrival)
+	print "\n" * spacing
+
+	print "Height at Depature: [INCHES]\n\n\n"
+	hdepart = raw_input()
+	inputs['h2'] = float(hdepart)
+
+
+	# I don't think this will work... yet, need to get hardware to make the inputs
+	# just entering the time here will require decoding and too much time to be changed later anyway. 
+
+	# print "What time did you arrive at ", location_input[1] , '?\n'
+	# start_pickup_time = raw_input()
+
+	# print "\n\nWhat time did you leave?"
+	# end_pickup_time = raw_input()
+
+	# So for now:
+	print "How long did you spend at " , location_input[1] , '?\n 	FORMAT: [ hr.minutes ] --->  5.25 \n'
+	pickup_duration = raw_input()
+	inputs['Pickup Duration'] = pickup_duration
+	print "\n\n"
+
+	# Check inputs are correct
+	print "This is what we have so far, are you sure you'd like to keep going?"
+	print ""
+	print "Location: " + inputs['location'] 
+	print "Height on Arrival: " + harrival
+	print "Height on Departure: " + hdepart
+	print "Duration: " , pickup_duration
+	print ""
+	print "[YES/NO]"
+
+
+	# Calculate volume -> pounds
+	checker = raw_input().lower() 
+	if checker != "n": 
+		print "Well ok then, good luck going forward!"
+		print "\n" * spacing
+		gal_arrival = height_to_volume(inputs['h1'])
+		gal_departure = height_to_volume(inputs['h2'])
+		score = round(((float(gal_arrival) - float(gal_departure)) / float(gal_arrival)) ,2) * 100
+		collected = gal_arrival - gal_departure
+		pounds_collected = gallons_to_pounds(collected)
+
+	else:
+		
+		print "start over, don't pass go"
+
+
+	# Build inputs
+	inputs['score'] = score
+	inputs['collected'] = collected
+	inputs['lbs'] = pounds_collected
+	inputs['leftovers'] = gal_departure
+
+
+	# Calculate price using pounds
+
+	# Look up AMS Price data
+	price_lookup(inputs['lbs'], ams)
+
+	print "Manually lookup the price and enter it here: [$cwt] Example, 23.34 \n\n"
+	price = float(raw_input()) / 100.0
+	flat_fee = 15.0 / 100.0
+	we_get = flat_fee * inputs['lbs']
+	they_get = (price - flat_fee) * inputs['lbs']
+	price_of_fuel = get_a(diesel) 
+
+	inputs['income'] = round(we_get, 2)
+	inputs['to_charity'] = round(they_get, 2) 
+	inputs['price'] = price # of WVO
+	inputs['fuel_price'] = price_of_fuel
+
+
+	# Calculate Fuel Surcharge
+	# Datestamp
+	# End Loop
+	# Display resulting Dictionary from inputs[]
+	print "\n" * 100
+	print "Here is a breakdown of how the pickup went."
+	print ""
+	print "Location visited: %(location)s" % (inputs)
+	print "Oil collected: %(collected)s gallons" % (inputs)
+	print "We only left ~ %(leftovers)s gallons behind" % (inputs)
+	print ""
+	print "The price today was: %(price)s $cwt" % (inputs)
+	print "Meaning CRES gets to keep, $%(income)s" % (inputs)
+	print "And the Charities get $%(to_charity)s" % (inputs)
+	print ""
+	print "For a score of: %(score)s" % (inputs)
+	print ""
+	print "The price of #2 Diesel today: $%s" % (price_of_fuel)
+	print "Source: " + diesel
+
+
+	print "These results will be added to the pickups.csv file above."
+	print "Thank you for your cooperation, we hope you come back soon!"
+	print ""
+	for row in inputs:
+		print row + ": " + str(inputs[row]) 
+
+	# tabulate(inputs, headers=[keys])
+
+	return inputs
+
+
+	# add oil_stats[prices]
+	# Send to .csv file 
+		#  Raw Data Variables:
+			# location_input
+			# harrival
+			# hdepart
+	# close
+
+
 
 
 
@@ -287,8 +500,9 @@ elif main_menu_choice[0] == main_menu.index('Run a pickup'):
 	print '\n\nThis is going to run a pickup!'
 	print '\n' * 10
 
-	pickups = []
-	pickups.insert( 0, run_pickups() )
+	pickups = run_pickups('spike')
+	# pickups.insert( 0, run_pickups() )
+	print pickups
 
 
 	
