@@ -206,11 +206,13 @@ def class_loader(master_dir):
 
 # -----------------------------------------------------------------
 
-# Looks up all the .csv files in cres_sheets, strips the extensions 
-# and compares the names to the choice made.
 
-# Need to make the individual .csv's have the same headers and get imputs
-# from pickups.py. 
+	# Looks up all the .csv files in cres_sheets, strips the extensions 
+	# and compares the names to the choice made.
+
+	# Need to make the individual .csv's have the same headers and get imputs
+	# from pickups.py. 
+
 def show_details(location, locfile):
 	print location[1]
 	
@@ -221,15 +223,10 @@ def show_details(location, locfile):
 		print row
 
 
-
-
-
 # -----------------------------------------------------------------
 
 
-
-
-def run_pickups(spike):
+def run_pickup(spike):
 	diesel = 'http://www.eia.gov/dnav/pet/pet_pri_gnd_dcus_r20_w.htm'
 	ams = 'http://www.ams.usda.gov/mnreports/nw_ls442.txt'
 
@@ -307,36 +304,23 @@ def run_pickups(spike):
 
 	os.system('clear')
 
-
-	# Check if files are there
-
-	
-
-
-	# Define locations
-
+	# Define locations for the menu
 	sheets_two = [ sheet.replace( '.csv' , '' ) for sheet in sheets ]
-
-	# Prompt for inputs (Loation, Height on Arrival, Height on Departure)
-	 
 	location_input = what_to_do(sheets_two, "Where would you like to run a pickup for?", 'Thank you!', 0)
 
-	# Verify that the input val is in the locations['names']
-
-
+	# Prompt for inputs (Loation, Height on Arrival, Height on Departure)
 	inputs = {
-		"location" : location_input[1],
+		"location" : location_input[1]
 	}
 	print "\n" * spacing
 
 	print "Height on Arrivial: [INCHES]\n"
 	harrival = raw_input()
-	inputs['h1'] = float(harrival)
 	print "\n" * spacing
 
 	print "Height at Depature: [INCHES]\n\n\n"
 	hdepart = raw_input()
-	inputs['h2'] = float(hdepart)
+	
 
 
 	# I don't think this will work... yet, need to get hardware to make the inputs
@@ -351,7 +335,6 @@ def run_pickups(spike):
 	# So for now:
 	print "How long did you spend at " , location_input[1] , '?\n 	FORMAT: [ hr.minutes ] --->  5.25 \n'
 	pickup_duration = raw_input()
-	inputs['Pickup Duration'] = pickup_duration
 	print "\n\n"
 
 	# Check inputs are correct
@@ -362,44 +345,43 @@ def run_pickups(spike):
 	print "Height on Departure: " + hdepart
 	print "Duration: " , pickup_duration
 	print ""
-	print "[YES/NO]"
-
+	print "[YES/NO] This is where you should be able to get back to the last input to make changes... Haven't got that working just yet. "
 
 	# Calculate volume -> pounds
 	checker = raw_input().lower() 
 	if checker != "n": 
 		print "Well ok then, good luck going forward!"
 		print "\n" * spacing
-		gal_arrival = height_to_volume(inputs['h1'])
-		gal_departure = height_to_volume(inputs['h2'])
+		gal_arrival = height_to_volume(float(harrival))
+		gal_departure = height_to_volume(float(hdepart))
 		score = round(((float(gal_arrival) - float(gal_departure)) / float(gal_arrival)) ,2) * 100
-		collected = gal_arrival - gal_departure
-		pounds_collected = gallons_to_pounds(collected)
+		gallons_collected = gal_arrival - gal_departure
+		pounds_collected = gallons_to_pounds(gallons_collected)
 
 	else:
-		
 		print "start over, don't pass go"
-
-
-	# Build inputs
-	inputs['score'] = score
-	inputs['collected'] = collected
-	inputs['lbs'] = pounds_collected
-	inputs['leftovers'] = gal_departure
 
 
 	# Calculate price using pounds
 
 	# Look up AMS Price data
-	price_lookup(inputs['lbs'], ams)
+	price_lookup(pounds_collected, ams)
 
 	print "Manually lookup the price and enter it here: [$cwt] Example, 23.34 \n\n"
 	price = float(raw_input()) / 100.0
-	flat_fee = 15.0 / 100.0
-	we_get = flat_fee * inputs['lbs']
-	they_get = (price - flat_fee) * inputs['lbs']
+	flat_fee = 15.0 / 100.0 			# Here is where you change the flat fee
+	we_get = flat_fee * pounds_collected
+	they_get = (price - flat_fee) * pounds_collected
 	price_of_fuel = get_a(diesel) 
 
+	# Start building inputs
+	inputs['height_on_arrival'] = harrival
+	inputs['height_on_departure'] = hdepart
+	inputs['score'] = score
+	inputs['gallons_collected'] = round(gallons_collected, 2)
+	inputs['pounds_collected'] = round(pounds_collected, 2)
+	inputs['leftovers'] = round(gal_departure, 2)
+	inputs['Pickup_Duration'] = pickup_duration
 	inputs['income'] = round(we_get, 2)
 	inputs['to_charity'] = round(they_get, 2) 
 	inputs['price'] = price # of WVO
@@ -414,7 +396,7 @@ def run_pickups(spike):
 	print "Here is a breakdown of how the pickup went."
 	print ""
 	print "Location visited: %(location)s" % (inputs)
-	print "Oil collected: %(collected)s gallons" % (inputs)
+	print "Oil collected: %(gallons_collected)s gallons" % (inputs)
 	print "We only left ~ %(leftovers)s gallons behind" % (inputs)
 	print ""
 	print "The price today was: %(price)s $cwt" % (inputs)
@@ -437,7 +419,6 @@ def run_pickups(spike):
 
 	return inputs
 
-
 	# add oil_stats[prices]
 	# Send to .csv file 
 		#  Raw Data Variables:
@@ -447,21 +428,44 @@ def run_pickups(spike):
 	# close
 
 
-
-
-
-
-
 # -----------------------------------------------------------------
 
 
+def add_to_csv(to_add):
+	print "USEAGE: add_to_csv( DICT to add )"
+	
+	print '\n\n\n\n'
+	print to_add.keys()
+
+
+ 	print '\n\n\n\n'
+	# Figure out which location this info needs to be added to... 
+	target_file = locfile + "/" + to_add['location'] + '.csv'
+
+
+	print target_file
+	print '\n\n\n\n'
+
+
+	fw = open(target_file, 'a')	
+	writer = csv.DictWriter(fw, to_add.keys())
+	
+	writer.writerow(to_add)
+
+	fw.close()
+	# for key in to_add:
+	# 	# writer.writerow(to_add[line])
+	# 	print line
+
+
+# -----------------------------------------------------------------
 
 
 # Let us start the Program here, methinks
 # Load the restaurants into the class. 
 name_list = make_locations(locfile)
 name_list = [name.decode('utf-8') for name in name_list]
-print name_list
+print "Name List: " , name_list
 
 # robby = class_loader(locfile)
 # print robby['Erie Cafe']['536 W. Erie Street']
@@ -500,9 +504,14 @@ elif main_menu_choice[0] == main_menu.index('Run a pickup'):
 	print '\n\nThis is going to run a pickup!'
 	print '\n' * 10
 
-	pickups = run_pickups('spike')
+	pickups = run_pickup('spike')
+
+	add_to_csv(pickups)
+
 	# pickups.insert( 0, run_pickups() )
-	print pickups
+	print '\n\n' , pickups
+
+
 
 
 	
