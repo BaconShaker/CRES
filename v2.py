@@ -512,9 +512,10 @@ print "Name List: " , name_list
 
 
 main_menu = [ 
-	'Exit',
+	'Add Client',
 	'List Restaurants',
 	'Run a pickup',
+	'Exit'
 	]	
 
 main1 = "This is a list of what this program can currently do:"
@@ -553,6 +554,8 @@ elif main_menu_choice[0] == main_menu.index('Run a pickup'):
 
 	
 	
+elif main_menu_choice[0] == main_menu.index('Add Client'):
+	print "This is where we should like to have the snake add a client. "
 
 
 
