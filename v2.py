@@ -93,6 +93,7 @@ menu_choice = [0, 'Main Menu']
 def what_to_do(choices, before, after, default_choice, *args):
 	# Returns a number corresponding to the response choices[index] in the list below. 
 	os.system('clear') 	
+	# choices.append('')
 	looper = 0	
 	while looper == 0:
 		print "\n" , before
@@ -128,25 +129,21 @@ def what_to_do(choices, before, after, default_choice, *args):
 
 # -----------------------------------------------------------------
 
-class Restaurant:
-	def __init__(self, master, **kwargs):
-		self.name = master['Name']
-		self.address = master['Address']
-		self.city = master['City']
-		self.state = master['State']
-		self.zip_code = master['Zip']
-		self.contact_person = master['Contact_Person']
-		self.phone_num = master['Phone_Number']
+class Client:
+	def __init__(self):
+		pass
 
 	# Make a function that shows the header(s) of the csv's
 
 	# Going to need to read the names of the CSV's then add it to the Restaurant Object
 	# Also going to need to opn each file to get the actual information to add it to the Object
 
-	def get_names(self):
+	def add(self):
 		# Should probably check if the file exists already... I'll come back to this. 
 
+		
 		pass
+
 
 
 # -----------------------------------------------------------------
@@ -251,6 +248,7 @@ def show_details(location, locfile):
 
 # -----------------------------------------------------------------
 
+# Should add the date --> blank = today
 
 def run_pickup(spike):
 	diesel = 'http://www.eia.gov/dnav/pet/pet_pri_gnd_dcus_r20_w.htm'
@@ -507,6 +505,74 @@ def add_to_csv(to_add):
 # -----------------------------------------------------------------
 
 
+def add_client(robby):
+	os.system('clear')
+
+	keep_adding = 0
+	count = 0
+	while keep_adding != "n":
+		print "You have chosen to add a new location to the master file.\n"
+		new_locations = {}
+
+		print "What is the FULL name of the restaurant you would like to add?"
+		new_locations["Name"] = raw_input("  ")
+		print ""
+
+		print "What is the NICKNAME you would like to assign this location?"
+		new_locations['Nickname'] = raw_input("  ")
+		print ""
+
+		print "What is the street address of location to be added?"
+		print "Eg: 2021 W Fulton"
+		new_locations['Street Address'] = raw_input()
+		print ""
+		print "Make it able to go back to fix mistakes"
+		print "What city is the location in? [Blank] = Chicago" 
+		bb = raw_input() 
+		if bb == "":
+			new_locations['City'] = "Chicago"
+		else: 
+			new_locations['City'] = bb
+		print ""
+
+		print "What is the State? [BLANK] = IL"
+		aa = raw_input() 
+		if aa == "":
+			new_locations['State'] = "IL"
+		else: 
+			new_locations['state'] = aa
+		print ""
+
+		print "What is the Zip?"
+		new_locations['Zip'] = raw_input("	")
+		print ""
+
+		print "And lastly, who beith the Contactuth Personath?"
+		new_locations['Contact_Person'] = raw_input("	")
+		print ""
+
+		print "Here is what you just entered, if it is correct hit [ENTER]"
+		print ""
+		new_row = []
+		for key in new_locations:
+			print key + ": " + new_locations[key]
+			new_row.append(new_locations[key])
+
+		print ""
+		if raw_input() == "":
+			locations = open(locfile  + '/master.csv', 'a')
+			writer = csv.DictWriter(locations, new_locations.keys())
+			writer.writerow(new_locations)
+			locations.close()
+			print ""
+
+		print "Would you like to add another location right now? [Y/n]"
+		print ""
+		keep_adding = raw_input()
+		
+	
+
+	return new_locations
 
 
 
@@ -529,7 +595,7 @@ main_menu = [
 	'Add Client',
 	'List Restaurants',
 	'Run a pickup',
-	'Exit',
+	'EXIT',
 	]	
 
 main1 = "This is a list of what this program can currently do:"
@@ -546,7 +612,8 @@ while menu_choice[0] == main_menu.index('Main Menu'):
 	default_choice = 0
 	menu_choice = what_to_do(main_menu, main1, main2, default_choice)
 
-
+	if menu_choice[0] == main_menu.index('EXIT'):
+		break
 
 
 
@@ -579,6 +646,18 @@ while menu_choice[0] == main_menu.index('Main Menu'):
 		
 	elif menu_choice[0] == main_menu.index('Add Client'):
 		print "This is where we should like to have the snake add a client. "
+		add_client(321)
+
+
+
+
+
+
+
+
+
+
+
 		menu_choice = [0,'Main Menu']
 
 
