@@ -93,7 +93,7 @@ def what_to_do(choices, before, after, default_choice, *args):
 	os.system('clear') 	
 	looper = 0	
 	while looper == 0:
-		print before
+		print "\n" , before
 		print ""
 		count = 0
 		counter = [0,]
@@ -214,13 +214,27 @@ def class_loader(master_dir):
 	# from pickups.py. 
 
 def show_details(location, locfile):
-	print location[1]
 	
-	fo = open(locfile + '/' + location[1] + '.csv' )
+	
+	fo = open(locfile + '/' + location + '.csv' )
 	fr = csv.DictReader(fo, dialect = 'excel', skipinitialspace = True)
 
+	# heads = fr.fieldnames
+	# print fr.iteritems
+	new_fr = []
+	print ""
+	count = 0
+	to_show = [ 'pickup_count' , 'leftovers', 'score' , 'gallons_collected' , 'price' , 'income' , 'to_charity'  ]
 	for row in fr:
-		print row
+		new_fr.append( { key.replace( '_' , ' ') : value for key, value in row.items() if key in to_show} )
+ 		count += 1
+	# print '\n' * 10
+	# print 'New fr: ' , new_fr
+	print "These are the stats for" , location , ':\n\n' 
+	print tabulate(new_fr, headers = 'keys') , '\n\n\n\n'
+	return tabulate(new_fr, headers = 'keys') , '\n\n\n\n'
+
+	fo.close()
 
 
 # -----------------------------------------------------------------
@@ -390,6 +404,7 @@ def run_pickup(spike):
 	inputs['fuel_price'] = price_of_fuel
 
 
+
 	# Calculate Fuel Surcharge
 	# Datestamp
 	# End Loop
@@ -419,6 +434,7 @@ def run_pickup(spike):
 
 
 	return inputs
+	
 
 	
 
@@ -426,9 +442,11 @@ def run_pickup(spike):
 
 
 def add_to_csv(to_add):
-	print "USEAGE: add_to_csv( DICT to add )"
+	print "\n\nUSEAGE: add_to_csv( DICT to add )"
 	print '\n\n\n\n'
 	print to_add.keys()
+	print ""
+	print to_add
  	print '\n\n\n\n'
 	# Figure out which location this info needs to be added to... 
 	target_file = locfile + "/" + to_add['location'] + '.csv'
@@ -439,12 +457,21 @@ def add_to_csv(to_add):
 
 	fop = open(target_file)
 	fdr = csv.DictReader(fop, dialect = 'excel', skipinitialspace = True)
+
+
+	pickup_count = 1
+
+	for line in fdr:
+		pickup_count += 1 
+	print "This is pickup #:" , pickup_count
+
+	to_add['pickup_count'] = pickup_count
+
 	howlong_add = len(to_add.keys())
 	howlong_fdr = len(fdr.fieldnames) 
+
 	print "fdr: " , howlong_fdr
 	print "to_add: " , howlong_add 
-
-	
 
 	if howlong_fdr == howlong_add:
 		# This one only writes the INPUT ROW.
@@ -463,12 +490,15 @@ def add_to_csv(to_add):
 		fw.close()
 
 	fop.close()
-
-
 	
 
 # -----------------------------------------------------------------
 
+
+
+
+
+# -----------------------------------------------------------------
 
 # Let us start the Program here, methinks
 # Load the restaurants into the class. 
@@ -500,12 +530,14 @@ main_menu_choice = what_to_do(main_menu, main1, main2, 0)
 if main_menu_choice[0] == main_menu.index('List Restaurants'):
 
 	default_choice = 0
-	top = "Here's a list of current clients. Choose a number to see individual details."
-	bottom = "Be cool Bitch!  ...   I said, be cool!"
+	top = "Here's a list of current clients. Choose a number to specific details."
+	bottom = ""
 	
 	location_choice = what_to_do(name_list, top, bottom, default_choice)
+	os.system('clear')
 
-	show_details(location_choice, locfile)
+	
+	show_details(location_choice[1], locfile)
 
 
 elif main_menu_choice[0] == main_menu.index('Run a pickup'):
@@ -513,13 +545,14 @@ elif main_menu_choice[0] == main_menu.index('Run a pickup'):
 	print '\n\nThis is going to run a pickup!'
 	print '\n' * 10
 
-	pickups = run_pickup('spike')
+	pickup_inputs = run_pickup('spike')
 
-	add_to_csv(pickups)
+	add_to_csv(pickup_inputs)
+	print '\n\n\n' * 3
+	show_details(pickup_inputs['location'] , locfile )
 
-	# pickups.insert( 0, run_pickups() )
-	print '\n\n' , pickups
-
+	
+	
 
 
 
