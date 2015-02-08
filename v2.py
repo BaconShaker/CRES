@@ -154,7 +154,7 @@ class Restaurant:
 def make_locations(locfile):
 
 	# Here is the list that controls the headers on the pickup_files
-	pickup_heads = [ 'Date' , 'Collected' ]
+	pickup_heads = []
 
 	# Open the master file and get the nicknames. The Nicknames will become the individual
 	# filenames for the pickup files. 
@@ -172,7 +172,7 @@ def make_locations(locfile):
 		else:
 			print "There is no '" ,  pickup_file   , "' we should make one!\n" 
 			to_make = open( pickup_file, 'a' )
-			writer = csv.DictWriter(to_make, fieldnames = pickup_heads )
+			writer = csv.DictWriter( to_make , fieldnames = pickup_heads)
 			writer.writeheader()
 			to_make.close() 
 	return nicknames
@@ -370,11 +370,13 @@ def run_pickup(spike):
 	print "Manually lookup the price and enter it here: [$cwt] Example, 23.34 \n\n"
 	price = float(raw_input()) / 100.0
 	flat_fee = 15.0 / 100.0 			# Here is where you change the flat fee
+	print "Our flat fee is: 		It can be changed ~line 373"
 	we_get = flat_fee * pounds_collected
 	they_get = (price - flat_fee) * pounds_collected
 	price_of_fuel = get_a(diesel) 
 
 	# Start building inputs
+	# Inputs is going to be the Dict that's RETURNed by this function. 
 	inputs['height_on_arrival'] = harrival
 	inputs['height_on_departure'] = hdepart
 	inputs['score'] = score
@@ -413,31 +415,20 @@ def run_pickup(spike):
 	print "Thank you for your cooperation, we hope you come back soon!"
 	print ""
 	for row in inputs:
-		print row + ": " + str(inputs[row]) 
+		print str(inputs[row]).replace('_' , ' ') , "	" , row 
 
-	# tabulate(inputs, headers=[keys])
 
 	return inputs
 
-	# add oil_stats[prices]
-	# Send to .csv file 
-		#  Raw Data Variables:
-			# location_input
-			# harrival
-			# hdepart
-	# close
-
+	
 
 # -----------------------------------------------------------------
 
 
 def add_to_csv(to_add):
 	print "USEAGE: add_to_csv( DICT to add )"
-	
 	print '\n\n\n\n'
 	print to_add.keys()
-
-
  	print '\n\n\n\n'
 	# Figure out which location this info needs to be added to... 
 	target_file = locfile + "/" + to_add['location'] + '.csv'
@@ -446,17 +437,35 @@ def add_to_csv(to_add):
 	print target_file
 	print '\n\n\n\n'
 
+	fop = open(target_file)
+	fdr = csv.DictReader(fop, dialect = 'excel', skipinitialspace = True)
+	howlong_add = len(to_add.keys())
+	howlong_fdr = len(fdr.fieldnames) 
+	print "fdr: " , howlong_fdr
+	print "to_add: " , howlong_add 
 
-	fw = open(target_file, 'a')	
-	writer = csv.DictWriter(fw, to_add.keys())
 	
-	writer.writerow(to_add)
 
-	fw.close()
-	# for key in to_add:
-	# 	# writer.writerow(to_add[line])
-	# 	print line
+	if howlong_fdr == howlong_add:
+		# This one only writes the INPUT ROW.
+		fw = open(target_file, 'a')	
+		writer = csv.DictWriter(fw, to_add.keys())
+		writer.writerow(to_add)
+		fw.close()
 
+	else:
+		# This overwrites the file completely, may be a good idea to make a script here that 
+		# moves the file that's being replaced to a safe location?
+		fw = open(target_file, 'wb')	
+		writer = csv.DictWriter(fw, to_add.keys())
+		writer.writeheader()
+		writer.writerow(to_add)
+		fw.close()
+
+	fop.close()
+
+
+	
 
 # -----------------------------------------------------------------
 
