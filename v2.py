@@ -232,7 +232,7 @@ def show_details(location, locfile):
 	# print '\n' * 10
 	# print 'New fr: ' , new_fr
 	print "These are the stats for" , location , ':\n\n' 
-	print "new_fr: " , new_fr
+	# print "new_fr: " , new_fr
 	print tabulate(new_fr, headers = 'keys') , '\n\n\n\n'
 
 	print 'Press [ENTER] key to continue...\n'
@@ -327,9 +327,12 @@ def run_pickup(spike):
 	sheets_two = [ sheet.replace( '.csv' , '' ) for sheet in sheets ]
 
 	pickup_is_running = 1
+	
 	while pickup_is_running == 1:
 		
+	
 		location_input = what_to_do(sheets_two, "Where would you like to run a pickup for?", 'Thank you!', 0)
+		
 
 		# Prompt for inputs (Loation, Height on Arrival, Height on Departure)
 		inputs = {
@@ -339,7 +342,7 @@ def run_pickup(spike):
 		print "\n" * spacing
 		print "This is a pickup for", location_input[1] , ".\n"
 
-		stepper = 1
+		
 		harrival = raw_input("				Height on Arrivial in [INCHES]  ")
 		print "\n" * spacing
 
@@ -411,7 +414,7 @@ def run_pickup(spike):
 
 
 	
-
+		os.system('clear')
 		# Calculate Fuel Surcharge
 		# Datestamp
 		# End Loop
@@ -432,7 +435,7 @@ def run_pickup(spike):
 		print "Source: " + diesel
 
 		check = [ [ key.replace( '_' , ' ') , inputs[key] ] for key in inputs]
-		print tabulate(check)
+		print tabulate(check, headers = [ 'Input' , 'Value'])
 
 		print "These results will be added to the pickups.csv file above."
 		print "Thank you for your cooperation, we hope you come back soon!"
@@ -440,8 +443,12 @@ def run_pickup(spike):
 		# for row in inputs:
 		# 	print str(inputs[row]).replace('_' , ' ') , "	" , row 
 
-
-		return inputs
+		make_sure = raw_input("Would you like to continue?  ")
+		if make_sure == "":
+			pickup_is_running = 0
+			return inputs
+		else:
+			pass
 	
 
 	
