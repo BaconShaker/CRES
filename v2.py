@@ -141,7 +141,6 @@ class Client:
 	def add(self):
 		# Should probably check if the file exists already... I'll come back to this. 
 
-		
 		pass
 
 
@@ -233,6 +232,7 @@ def show_details(location, locfile):
 	# print '\n' * 10
 	# print 'New fr: ' , new_fr
 	print "These are the stats for" , location , ':\n\n' 
+	print "new_fr: " , new_fr
 	print tabulate(new_fr, headers = 'keys') , '\n\n\n\n'
 
 	print 'Press [ENTER] key to continue...\n'
@@ -241,9 +241,6 @@ def show_details(location, locfile):
 	return tabulate(new_fr, headers = 'keys') , '\n\n\n\n'
 
 	fo.close()
-
-
-
 
 
 # -----------------------------------------------------------------
@@ -299,7 +296,6 @@ def run_pickup(spike):
 		print text[301:475]
 		print ""
 		# soup.prettify(formatter= 'html')
-
 		# total = pounds * price
 		# return total
 		response.close()
@@ -318,7 +314,6 @@ def run_pickup(spike):
 		print temp
 		price = temp[32:36]
 		return price
-
 		diesel.close()
 
 
@@ -330,120 +325,123 @@ def run_pickup(spike):
 
 	# Define locations for the menu
 	sheets_two = [ sheet.replace( '.csv' , '' ) for sheet in sheets ]
-	location_input = what_to_do(sheets_two, "Where would you like to run a pickup for?", 'Thank you!', 0)
 
-	# Prompt for inputs (Loation, Height on Arrival, Height on Departure)
-	inputs = {
-		"location" : location_input[1]
-	}
-	print "\n" * spacing
+	pickup_is_running = 1
+	while pickup_is_running == 1:
+		
+		location_input = what_to_do(sheets_two, "Where would you like to run a pickup for?", 'Thank you!', 0)
 
-	print "Height on Arrivial: [INCHES]\n"
-	harrival = raw_input()
-	print "\n" * spacing
+		# Prompt for inputs (Loation, Height on Arrival, Height on Departure)
+		inputs = {
+			"location" : location_input[1]
+		}
 
-	print "Height at Depature: [INCHES]\n\n\n"
-	hdepart = raw_input()
-	
-
-
-	# I don't think this will work... yet, need to get hardware to make the inputs
-	# just entering the time here will require decoding and too much time to be changed later anyway. 
-
-	# print "What time did you arrive at ", location_input[1] , '?\n'
-	# start_pickup_time = raw_input()
-
-	# print "\n\nWhat time did you leave?"
-	# end_pickup_time = raw_input()
-
-	# So for now:
-	print "How long did you spend at " , location_input[1] , '?\n 	FORMAT: [ hr.minutes ] --->  5.25 \n'
-	pickup_duration = raw_input()
-	print "\n\n"
-
-	# Check inputs are correct
-	print "This is what we have so far, are you sure you'd like to keep going?"
-	print ""
-	print "Location: " + inputs['location'] 
-	print "Height on Arrival: " + harrival
-	print "Height on Departure: " + hdepart
-	print "Duration: " , pickup_duration
-	print ""
-	print "[YES/NO] This is where you should be able to get back to the last input to make changes... Haven't got that working just yet. "
-
-	# Calculate volume -> pounds
-	checker = raw_input().lower() 
-	if checker != "n": 
-		print "Well ok then, good luck going forward!"
 		print "\n" * spacing
+		print "This is a pickup for", location_input[1] , ".\n"
+
+		stepper = 1
+		harrival = raw_input("				Height on Arrivial in [INCHES]  ")
+		print "\n" * spacing
+
+		steps = [ ['Height (arrivial): ' , harrival] ]
+		status = tabulate(steps, headers = ['Step' , 'Value'])
+		print status , '\n\n'
+
+		
+		hdepart = raw_input("				Height at Depature: [INCHES]  ")
+		steps.append( [ 'Height (depart)' , hdepart ] )
+		status = tabulate(steps, headers = ['Step' , 'Value'])
+		print status
+		print "\n\n"
+
+
+		# I don't think this will work... yet, need to get hardware to make the inputs
+		# just entering the time here will require decoding and too much time to be changed later anyway. 
+
+		# print "What time did you arrive at ", location_input[1] , '?\n'
+		# start_pickup_time = raw_input()
+
+		# print "\n\nWhat time did you leave?"
+		# end_pickup_time = raw_input()
+
+		# So for now:
+		print "		How long did you spend at " , location_input[1] , '?'
+		pickup_duration = raw_input("							[HOURS]  ")
+		steps.append( [ 'Time on location:' , pickup_duration ] )
+		status = tabulate(steps, headers = ['Step' , 'Value'])
+		print status
+
+		print "\n\n"
+
+		# Calculate volume -> pounds
+		
 		gal_arrival = height_to_volume(float(harrival))
 		gal_departure = height_to_volume(float(hdepart))
 		score = round(((float(gal_arrival) - float(gal_departure)) / float(gal_arrival)) ,2) * 100
 		gallons_collected = gal_arrival - gal_departure
 		pounds_collected = gallons_to_pounds(gallons_collected)
 
-	else:
-		print "start over, don't pass go"
+
+		# Calculate price using pounds
+
+		# Look up AMS Price data
+		price_lookup(pounds_collected, ams)
+
+		print "Manually lookup the price and enter it here: [$cwt] Example, 23.34 \n\n"
+		price = float(raw_input()) / 100.0
+		flat_fee = 15.0 / 100.0 			# Here is where you change the flat fee
+		print "Our flat fee is: " , flat_fee , "	It can be changed ~line 373"
+		we_get = flat_fee * pounds_collected
+		they_get = (price - flat_fee) * pounds_collected
+		price_of_fuel = get_a(diesel) 
+
+		# Start building inputs
+		# Inputs is going to be the Dict that's RETURNed by this function. 
+		inputs['height_on_arrival'] = harrival
+		inputs['height_on_departure'] = hdepart
+		inputs['score'] = score
+		inputs['gallons_collected'] = round(gallons_collected, 2)
+		inputs['pounds_collected'] = round(pounds_collected, 2)
+		inputs['leftovers'] = round(gal_departure, 2)
+		inputs['Pickup_Duration'] = pickup_duration
+		inputs['income'] = round(we_get, 2)
+		inputs['to_charity'] = round(they_get, 2) 
+		inputs['price'] = price # of WVO
+		inputs['fuel_price'] = price_of_fuel
 
 
-	# Calculate price using pounds
+	
 
-	# Look up AMS Price data
-	price_lookup(pounds_collected, ams)
+		# Calculate Fuel Surcharge
+		# Datestamp
+		# End Loop
+		# Display resulting Dictionary from inputs[]
+		print "Here is a breakdown of how the pickup went."
+		print ""
+		print "Location visited: %(location)s" % (inputs)
+		print "Oil collected: %(gallons_collected)s gallons" % (inputs)
+		print "We only left ~ %(leftovers)s gallons behind" % (inputs)
+		print ""
+		print "The price today was: %(price)s $cwt" % (inputs)
+		print "Meaning CRES gets to keep, $%(income)s" % (inputs)
+		print "And the Charities get $%(to_charity)s" % (inputs)
+		print ""
+		print "For a score of: %(score)s" % (inputs)
+		print ""
+		print "The price of #2 Diesel today: $%s" % (price_of_fuel)
+		print "Source: " + diesel
 
-	print "Manually lookup the price and enter it here: [$cwt] Example, 23.34 \n\n"
-	price = float(raw_input()) / 100.0
-	flat_fee = 15.0 / 100.0 			# Here is where you change the flat fee
-	print "Our flat fee is: 		It can be changed ~line 373"
-	we_get = flat_fee * pounds_collected
-	they_get = (price - flat_fee) * pounds_collected
-	price_of_fuel = get_a(diesel) 
+		check = [ [ key.replace( '_' , ' ') , inputs[key] ] for key in inputs]
+		print tabulate(check)
 
-	# Start building inputs
-	# Inputs is going to be the Dict that's RETURNed by this function. 
-	inputs['height_on_arrival'] = harrival
-	inputs['height_on_departure'] = hdepart
-	inputs['score'] = score
-	inputs['gallons_collected'] = round(gallons_collected, 2)
-	inputs['pounds_collected'] = round(pounds_collected, 2)
-	inputs['leftovers'] = round(gal_departure, 2)
-	inputs['Pickup_Duration'] = pickup_duration
-	inputs['income'] = round(we_get, 2)
-	inputs['to_charity'] = round(they_get, 2) 
-	inputs['price'] = price # of WVO
-	inputs['fuel_price'] = price_of_fuel
-
-
-
-	# Calculate Fuel Surcharge
-	# Datestamp
-	# End Loop
-	# Display resulting Dictionary from inputs[]
-	print "\n" * 100
-	print "Here is a breakdown of how the pickup went."
-	print ""
-	print "Location visited: %(location)s" % (inputs)
-	print "Oil collected: %(gallons_collected)s gallons" % (inputs)
-	print "We only left ~ %(leftovers)s gallons behind" % (inputs)
-	print ""
-	print "The price today was: %(price)s $cwt" % (inputs)
-	print "Meaning CRES gets to keep, $%(income)s" % (inputs)
-	print "And the Charities get $%(to_charity)s" % (inputs)
-	print ""
-	print "For a score of: %(score)s" % (inputs)
-	print ""
-	print "The price of #2 Diesel today: $%s" % (price_of_fuel)
-	print "Source: " + diesel
+		print "These results will be added to the pickups.csv file above."
+		print "Thank you for your cooperation, we hope you come back soon!"
+		print ""
+		# for row in inputs:
+		# 	print str(inputs[row]).replace('_' , ' ') , "	" , row 
 
 
-	print "These results will be added to the pickups.csv file above."
-	print "Thank you for your cooperation, we hope you come back soon!"
-	print ""
-	for row in inputs:
-		print str(inputs[row]).replace('_' , ' ') , "	" , row 
-
-
-	return inputs
+		return inputs
 	
 
 	
@@ -599,7 +597,7 @@ main_menu = [
 	]	
 
 main1 = "This is a list of what this program can currently do:"
-main2 = "Looking to add more now so hold tight... \n"
+main2 = "Need to add: editing functionality for the master and pickup files during and after the script has run.\n"
 # menu_choice = what_to_do(main_menu, main1, main2, 0)
 # print "Menu Choice: " , menu_choice
 
@@ -612,8 +610,7 @@ while menu_choice[0] == main_menu.index('Main Menu'):
 	default_choice = 0
 	menu_choice = what_to_do(main_menu, main1, main2, default_choice)
 
-	if menu_choice[0] == main_menu.index('EXIT'):
-		break
+
 
 
 
@@ -647,26 +644,15 @@ while menu_choice[0] == main_menu.index('Main Menu'):
 	elif menu_choice[0] == main_menu.index('Add Client'):
 		print "This is where we should like to have the snake add a client. "
 		add_client(321)
-
-
-
-
-
-
-
-
-
-
-
 		menu_choice = [0,'Main Menu']
 
-
-
-
-
-	elif menu_choice[0] == main_menu.index('Exit'):
+	if menu_choice[0] == main_menu.index('EXIT'):
 		os.system('clear')
 		break
+
+
+
+
 
 
 
