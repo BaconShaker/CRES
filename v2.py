@@ -130,8 +130,15 @@ def what_to_do(choices, before, after, default_choice, *args):
 # -----------------------------------------------------------------
 
 class Client:
-	def __init__(self):
-		pass
+	def __init__(self, fmaster):
+			opener = open(fmaster)
+			all_lines = [ line.split(',') for line in opener ]
+			self.place = all_lines[1]
+			print '\n\n' , all_lines
+			print ""
+
+			opener.close()
+		
 
 	# Make a function that shows the header(s) of the csv's
 
@@ -140,7 +147,7 @@ class Client:
 
 	def add(self):
 		# Should probably check if the file exists already... I'll come back to this. 
-
+		print "Place" , self.place
 		pass
 
 
@@ -592,6 +599,9 @@ name_list = make_locations(locfile)
 name_list = [name.decode('utf-8') for name in name_list]
 print "Name List: " , name_list
 
+# robby = Client(locfile + '/master.csv')
+# print "this is robby: " , robby.add()
+
 # robby = class_loader(locfile)
 # print robby['Erie Cafe']['536 W. Erie Street']
 
@@ -615,11 +625,8 @@ main2 = "Need to add: editing functionality for the master and pickup files duri
 
 while menu_choice[0] == main_menu.index('Main Menu'):
 	default_choice = 0
+
 	menu_choice = what_to_do(main_menu, main1, main2, default_choice)
-
-
-
-
 
 	# menu_choice takes the int you type and compares the string to the list main_menu 
 	if menu_choice[0] == main_menu.index('List Restaurants'):
