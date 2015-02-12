@@ -631,17 +631,6 @@ def write_to_xl(csvfiles):
 
 
 
-# Let us start the Program here, methinks
-# Load the restaurants into the class. 
-name_list = make_locations(locfile)
-name_list = [name.decode('utf-8') for name in name_list]
-print "Name List: " , name_list
-
-# robby = Client(locfile + '/master.csv')
-# print "this is robby: " , robby.add()
-
-# robby = class_loader(locfile)
-# print robby['Erie Cafe']['536 W. Erie Street']
 
 main_menu = [
 	'Main Menu', 
@@ -651,18 +640,31 @@ main_menu = [
 	'Write to xlsx',
 	'EXIT',
 	]	
-
-main1 = "This is a list of what this program can currently do:"
-main2 = "Need to add: editing functionality for the master and pickup files during and after the script has run.\n"
-# menu_choice = what_to_do(main_menu, main1, main2, 0)
-# print "Menu Choice: " , menu_choice
-
-
-# re if pick below, 
-# 	[0] is the number input from the prompt,
-# 	[1] should be the string in 'word' from the list 
-
+		
 while menu_choice[0] == main_menu.index('Main Menu'):
+	# Let us start the Program here, methinks
+	# Load the restaurants into the class. 
+	name_list = make_locations(locfile)
+	name_list = [name.decode('utf-8') for name in name_list]
+	print "Name List: " , name_list
+
+	# robby = Client(locfile + '/master.csv')
+	# print "this is robby: " , robby.add()
+
+	# robby = class_loader(locfile)
+	# print robby['Erie Cafe']['536 W. Erie Street']
+
+
+
+	main1 = "This is a list of what this program can currently do:"
+	main2 = "Need to add: editing functionality for the master and pickup files during and after the script has run.\n"
+	# menu_choice = what_to_do(main_menu, main1, main2, 0)
+	# print "Menu Choice: " , menu_choice
+
+
+	# re if pick below, 
+	# 	[0] is the number input from the prompt,
+	# 	[1] should be the string in 'word' from the list 
 	default_choice = 0
 
 	menu_choice = what_to_do(main_menu, main1, main2, default_choice)
