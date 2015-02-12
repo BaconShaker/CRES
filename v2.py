@@ -640,7 +640,7 @@ main_menu = [
 	'Write to xlsx',
 	'EXIT',
 	]	
-		
+
 while menu_choice[0] == main_menu.index('Main Menu'):
 	# Let us start the Program here, methinks
 	# Load the restaurants into the class. 
