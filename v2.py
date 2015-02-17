@@ -24,7 +24,7 @@
 
 
 
-import csv 
+import csv # This may need to be gotten with apt-get
 import sys 
 import operator # This is for what? Something in the arrange_locations() def
 import os.path
@@ -35,8 +35,8 @@ import urllib2
 from bs4 import BeautifulSoup		# pip install BeautifulSoup4
 import os
 from os import listdir
-from tabulate import tabulate
-import json
+from tabulate import tabulate # got this with 
+import json # Pretty sure I got this for the GoogleMaps in dir2.py
 from collections import defaultdict
 
 
@@ -46,7 +46,10 @@ from collections import defaultdict
 # 	print key
 # That will list the Imported Modules for you. 
 
-# Now let's check which system is running 
+# Now let's check which system is running.
+
+# Need to find a way to get the GDrive file on the the Linux side of things. That's going to be hard
+
 
 if sys.platform.startswith('darwin'):
 	print ""
@@ -78,9 +81,11 @@ sheets = [ f for f in listdir(locfile)   ]
 print "Unsorted: ", sheets, '\n'
 
 # Use the .remove here to get rid of entries we don't want to make the list. 
-sheets.remove('.DS_Store')
-sheets.remove('Mordor.xlsx')
-sheets.remove('master.csv')
+sheets.remove('.DS_Store') # Not sure what this is but we don't want it.
+sheets.remove('Mordor.xlsx') # This is the xlsx file that has all the csv files as worksheets, master is the first page. 
+sheets.remove('master.csv') # A csv file that has all the addresses and contact information for each location. 
+
+# Master should also have an updated 'last pickup' and 'next pickup' column in it. Still need to add that. 
 
 print "Censored: ", sheets, '\n'
 sheets.sort()
@@ -190,7 +195,8 @@ def make_locations(locfile):
 # -----------------------------------------------------------------
 
 def class_loader(master_dir):
-	
+	# This method is USELESS! 
+
 	projects = defaultdict(dict)
 	
 	handler = open(master_dir + '/master.csv')
@@ -611,6 +617,7 @@ def write_to_xl(csvfiles):
 		restaurant_name = cap(restaurant_name, 31)
 
 		ws = master.create_sheet()
+		# Sometimes this adds a  header row for no reason. I think it has to do with whether or not the location was just created or not
 		ws.header_footer.center_header.font_size = 14
 		ws.header_footer.center_header.font_name = "Arial,Bold"
 
@@ -618,11 +625,16 @@ def write_to_xl(csvfiles):
 		for each_row in all_rows:
 			ws.append( each_row )
 
-
-	
-
 	# Don't forget to save to .xlsx
 	master.save(os.path.expanduser( "~/GDrive/cres_sheets/Mordor.xlsx" ))
+
+
+# -----------------------------------------------------------------
+
+import googlemaps
+
+# This should be able to do all the mapping and directions. There's also a method that makes directions matrices
+# Probably worth looking into at least for simplicity's sake.
 
 
 
@@ -680,10 +692,7 @@ while menu_choice[0] == main_menu.index('Main Menu'):
 		menu_choice = [0, 'Main Menu'] 
 
 
-
-
-
-	elif menu_choice[0] == main_menu.index('Run a pickup'):
+	elif menu_choice[0] == main_menu.index('Run a pickup'): # Run the pickup program, modify corresponding csv files and return to main_menu
 		print '\n\nThis is going to run a pickup!'
 		print '\n' * 10
 		pickup_inputs = run_pickup('spike')
@@ -692,20 +701,19 @@ while menu_choice[0] == main_menu.index('Main Menu'):
 		show_details(pickup_inputs['location'] , locfile )
 		menu_choice = [0, 'Main Menu']
 
-
-
-
 		
-	elif menu_choice[0] == main_menu.index('Add Client'):
+	elif menu_choice[0] == main_menu.index('Add Client'): # Add a location, return to main_menu
 		print "This is where we should like to have the snake add a client. "
 		add_client(321)
 		menu_choice = [0,'Main Menu']
 
-	elif menu_choice[0] == main_menu.index('EXIT'):
+
+	elif menu_choice[0] == main_menu.index('EXIT'): # Quit the damn program already we don't want to do this anymore! 
 		os.system('clear')
 		break
 
-	elif menu_choice[0] == main_menu.index('Write to xlsx'):
+
+	elif menu_choice[0] == main_menu.index('Write to xlsx'): # Write all the csv files to an xlsx file, each location has its own sheet. 
 		write_to_xl(locfile)
 		menu_choice = [0,'Main Menu']
 
