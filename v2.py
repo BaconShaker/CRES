@@ -32,7 +32,7 @@ from os.path import isfile, join
 from datetime import datetime
 import urllib
 import urllib2
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup		# pip install BeautifulSoup4
 import os
 from os import listdir
 from tabulate import tabulate
@@ -79,11 +79,15 @@ print "Unsorted: ", sheets, '\n'
 
 # Use the .remove here to get rid of entries we don't want to make the list. 
 sheets.remove('.DS_Store')
+sheets.remove('Mordor.xlsx')
 sheets.remove('master.csv')
+
 print "Censored: ", sheets, '\n'
 sheets.sort()
 print "Sorted: ", sheets, "\n"
 
+
+# Make sure we enter the main menu loop
 menu_choice = [0, 'Main Menu']
 
 # -------------------------------------------------------------------
@@ -150,11 +154,7 @@ class Client:
 		print "Place" , self.place
 		pass
 
-
-
 # -----------------------------------------------------------------
-
-
 
 def make_locations(locfile):
 
@@ -183,13 +183,11 @@ def make_locations(locfile):
 	return nicknames
 	apple.close()
 
-
 # -----------------------------------------------------------------
 
 	
 
 # -----------------------------------------------------------------
-
 
 def class_loader(master_dir):
 	
@@ -209,11 +207,7 @@ def class_loader(master_dir):
 	return projects
 	handler.close()
 
-
-
-
 # -----------------------------------------------------------------
-
 
 	# Looks up all the .csv files in cres_sheets, strips the extensions 
 	# and compares the names to the choice made.
@@ -252,7 +246,7 @@ def show_details(location, locfile):
 
 # -----------------------------------------------------------------
 
-# Should add the date --> blank = today
+	# Should add the date --> blank = today
 
 def run_pickup(spike):
 	diesel = 'http://www.eia.gov/dnav/pet/pet_pri_gnd_dcus_r20_w.htm'
@@ -457,11 +451,7 @@ def run_pickup(spike):
 		else:
 			pass
 	
-
-	
-
 # -----------------------------------------------------------------
-
 
 def add_to_csv(to_add):
 	print "\n\nUSEAGE: add_to_csv( DICT to add )"
@@ -513,9 +503,7 @@ def add_to_csv(to_add):
 
 	fop.close()
 	
-
 # -----------------------------------------------------------------
-
 
 def add_client(robby):
 	os.system('clear')
@@ -586,6 +574,57 @@ def add_client(robby):
 
 	return new_locations
 
+# -----------------------------------------------------------------
+
+def cap(s, l):
+
+    return s if len(s)<=l else s[0:l-3]+'...'
+
+# -----------------------------------------------------------------  
+
+from openpyxl import Workbook
+from openpyxl import worksheet
+from openpyxl.workbook import Workbook
+# Got these with pip install openpyxl
+
+def write_to_xl(csvfiles):
+	spartan = open(locfile + '/' + 'master.csv')
+	lines = [ x.split(',') for x in spartan ]
+	# Create the main Workbook
+	master = Workbook()
+
+
+
+	# Get to the first sheet, created by default when Workbook() is called
+	main = master.active
+	main.title = 'One To Rule Them All'
+	for row in lines:
+		main.append(row)
+	
+
+	# Now to create all the other sheets
+	for restaurant in sheets:
+		spam = open(locfile + '/' + restaurant)
+		all_rows = [ line.split(',') for line in spam ]
+
+		restaurant_name = restaurant.replace( ".csv" , "")
+		restaurant_name = cap(restaurant_name, 31)
+
+		ws = master.create_sheet()
+		ws.header_footer.center_header.font_size = 14
+		ws.header_footer.center_header.font_name = "Arial,Bold"
+
+		ws.title = str(restaurant_name)
+		for each_row in all_rows:
+			ws.append( each_row )
+
+
+	
+
+	# Don't forget to save to .xlsx
+	master.save(os.path.expanduser( "~/GDrive/cres_sheets/Mordor.xlsx" ))
+
+
 
 
 # -----------------------------------------------------------------
@@ -593,37 +632,39 @@ def add_client(robby):
 
 
 
-# Let us start the Program here, methinks
-# Load the restaurants into the class. 
-name_list = make_locations(locfile)
-name_list = [name.decode('utf-8') for name in name_list]
-print "Name List: " , name_list
-
-# robby = Client(locfile + '/master.csv')
-# print "this is robby: " , robby.add()
-
-# robby = class_loader(locfile)
-# print robby['Erie Cafe']['536 W. Erie Street']
-
 main_menu = [
 	'Main Menu', 
 	'Add Client',
 	'List Restaurants',
 	'Run a pickup',
+	'Write to xlsx',
 	'EXIT',
 	]	
 
-main1 = "This is a list of what this program can currently do:"
-main2 = "Need to add: editing functionality for the master and pickup files during and after the script has run.\n"
-# menu_choice = what_to_do(main_menu, main1, main2, 0)
-# print "Menu Choice: " , menu_choice
-
-
-# re if pick below, 
-# 	[0] is the number input from the prompt,
-# 	[1] should be the string in 'word' from the list 
-
 while menu_choice[0] == main_menu.index('Main Menu'):
+	# Let us start the Program here, methinks
+	# Load the restaurants into the class. 
+	name_list = make_locations(locfile)
+	name_list = [name.decode('utf-8') for name in name_list]
+	print "Name List: " , name_list
+
+	# robby = Client(locfile + '/master.csv')
+	# print "this is robby: " , robby.add()
+
+	# robby = class_loader(locfile)
+	# print robby['Erie Cafe']['536 W. Erie Street']
+
+
+
+	main1 = "This is a list of what this program can currently do:"
+	main2 = "Need to add: editing functionality for the master and pickup files during and after the script has run.\n"
+	# menu_choice = what_to_do(main_menu, main1, main2, 0)
+	# print "Menu Choice: " , menu_choice
+
+
+	# re if pick below, 
+	# 	[0] is the number input from the prompt,
+	# 	[1] should be the string in 'word' from the list 
 	default_choice = 0
 
 	menu_choice = what_to_do(main_menu, main1, main2, default_choice)
@@ -660,9 +701,15 @@ while menu_choice[0] == main_menu.index('Main Menu'):
 		add_client(321)
 		menu_choice = [0,'Main Menu']
 
-	if menu_choice[0] == main_menu.index('EXIT'):
+	elif menu_choice[0] == main_menu.index('EXIT'):
 		os.system('clear')
 		break
+
+	elif menu_choice[0] == main_menu.index('Write to xlsx'):
+		write_to_xl(locfile)
+		menu_choice = [0,'Main Menu']
+
+
 
 
 
