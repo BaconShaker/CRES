@@ -3,7 +3,9 @@
 # This should make a class to run pickups at each location.... Should. 
 
 # Cheating...
+
 from tabulate import tabulate
+import os.path
 
 
 
@@ -11,11 +13,20 @@ class Menu():
 	def __init__(self, prefix , choices, suffix, default,  *args):
 		print 'I hope this takes lists?'
 		print "Usage: Name(string, list, string, int)"
+		self.prefix = prefix
+		self.choices = choices
+		self.suffix = suffix
+		self.default = default
 
-		print '\n' , '	', prefix , '\n'
-		print '	' , tabulate( [ ( index + 1, choice ) for index, choice in enumerate(choices) ] ) 
-		print '\n' , '	', suffix ,'\n' , '		[BLANK] --> ' , default
+	def display(self):
+		os.system('clear')
+		print '\n' , '	', self.prefix , '\n'
+		print tabulate( [ ( '		' + str(index + 1) , choice ) for index, choice in enumerate(self.choices) ] , tablefmt ='plain')  
+		print '\n' , '			', self.suffix ,'\n' , '						[BLANK] --> ' , self.default
 
+		# Got the table to sidplay ok but now I need to get the rawinput to return the same things as in v2.py
+		# Should be in the format of:  
+		#								response = [ int(selection), word] 
 
 
 
@@ -99,8 +110,13 @@ pickup.arrival()
 
 
 
-pre = 'This would be the first part of the prompt, in string form. '
-post = 'This is the latter part of the menu item, also in string form. '
+pre = 'This is the Main Menu, by all means choose an option:'
+post = 'Thanks, jackass... '
 questions = ['choice 1', 'choice 2', 'yadda yadda yadda']
 
+# Load the Menu to a variable, 
 main_menu = Menu(pre, questions, post, 0)
+
+# Actually do things with the Menu, like display it. 
+main_menu.display()
+
