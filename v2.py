@@ -62,7 +62,7 @@ if sys.platform.startswith('darwin'):
 elif sys.platform.startswith('linux'):
 	print ""
 	print 'This is a Linux\n' 
-	locfile = os.path.expanduser( '~/Locations')
+	locfile = os.path.expanduser( '~/cres_sheets2')
 	print "Locfile: ", locfile, '\n'
 
 
