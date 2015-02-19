@@ -58,12 +58,15 @@ if sys.platform.startswith('darwin'):
 
 	locfile = os.path.expanduser( "~/GDrive/cres_sheets" )  #mac
 	print "Locfile: ", locfile, '\n'
+	sheets = [ f for f in listdir(locfile)   ]
+	sheets.remove('.DS_Store') # Not sure what this is but we don't want it.
 
 elif sys.platform.startswith('linux'):
 	print ""
 	print 'This is a Linux\n' 
 	locfile = os.path.expanduser( '~/cres_sheets2')
 	print "Locfile: ", locfile, '\n'
+	sheets = [ f for f in listdir(locfile)   ]
 
 
 # The first thing we're going to have to do is find the 
@@ -75,13 +78,13 @@ elif sys.platform.startswith('linux'):
 # print locations
 
 # sheets is a list of files in locfile
-sheets = [ f for f in listdir(locfile)   ] 
+ 
 
 
 print "Unsorted: ", sheets, '\n'
 
 # Use the .remove here to get rid of entries we don't want to make the list. 
-sheets.remove('.DS_Store') # Not sure what this is but we don't want it.
+
 sheets.remove('Mordor.xlsx') # This is the xlsx file that has all the csv files as worksheets, master is the first page. 
 sheets.remove('master.csv') # A csv file that has all the addresses and contact information for each location. 
 
@@ -627,6 +630,7 @@ def write_to_xl(csvfiles):
 
 	# Don't forget to save to .xlsx
 	master.save(os.path.expanduser( "~/GDrive/cres_sheets/Mordor.xlsx" ))
+	# Need to make this work with the new location on the linux Side
 
 
 # -----------------------------------------------------------------
