@@ -13,6 +13,7 @@ class Menu():
 	def __init__(self, prefix , choices, suffix, default,  *args):
 		print 'I hope this takes lists?'
 		print "Usage: Name(string, list, string, int)"
+		# Here's all the attributes the menu is going to have upon initialization. Can add more later
 		self.prefix = prefix
 		self.choices = choices
 		self.suffix = suffix
@@ -21,7 +22,8 @@ class Menu():
 	def display(self):
 		os.system('clear')
 		print '\n' , '	', self.prefix , '\n'
-		print tabulate( [ ( '		' + str(index + 1) , choice ) for index, choice in enumerate(self.choices) ] , tablefmt ='plain')  
+		trunk_list = [ ( '		' + str(index + 1) , choice ) for index, choice in enumerate(self.choices) ]
+		print tabulate( trunk_list , tablefmt ='plain')  
 		print '\n' , '			', self.suffix ,'\n' , '						[BLANK] --> ' , self.default
 
 		# Got the table to sidplay ok but now I need to get the rawinput to return the same things as in v2.py
@@ -29,6 +31,20 @@ class Menu():
 		#								response = [ int(selection), word] 
 
 
+		selection = raw_input()
+		# while selection not in trunk_list:
+			
+		if selection == '':
+			selection = self.default
+
+		else:
+			selection = selection 
+			# Not sure I neeeeeeed this, but something tells me it's a good idera to keep it here for the time being. 
+			# Can figure it out later, eh?
+			# Need to figure out how to get word and 
+
+		print 'Good work, you picked: ' , selection
+		# response = [ int (selection) , word ]
 
 
 
