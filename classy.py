@@ -43,7 +43,7 @@ elif sys.platform.startswith('linux'):
 class Menu():
 	def __init__(self, prefix , choices, suffix, default,  *args):
 
-		print "Menu usage: Name(string, list, string, int)"
+		print "\nMenu usage: Name(string, list, string, int)"
 		# Here's all the attributes the menu is going to have upon initialization. Can add more later
 		self.prefix = prefix
 		self.choices = choices # May have to do some [choice.decode('utf-8') for choice in choices]
@@ -129,14 +129,54 @@ class Collection():
 		self.link_diesel = 'http://www.eia.gov/dnav/pet/pet_pri_gnd_dcus_r20_w.htm'
 		self.link_ams = 'http://www.ams.usda.gov/mnreports/nw_ls442.txt'
 
+	def main_prompt(self):
 		a = "Where are you collecting oil from?"
 		b = "Thank you!"
 		# locations = [sheet.replace('.csv' , '') for sheet in sheets]
 		location_menu = Menu(a, name_list, b, 0) #locations was here before name_list
-		to_collect = location_menu.display()
+		collect_from = location_menu.display()
 
-		print "This is where you have choosen to collect oil: " , to_collect[1] , '\n'
+		# collect_from returns [ 0, word ] from the main menu prompt.
+		# Take that and make it into the runpickup from v2.py
 
+		print "This is where you have choosen to collect oil: " , collect_from[1] , '\n'
+		
+
+
+		# Need to set up the inputs dict. 
+
+		inputs = {
+			'location' : collect_from[1]
+		}
+
+		# Try to make this input section a little more robust so you can move 
+		#forwards and back while entering information. First try a bunch of nestled while loops. 
+		stage = 1 # stage 0 should be quit!  
+		
+		while stage >= 1:
+			print 'What was the height of the oil when you got there?'
+			height_on_arrival = raw_input('\n ')
+			stage += 1 # move to the next 
+
+			while stage >=2:
+				print "\nWhat was the height of the oil when you left?"
+				height_on_departure = raw_input('\n')
+				if height_on_departure != 'b':
+					stage += 1
+				else:
+					stage = 1 
+
+				while stage >= 3:
+					# Got the menu to at least loop, need to make it go through all the way then interate back. 
+				
+
+			print "this is the end of the pickup, you should have been spit back to the main menu"
+			# break
+
+
+
+
+		return inputs
 
 	def conversions(self):
 		pass
@@ -190,7 +230,7 @@ main_menu = Menu(pre, main_choices, post, 1)
 # Start the main loop. 
 to_loop = 1
 while to_loop != 0:
-
+	# This is the main list of locations, got it from master.csv
 	name_list = make_locations(locfile)
 	# First prompt of Main Menu
 	menu_choice = main_menu.display()
@@ -202,12 +242,37 @@ while to_loop != 0:
 	if menu_choice[0] == main_choices.index('EXIT PROGRAM'): 
 		break
 
+
+
+
+
+
+
+
+
+
+# Here is where I'm working on the plane. 
+
 	elif menu_choice[0] == main_choices.index('Run Pickup'):
 		print "Run a pickup"
 
 		# Define a Collection variable to get the ball rolling
-		pickup = Collection()
-		
+		collect = Collection()
+		pickup = collect.main_prompt()
+		print '\nYou chose to run a pickup, here are the results: ' , pickup
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
