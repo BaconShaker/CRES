@@ -11,6 +11,10 @@ import sys
 import os
 from os import listdir
 import csv
+import urllib
+import urllib2
+from bs4 import BeautifulSoup		# pip install BeautifulSoup4
+
 
 
 
@@ -129,6 +133,36 @@ class Collection():
 		self.link_diesel = 'http://www.eia.gov/dnav/pet/pet_pri_gnd_dcus_r20_w.htm'
 		self.link_ams = 'http://www.ams.usda.gov/mnreports/nw_ls442.txt'
 
+		
+		# Need to get work on this parser.  
+
+		print ""
+		print "Price_lookup():" # Input gallons or inches?
+		print ""
+		response = urllib2.urlopen(self.link_ams)
+		# response = urllib2.urlopen('http://www.ams.usda.gov/mnreports/nw_ls442.txt')
+		soup = BeautifulSoup(response)
+		# page = response.readline()
+		text = soup.get_text()
+		print text[301:475]
+		print ""
+		# soup.prettify(formatter= 'html')
+		# total = pounds * price
+		# return total
+		print "What is the AMS price you would like to use for this collection?"
+		self.ams = float( raw_input('\n ') ) / 100.0
+		response.close()
+
+
+
+
+# Should add the ability to build the route just before making inputs Below
+# that way you'll have the distance for the fuel calculation. Once you make the list 
+# you should be able to iterate through the list to make inputs
+
+
+
+
 	def main_prompt(self):
 		a = "Where are you collecting oil from?"
 		b = "Thank you!"
@@ -141,39 +175,64 @@ class Collection():
 
 		print "This is where you have choosen to collect oil: " , collect_from[1] , '\n'
 		
-
-
 		# Need to set up the inputs dict. 
 
-		inputs = {
-			'location' : collect_from[1]
-		}
+		height_on_arrival = int()
+		height_on_departure = int()
+		pickup_duration = int()
+
+
+		inputs = {}
+		inputs['Location'] = collect_from[1]
+		inputs['Arrival Height'] = height_on_arrival
+		inputs['Departure Height'] = height_on_departure
+		inputs['Duration'] = pickup_duration
+		inputs['AMS Price'] = self.ams
 
 		# Try to make this input section a little more robust so you can move 
 		#forwards and back while entering information. First try a bunch of nestled while loops. 
 		stage = 1 # stage 0 should be quit!  
 		
-		while stage >= 1:
-			print 'What was the height of the oil when you got there?'
-			height_on_arrival = raw_input('\n ')
-			stage += 1 # move to the next 
+		while stage != 0:
+			if stage == 1:
+				print 'What was the height of the oil when you got there?'
+				height_on_arrival = raw_input('\n ')
+				if height_on_arrival != 'b':
+					stage += 1 # move to the next 
+				else:
+					stage = 0
+					print "This should send you back to the main menu."
+					
 
-			while stage >=2:
+			if stage == 2:
 				print "\nWhat was the height of the oil when you left?"
-				height_on_departure = raw_input('\n')
+				height_on_departure = raw_input('\n ')
 				if height_on_departure != 'b':
 					stage += 1
 				else:
 					stage = 1 
 
-				while stage >= 3:
+			if stage == 3:
 					# Got the menu to at least loop, need to make it go through all the way then interate back. 
+				print "\nHow long did the pickup take?"
+				pickup_duration = raw_input('\n ')
+				if pickup_duration != 'b':
+					stage += 1
+				else: 
+					stage = 2
+
+			if stage == 4:
+				print "\nWhat is the price of oil today?"
+				break
+			
 				
 
 			print "this is the end of the pickup, you should have been spit back to the main menu"
-			# break
+			
 
 
+
+		print inputs
 
 
 		return inputs
