@@ -19,11 +19,23 @@ def inches_to_gallons(*args):
 	return gallons
 
 
-	
+class Collect():
+	def __init__(self):
+		self.r = 'Smith'
+		print "This is the class working"
+
+	def run_pick(self):
+		print self.r
+
+def jibs():
+	print var.get()
+
+
+jayne = Collect()
 
     
 root = Tk()
-root.title("Feet to Meters")
+root.title("Collection Details")
 
 mainframe = ttk.Frame(root, padding="3 3 12 12")
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
@@ -71,9 +83,18 @@ answers = [
 
 # Make rows
 
+var = StringVar(root)
+var.set('Robby')
+choices = ['Robby' , 'Jason' , 'Mike' , 'Steph']
+option = OptionMenu(mainframe, var, *choices)
+option.grid(column = 1,  row = 0)
+ttk.Button(mainframe, text = 'Button', command = jibs).grid(column = 3, row = 0)
+
+
+
 for i , q in enumerate(questions):
-	ttk.Label(mainframe, text = q).grid(column = 1, row = i)
-	ttk.Entry(mainframe, width = 7, textvariable = answers[i] ).grid(column = 2, row = i)
+	ttk.Label(mainframe, text = q).grid(column = 1, row = i+1)
+	ttk.Entry(mainframe, width = 7, textvariable = answers[i] ).grid(column = 2, row = i+1)
 
 
 # Put a button to do the calculations
