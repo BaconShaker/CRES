@@ -157,13 +157,9 @@ class Collection():
 
 
 
-
-
-
-
-# Should add the ability to build the route just before making inputs Below
-# that way you'll have the distance for the fuel calculation. Once you make the list 
-# you should be able to iterate through the list to make inputs
+	# Should add the ability to build the route just before making inputs Below
+	# that way you'll have the distance for the fuel calculation. Once you make the list 
+	# you should be able to iterate through the list to make inputs
 
 
 
@@ -190,6 +186,14 @@ class Collection():
 			print date.today()
 			date_of_pickup.set(date.today())
 
+		def grab_inputs():
+			to_return = [variable.get() for variable in answers]
+			to_return.insert(0, loc_select.get() )
+			print to_return
+			
+
+
+
 
 
 
@@ -209,6 +213,8 @@ class Collection():
 		volume = StringVar()
 		date_of_pickup = StringVar()
 		stop_number = StringVar()
+		price = StringVar()
+		
 
 		loc_select = StringVar()
 		# Need to add variables like this:
@@ -219,6 +225,7 @@ class Collection():
 			'Date (pickup): ' ,
 			'Arrivial (in):' ,
 			'Departure (in):' ,
+			"Price (cwt):" ,
 			"Duration (hrs)" , 
 			"Quality (0-100)", 
 			# "Stop #: " ,
@@ -229,17 +236,19 @@ class Collection():
 			date_of_pickup , 
 			arrive , 
 			depart , 
+			price ,
 			duration , 
 			qual,
 			# stop_number ,
 		]
 
 
-
 		# This is the setup for the drop down menu for location selection
-		loc_select.set('Choose Location')
-		choices = name_list
-		OptionMenu(mainframe, loc_select, *choices).grid(column = 0,  row = 1, sticky = W)
+		choices = ['Choose Location']
+		for name in name_list:
+			choices.append(name)
+		print name_list
+		ttk.OptionMenu(mainframe, loc_select, *choices).grid(column = 1,  row = 0, sticky = W)
 		
 		# Display stop number
 		ttk.Label(mainframe, text = "Stop #: " , ).grid(column = 1, row = 1)
@@ -255,11 +264,12 @@ class Collection():
 		ttk.Button(mainframe, text = 'Enter TODAY' , command = today).grid(column = 3, row = questions.index('Date (pickup): ') + 2 )
 
 		# Put a button look up the AMS Price
-		ttk.Button(mainframe, text = 'AMS Price Lookup', command = price_lookup).grid(column = 3, row = len(choices) + 2)
-		
+		ttk.Button(mainframe, text = 'AMS Price Lookup', command = price_lookup).grid(column = 3, row = questions.index('Price (cwt):') + 2)
 
+		# Make a button that submits what's in the fields
+		submit = ttk.Button(mainframe, text = 'Submit', command = grab_inputs).grid(column = 3, row = len(choices) + 2)
 
-		ttk.Label(mainframe, text = "-------------------------------").grid(column = 0, row = len(choices) + 3 )
+		# ttk.Label(mainframe, text = "-------------------------------").grid(column = 0, row = len(choices) + 3 )
 		ttk.Label(mainframe, text = "-------------------------------").grid(column = 1, row = len(choices) + 3)
 		ttk.Label(mainframe, text = "-------------------------------").grid(column = 2, row = len(choices) + 3)
 		ttk.Label(mainframe, text = "-------------------------------").grid(column = 3, row = len(choices) + 3)
@@ -272,9 +282,12 @@ class Collection():
 
 		
 		root.mainloop()
-		
-
-		return "This is the end of the collection"
+		print "\n\nqual: " , qual.get()
+		final = [
+			ans.get() for ans in answers
+		]
+		final.insert( 0 , loc_select.get())
+		return list(final)
 
 
 
