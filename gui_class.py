@@ -14,7 +14,9 @@ import csv
 import urllib
 import urllib2
 from bs4 import BeautifulSoup		# pip install BeautifulSoup4
-
+from Tkinter import *
+import ttk
+from datetime import date
 
 
 
@@ -126,10 +128,6 @@ def make_locations(locfile):
 
 # -----------------------------------------------------------------
 
-
-from Tkinter import *
-import ttk
-from datetime import date
 
 class Collection():
 	def __init__(self):
