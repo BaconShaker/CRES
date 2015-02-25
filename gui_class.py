@@ -3,21 +3,28 @@
 # This should make a class to run pickups at each location.... Should. 
 
 # Cheating...
+mods = 1
+while mods == 1:
+	try:
+		from tabulate import tabulate #makes the nice tables
+		import os.path #pathfinder
+		import time #this is for any delays I want
+		import sys
+		import os
+		from os import listdir
+		import csv
+		import urllib
+		import urllib2
+		from bs4 import BeautifulSoup           # pip install BeautifulS
+		from Tkinter import *
+		import ttk
+		from datetime import date
 
-from tabulate import tabulate #makes the nice tables
-import os.path #pathfinder
-import time #this is for any delays I want
-import sys
-import os
-from os import listdir
-import csv
-import urllib
-import urllib2
-from bs4 import BeautifulSoup		# pip install BeautifulSoup4
-from Tkinter import *
-import ttk
-from datetime import date
+	except ImportError as err:
+		print "Something didn't work right.\n"
+		print  err.args
 
+	mods = 0
 
 
 # First let's check which system is running.
@@ -420,7 +427,7 @@ class Collection():
 
 pre = 'This is the Main Menu, by all means choose an option:'
 post = 'Thanks, jackass... '
-main_choices = ['EXIT PROGRAM', 'Run Pickup', 'choice 2', "yadda y'adda yadda"]
+main_choices = ['EXIT PROGRAM', 'Run Pickup GUI', 'Run Pickup txt' , 'choice 2', "yadda y'adda yadda"]
 
 # Load the Menu to a variable, 
 main_menu = Menu_main(pre, main_choices, post, 1)
@@ -444,17 +451,7 @@ while to_loop != 0:
 		break
 
 
-
-
-
-
-
-
-
-
-# Here is where I'm working on the plane. 
-
-	elif menu_choice[0] == main_choices.index('Run Pickup'):
+	elif menu_choice[0] == main_choices.index('Run Pickup GUI'):
 		print "Run a pickup"
 
 		# Define a Collection variable to get the ball rolling
@@ -466,7 +463,9 @@ while to_loop != 0:
 		print tabulate( [ (key, collection_inputs[key] ) for key in collection_inputs] )
 		print '\n'
 
-
+	elif menu_choice[0] == main_choices.index('Run Pickup txt'):
+		print "This is where the plug and chug method should go"
+		time.sleep(2)
 
 	elif menu_choice[0] == main_choices.index('choice 2'):
 		print "That worked I think"
