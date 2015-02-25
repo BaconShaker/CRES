@@ -186,15 +186,22 @@ class Collection():
 			print date.today()
 			date_of_pickup.set(date.today())
 
-		def grab_inputs():
+		def finalize():
 			to_return = [variable.get() for variable in answers]
 			to_return.insert(0, loc_select.get() )
-			print to_return
+			
+			ttk.Label(mainframe, text = "Close the window to add: \n").grid(column = 1, row = len(choices) + 4)
+			
+			# print "\n\nConversions from finalize: \n 			" , self.conversions(to_return)
+
+			check_final = self.conversions(to_return)
+			for index, key in enumerate(check_final):
+				ttk.Label(mainframe, text = key.replace( '_' , " " ) ).grid(column = 2, row =  index + len(choices) + 5, sticky = E)
+				ttk.Label(mainframe, text = check_final[key] ).grid(column = 3, row =  index + len(choices) + 5, sticky = N )
+
 			
 
-
-
-
+			return to_return
 
 
 		root = Tk()
@@ -206,17 +213,28 @@ class Collection():
 		mainframe.rowconfigure(0, weight=1)
 
 		# set up the variables, these should match what's in the answers list
-		arrive = StringVar()
-		depart = StringVar()
-		duration = StringVar()
-		qual = StringVar()
-		volume = StringVar()
+		arrive = IntVar()
+		depart = IntVar()
+		duration = IntVar()
+		qual = IntVar()
+		volume = DoubleVar()
 		date_of_pickup = StringVar()
-		stop_number = StringVar()
-		price = StringVar()
-		
+		stop_number = IntVar()
+		price = DoubleVar()
+		cres_fee = DoubleVar()
 
+		
+		robby = StringVar()
 		loc_select = StringVar()
+
+		# Making the defaults
+		arrive.set(30)
+		depart.set(1)
+		price.set(23.0)
+		qual.set(50)
+		cres_fee.set(.15)
+		
+		date_of_pickup.set("2015-MM-DD")
 		# Need to add variables like this:
 			# trying = StringVar()
 
@@ -226,8 +244,9 @@ class Collection():
 			'Arrivial (in):' ,
 			'Departure (in):' ,
 			"Price (cwt):" ,
-			"Duration (hrs)" , 
-			"Quality (0-100)", 
+			"Duration (hrs):" , 
+			"Quality (0-100):", 
+			"Fee ($/lb):",
 			# "Stop #: " ,
 		]
 
@@ -239,6 +258,7 @@ class Collection():
 			price ,
 			duration , 
 			qual,
+			cres_fee, 
 			# stop_number ,
 		]
 
@@ -247,7 +267,7 @@ class Collection():
 		choices = ['Choose Location']
 		for name in name_list:
 			choices.append(name)
-		print name_list
+		print "\nname_list" , name_list
 		ttk.OptionMenu(mainframe, loc_select, *choices).grid(column = 1,  row = 0, sticky = W)
 		
 		# Display stop number
@@ -267,7 +287,8 @@ class Collection():
 		ttk.Button(mainframe, text = 'AMS Price Lookup', command = price_lookup).grid(column = 3, row = questions.index('Price (cwt):') + 2)
 
 		# Make a button that submits what's in the fields
-		submit = ttk.Button(mainframe, text = 'Submit', command = grab_inputs).grid(column = 3, row = len(choices) + 2)
+		ttk.Button(mainframe, text = 'Finalize', command = finalize).grid(column = 2, row = len(choices) + 2)
+		# ttk.Button(mainframe, text = 'PUSH', command = )
 
 		# ttk.Label(mainframe, text = "-------------------------------").grid(column = 0, row = len(choices) + 3 )
 		ttk.Label(mainframe, text = "-------------------------------").grid(column = 1, row = len(choices) + 3)
@@ -280,23 +301,91 @@ class Collection():
 		# root.bind('<Return>', inches_to_gallons)
 		# root.bind('<Return>', calculate)
 
-		
+		# Opens the INPUT Screen
 		root.mainloop()
-		print "\n\nqual: " , qual.get()
+
+
+		
+		# Build the output, need to .insert() any additional variables that aren't in answers
 		final = [
 			ans.get() for ans in answers
 		]
 		final.insert( 0 , loc_select.get())
+		print "Here's what's going into conversions(): " , final
+
 		return list(final)
 
 
 
-	def conversions(self):
-		print "This is working!!!"
+	def conversions(self, *input_data):
+		# print "input data: " , input_data
+		# input_data is in the form :
+		# 								0Location name
+		# 								1date
+		# 								2arrival inches
+		# 								3depart inches 
+		# 								4price (cwt)
+		# 								5durarion (hrs)
+		# 								6quality (whole number)
+		#								7service_fee
+		# 								7pickupcount?
+		# 								7(not yet) route info
+
+		# First let's convert inches cubed to gallons
+		# Total volume:
+		h = 36
+		w = 28
+		l = 48
+
+		# Measured heights:
+		a_height = input_data[0][2]
+		d_height = input_data[0][3]
+
+		a_vol = float( l * w * a_height) * 0.0043290
+		d_vol = float(l * w * d_height) * 0.0043290
+
+		# x_vol is in GALLONS! ( multiplied by 0.0043290 )
+
+		# Convert gallons to lbs
+		lbs_per_gallon = 7.75 #/gal
+		a_lbs = a_vol * lbs_per_gallon 
+		d_lbs = d_vol * lbs_per_gallon
+
+		gal_collected = a_vol - d_vol
+		lbs_collected = a_lbs - d_lbs
+
+		price = input_data[0][4] / 100.0
+
+		service_fee = input_data[0][7]
+
+
+		inputs = {
+			"Gallons_Collected" : round(gal_collected, 2) ,
+			"Pounds_Collected" : round(lbs_collected, 2) ,
+			"Fuel_Price" : price, 
+			"Score" : round(lbs_collected / a_lbs , 2) * 100 ,
+			"Location" : input_data[0][0] , 
+			"Total_Income" : round(price * lbs_collected, 2) ,
+			"To_CRES" : round((service_fee) * lbs_collected , 2) ,
+			"To_Charity" : round((price - service_fee) * lbs_collected , 2), 
+			"Date_of_Pickup" : input_data[0][1],
+			"Left_Behind" : round(d_vol,2),
+			"Duration" : input_data[0][5],
+			"Arrivial_Height" : input_data[0][2],
+			"Departure_Height" : input_data[0][3],
+		}
+
+		# print "inputs from conversions:"
+		# for key in inputs:
+		# 	print "				" , key , ":", inputs[key]
+
+
+		# robby.set('0')
+		self.inputs = inputs
+		return inputs
 		
 
-		# This should be on top so it can be called later. 
-
+		
 
 	def arrival(self):
 		print "This is the on arrival def"
@@ -373,9 +462,11 @@ while to_loop != 0:
 		# Define a Collection variable to get the ball rolling
 		collect = Collection()
 		pickup = collect.main_prompt()
-		print '\nYou chose to run a pickup, here are the results: ' , pickup
-
-
+		
+		collection_inputs = collect.conversions(pickup)
+		print '\nYou chose to run a pickup, here are the results:\n ' 
+		print tabulate( [ (key, collection_inputs[key] ) for key in collection_inputs] )
+		print '\n'
 
 
 
