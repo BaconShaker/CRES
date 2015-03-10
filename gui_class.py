@@ -179,7 +179,6 @@ class Collection():
 				ttk.Label(mainframe, text = key.replace( '_' , " " ) ).grid(column = 2, row =  index + len(choices) + 5, sticky = E)
 				ttk.Label(mainframe, text = check_final[key] ).grid(column = 3, row =  index + len(choices) + 5, sticky = N )
 
-			
 
 			return to_return
 
@@ -366,11 +365,53 @@ class Collection():
 		
 
 		
-	def write_to_csv(self, writer):
-		print "This def should get the local weather conditions"
+	def write_to_csv(self):
+		print "This should write inputs to a csv file"
+		print "Here are the inputs: " , self.inputs	
+		writer = self.inputs
 		
 		
-		# Would be a nice spot for some geocoding, CDMA hackathonage. 
+		target_file = locfile + "/" + writer['Location'] + '.csv'
+
+
+		print target_file
+		print '\n\n\n\n'
+
+		fop = open(target_file)
+		fdr = csv.DictReader(fop, dialect = 'excel', skipinitialspace = True)
+
+
+		pickup_count = 1
+
+		for line in fdr:
+			pickup_count += 1 
+		print "This is pickup #:" , pickup_count
+
+		writer['pickup_count'] = pickup_count
+
+		howlong_add = len(writer.keys())
+		howlong_fdr = len(fdr.fieldnames) 
+
+		print "fdr: " , howlong_fdr
+		print "writer: " , howlong_add 
+
+		if howlong_fdr == howlong_add:
+			# This one only writes the INPUT ROW.
+			fw = open(target_file, 'a')	
+			dict_writer = csv.DictWriter(fw, writer.keys())
+			dict_writer.writerow(writer)
+			fw.close()
+
+		else:
+			# This overwrites the file completely, may be a good idea to make a script here that 
+			# moves the file that's being replaced to a safe location?
+			fw = open(target_file, 'wb')	
+			dict_writer = csv.DictWriter(fw, writer.keys())
+			dict_writer.writeheader()
+			dict_writer.writerow(writer)
+			fw.close()
+
+		fop.close()
 
 
 
@@ -381,9 +422,9 @@ class Clients():
 		oranges = csv.DictReader(apple, dialect = 'excel', skipinitialspace = True)
 		self.master_dict = oranges
 		self.names = [x['Name'] for x in oranges]
+		apple.close()
 
 	def make_locations(self, locfile):
-
 
 		# Here is the list that controls the headers on the pickup_files
 		pickup_heads = []
@@ -393,7 +434,6 @@ class Clients():
 
 		print self.master_dict.fieldnames
 
-		
 
 		for nick in self.names:
 			pickup_file = locfile + '/' + nick + '.csv'
@@ -401,7 +441,7 @@ class Clients():
 				print "YAY! There's a file for: " , nick
 
 			else:
-				print "There is no '" ,  pickup_file   , "' we should make one!\n" 
+				print "There is no '" ,  pickup_file   , "' we should make one! (IT'S GOING TO BE BLANK!!!) \n" 
 				to_make = open( pickup_file, 'a' )
 				writer = csv.DictWriter( to_make , fieldnames = pickup_heads)
 				writer.writeheader()
@@ -412,6 +452,8 @@ class Clients():
 
 
 	def show_details(self, location, locfile):
+		# Should add in the ability to see ALL the stats we have, not just the ones in to_show
+
 		os.system('clear')
 		
 		fo = open(locfile + '/' + location + '.csv' )
@@ -422,7 +464,7 @@ class Clients():
 		new_fr = []
 		print ""
 		count = 0
-		to_show = [  ]
+		to_show = [ 'Fuel_Price', 'Pounds_Collected', 'pickup_count' , 'To_Charity', "Left_Behind", "Total_Income", "Duration"]
 		for row in fr:
 			new_fr.append( { key.replace( '_' , ' ') : value for key, value in row.items() if key in to_show} )
 	 		count += 1
@@ -484,6 +526,11 @@ while to_loop != 0:
 		break
 
 
+
+
+
+
+
 	elif menu_choice[0] == main_choices.index('Run Pickup GUI'):
 		print "Run a pickup"
 
@@ -496,11 +543,24 @@ while to_loop != 0:
 		print tabulate( [ (key, collection_inputs[key] ) for key in collection_inputs] )
 		print '\n'
 
-		collect.write_to_csv(collection_inputs)
+		print "These are the Collection Inputs:" , collection_inputs
+
+		collect.write_to_csv()
+
+
+
+
+
 
 	elif menu_choice[0] == main_choices.index('Run Pickup txt'):
 		print "This is where the plug and chug method should go"
 		time.sleep(2)
+
+
+
+
+
+
 
 	elif menu_choice[0] == main_choices.index('Client List'):
 		print "That worked I think"
@@ -511,7 +571,12 @@ while to_loop != 0:
 		p = Menu_main(alpha, name_list, beta, 1)
 		q = p.display()
 
-		place.show_details( q[1] , locfile )
+		places.show_details( q[1] , locfile )
+
+
+
+
+
 
 
 	else:
