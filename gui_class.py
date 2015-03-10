@@ -99,39 +99,14 @@ class Menu_main():
 		print "\nResponse: " , response 
 		return response
 
+
 	def return_to_main(self):
 		return 0
 
 
 # -----------------------------------------------------------------
 
-def make_locations(locfile):
 
-	# Here is the list that controls the headers on the pickup_files
-	pickup_heads = []
-
-	# Open the master file and get the nicknames. The Nicknames will become the individual
-	# filenames for the pickup files. 
-
-	apple = open(locfile + '/master.csv')
-	oranges = csv.DictReader(apple, dialect = 'excel', skipinitialspace = True)
-
-	nicknames = [x['Name'] for x in oranges]
-	print "Files exist for: " 
-	for nick in nicknames:
-		pickup_file = locfile + '/' + nick + '.csv'
-		if os.path.exists(pickup_file):
-			print  '		', nick 
-			
-
-		else:
-			print "There is no '" ,  pickup_file   , "' we should make one!\n" 
-			to_make = open( pickup_file, 'a' )
-			writer = csv.DictWriter( to_make , fieldnames = pickup_heads)
-			writer.writeheader()
-			to_make.close() 
-	return nicknames
-	apple.close()
 
 # -----------------------------------------------------------------
 
@@ -391,22 +366,78 @@ class Collection():
 		
 
 		
-
-	def arrival(self):
-		print "This is the on arrival def"
-		print self.link_diesel
-		# Need to get Location, initial height, condition of bin(?), record/input time, 
-		# Do math 
-
-
-	def weather(self):
+	def write_to_csv(self, writer):
 		print "This def should get the local weather conditions"
+		
+		
 		# Would be a nice spot for some geocoding, CDMA hackathonage. 
 
 
 
 
+class Clients():
+	def __init__(self):
+		apple = open(locfile + '/master.csv')
+		oranges = csv.DictReader(apple, dialect = 'excel', skipinitialspace = True)
+		self.master_dict = oranges
+		self.names = [x['Name'] for x in oranges]
 
+	def make_locations(self, locfile):
+
+
+		# Here is the list that controls the headers on the pickup_files
+		pickup_heads = []
+
+		# Open the master file and get the nicknames. The Nicknames will become the individual
+		# filenames for the pickup files. 
+
+		print self.master_dict.fieldnames
+
+		
+
+		for nick in self.names:
+			pickup_file = locfile + '/' + nick + '.csv'
+			if os.path.exists(pickup_file):
+				print "YAY! There's a file for: " , nick
+
+			else:
+				print "There is no '" ,  pickup_file   , "' we should make one!\n" 
+				to_make = open( pickup_file, 'a' )
+				writer = csv.DictWriter( to_make , fieldnames = pickup_heads)
+				writer.writeheader()
+				to_make.close() 
+		
+	
+
+
+
+	def show_details(self, location, locfile):
+		os.system('clear')
+		
+		fo = open(locfile + '/' + location + '.csv' )
+		fr = csv.DictReader(fo, dialect = 'excel', skipinitialspace = True)
+		print fr.fieldnames
+		# heads = fr.fieldnames
+		# print fr.iteritems
+		new_fr = []
+		print ""
+		count = 0
+		to_show = [  ]
+		for row in fr:
+			new_fr.append( { key.replace( '_' , ' ') : value for key, value in row.items() if key in to_show} )
+	 		count += 1
+		# print '\n' * 10
+		# print 'New fr: ' , new_fr
+		print "These are the stats for" , location , ':\n\n' 
+		# print "new_fr: " , new_fr
+		print tabulate(new_fr, headers = 'keys') , '\n\n\n\n'
+
+		print 'Press [ENTER] key to continue...\n'
+		pause = raw_input()
+
+		return tabulate(new_fr, headers = 'keys') , '\n\n\n\n'
+
+		fo.close()
 
 
 
@@ -427,19 +458,21 @@ class Collection():
 
 pre = 'This is the Main Menu, by all means choose an option:'
 post = 'Thanks, jackass... '
-main_choices = ['EXIT PROGRAM', 'Run Pickup GUI', 'Run Pickup txt' , 'choice 2', "yadda y'adda yadda"]
+main_choices = ['EXIT PROGRAM', 'Run Pickup GUI', 'Run Pickup txt' , 'Client List', "yadda y'adda yadda"]
 
 # Load the Menu to a variable, 
 main_menu = Menu_main(pre, main_choices, post, 1)
-
-
+collect = Collection()
+places = Clients()
+places.make_locations(locfile)
 
 
 # Start the main loop. 
 to_loop = 1
 while to_loop != 0:
 	# This is the main list of locations, got it from master.csv
-	name_list = make_locations(locfile)
+
+	name_list = places.names
 	# First prompt of Main Menu
 	menu_choice = main_menu.display()
 	print menu_choice
@@ -455,7 +488,7 @@ while to_loop != 0:
 		print "Run a pickup"
 
 		# Define a Collection variable to get the ball rolling
-		collect = Collection()
+		
 		pickup = collect.main_prompt()
 		
 		collection_inputs = collect.conversions(pickup)
@@ -463,12 +496,23 @@ while to_loop != 0:
 		print tabulate( [ (key, collection_inputs[key] ) for key in collection_inputs] )
 		print '\n'
 
+		collect.write_to_csv(collection_inputs)
+
 	elif menu_choice[0] == main_choices.index('Run Pickup txt'):
 		print "This is where the plug and chug method should go"
 		time.sleep(2)
 
-	elif menu_choice[0] == main_choices.index('choice 2'):
+	elif menu_choice[0] == main_choices.index('Client List'):
 		print "That worked I think"
+		alpha = "Here's a list of our Clients,"
+		beta = "Choose one to see more details!"
+		
+
+		p = Menu_main(alpha, name_list, beta, 1)
+		q = p.display()
+
+		place.show_details( q[1] , locfile )
+
 
 	else:
 		os.system('clear')
