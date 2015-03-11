@@ -134,6 +134,7 @@ class Collection():
 		print ""
 		ams_edit = text[text.index('Des') : text.index('2015') + 4 ].replace("     ", "\n Current as of ")
 		self.ams_location = ams_edit
+		self.sp_count = 0
 
 
 
@@ -166,7 +167,19 @@ class Collection():
 			print date.today()
 			date_of_pickup.set(date.today())
 
+		sparks = []
+		
 		def finalize():
+			to_return = [variable.get() for variable in answers]
+			to_return.insert(0, loc_select.get() )
+			to_return.insert(1, stop_number.get() )
+			sparks.insert(self.sp_count, to_return)
+			self.sp_count += 1 
+
+
+
+
+		def finalize_disp():
 			# ________
 			route_frame = Tk()
 			route_frame.title("Going to add this to csv")
@@ -181,6 +194,8 @@ class Collection():
 			to_return = [variable.get() for variable in answers]
 			to_return.insert(0, loc_select.get() )
 			to_return.insert(1, stop_number.get() )
+
+			
 
 			#;djsfh;osdifhlkdsfnd;klfnsdlfkn
 			
@@ -291,6 +306,7 @@ class Collection():
 		# Put a button look up the AMS Price
 		ttk.Button(mainframe, text = 'AMS Price Lookup', command = price_lookup).grid(column = 3, row = questions.index('Price (cwt):') + 2)
 
+		el_fin = []
 		# Make a button that submits what's in the fields
 		ttk.Button(mainframe, text = 'Finalize', command = finalize).grid(column = 2, row = len(choices) + 2)
 		# ttk.Button(mainframe, text = 'PUSH', command = )
@@ -315,15 +331,17 @@ class Collection():
 		final = [
 			ans.get() for ans in answers
 		]
-		# final.insert( 0 , loc_select.get() )
-		# final.insert( 1 , stop_number.get() )
-		print "Here's what's going into conversions(): " , final
+		final.insert( 0 , loc_select.get() )
+		final.insert( 1 , stop_number.get() )
+		# print "Here's what's going into conversions(): " , list(final)
+		print "sparks: " , sparks
+		self.sparks = sparks
+		return sparks
 
-		return list(final)
 
 
-
-	def conversions(self, *input_data):
+	def conversions(self, *routes):
+		# input_data is the output of main_prompt
 		# print "input data: " , input_data
 		# input_data is in the form :
 		# 								0Location name
@@ -342,105 +360,109 @@ class Collection():
 		h = 36
 		w = 28
 		l = 48
-		print input_data
+		print "yasasa" , self.sparks
 		# Measured heights:
-		a_height = input_data[0][3]
-		d_height = input_data[0][4]
+		in_list = []
+		for input_data in self.sparks: 
+			a_height = input_data[3]
+			d_height = input_data[4]
 
-		a_vol = float( l * w * a_height) * 0.0043290
-		d_vol = float(l * w * d_height) * 0.0043290
+			a_vol = float( l * w * a_height) * 0.0043290
+			d_vol = float(l * w * d_height) * 0.0043290
 
-		# x_vol is in GALLONS! ( multiplied by 0.0043290 )
+			# x_vol is in GALLONS! ( multiplied by 0.0043290 )
 
-		# Convert gallons to lbs
-		lbs_per_gallon = 7.75 #/gal
-		a_lbs = a_vol * lbs_per_gallon 
-		d_lbs = d_vol * lbs_per_gallon
+			# Convert gallons to lbs
+			lbs_per_gallon = 7.75 #/gal
+			a_lbs = a_vol * lbs_per_gallon 
+			d_lbs = d_vol * lbs_per_gallon
 
-		gal_collected = a_vol - d_vol
-		lbs_collected = a_lbs - d_lbs
+			gal_collected = a_vol - d_vol
+			lbs_collected = a_lbs - d_lbs
 
-		price = input_data[0][5] / 100.0
+			price = input_data[5] / 100.0
 
-		service_fee = input_data[0][8]
-
-
-		inputs = {
-			"Gallons_Collected" : round(gal_collected, 2) ,
-			"Pounds_Collected" : round(lbs_collected, 2) ,
-			"Oil_Price" : price, 
-			"Score" : round(lbs_collected / a_lbs , 2) * 100 ,
-			"Location" : input_data[0][0] , 
-			"Total_Income" : round(price * lbs_collected, 2) ,
-			"To_CRES" : round((service_fee) * lbs_collected , 2) ,
-			"To_Charity" : round((price - service_fee) * lbs_collected , 2), 
-			"Date_of_Pickup" : input_data[0][2],
-			"Left_Behind" : round(d_vol,2),
-			"Duration" : input_data[0][6],
-			"Arrivial_Height" : input_data[0][3],
-			"Departure_Height" : input_data[0][4],
-			"Stop_Number" : input_data[0][1]
-		}
-
-		# print "inputs from conversions:"
-		# for key in inputs:
-		# 	print "				" , key , ":", inputs[key]
+			service_fee = input_data[8]
 
 
-		# robby.set('0')
-		self.inputs = inputs
-		return inputs
+			inputs = {
+				"Gallons_Collected" : round(gal_collected, 2) ,
+				"Pounds_Collected" : round(lbs_collected, 2) ,
+				"Oil_Price" : price, 
+				"Score" : round(lbs_collected / a_lbs , 2) * 100 ,
+				"Location" : input_data[0] , 
+				"Total_Income" : round(price * lbs_collected, 2) ,
+				"To_CRES" : round((service_fee) * lbs_collected , 2) ,
+				"To_Charity" : round((price - service_fee) * lbs_collected , 2), 
+				"Date_of_Pickup" : input_data[2],
+				"Left_Behind" : round(d_vol,2),
+				"Duration" : input_data[6],
+				"Arrivial_Height" : input_data[3],
+				"Departure_Height" : input_data[4],
+				"Stop_Number" : input_data[1]
+			}
+
+			# print "inputs from conversions:"
+			# for key in inputs:
+			# 	print "				" , key , ":", inputs[key]
+
+
+			# robby.set('0')
+			in_list.append(inputs)
+		self.inputs_list = in_list
+		return self.inputs_list
 		
 
-		
-	def write_to_csv(self):
+	# in_dict is from the for loop in the main section below. it's the same as inputs for each location. 
+	def write_to_csv(self, *in_dict):
 		print "This should write inputs to a csv file"
-		print "Here are the inputs: " , self.inputs	
-		writer = self.inputs
+		# print "Here are the inputs: " , self.inputs_list
+		for item in in_dict:
+			writer = item
 
-		
-		
-		target_file = locfile + "/" + writer['Location'] + '.csv'
-
-
-		print target_file
-		print '\n\n\n\n'
-
-		fop = open(target_file)
-		fdr = csv.DictReader(fop, dialect = 'excel', skipinitialspace = True)
+			print '\n\nwriter' , writer
+			
+			target_file = locfile + "/" + writer['Location'] + '.csv'
 
 
-		pickup_count = 1
+			print target_file
+			print '\n\n\n\n'
 
-		for line in fdr:
-			pickup_count += 1 
-		print "This is pickup #:" , pickup_count
+			fop = open(target_file)
+			fdr = csv.DictReader(fop, dialect = 'excel', skipinitialspace = True)
 
-		writer['pickup_count'] = pickup_count
 
-		howlong_add = len(writer.keys())
-		howlong_fdr = len(fdr.fieldnames) 
+			pickup_count = 1
 
-		print "fdr: " , howlong_fdr
-		print "writer: " , howlong_add 
+			for line in fdr:
+				pickup_count += 1 
+			print "This is pickup #:" , pickup_count
 
-		if howlong_fdr == howlong_add:
-			# This one only writes the INPUT ROW.
-			fw = open(target_file, 'a')	
-			dict_writer = csv.DictWriter(fw, writer.keys())
-			dict_writer.writerow(writer)
-			fw.close()
+			writer['pickup_count'] = pickup_count
 
-		else:
-			# This overwrites the file completely, may be a good idea to make a script here that 
-			# moves the file that's being replaced to a safe location?
-			fw = open(target_file, 'wb')	
-			dict_writer = csv.DictWriter(fw, writer.keys())
-			dict_writer.writeheader()
-			dict_writer.writerow(writer)
-			fw.close()
+			howlong_add = len(writer.keys())
+			howlong_fdr = len(fdr.fieldnames) 
 
-		fop.close()
+			print "fdr: " , howlong_fdr
+			print "writer: " , howlong_add 
+
+			if howlong_fdr == howlong_add:
+				# This one only writes the INPUT ROW.
+				fw = open(target_file, 'a')	
+				dict_writer = csv.DictWriter(fw, writer.keys())
+				dict_writer.writerow(writer)
+				fw.close()
+
+			else:
+				# This overwrites the file completely, may be a good idea to make a script here that 
+				# moves the file that's being replaced to a safe location?
+				fw = open(target_file, 'wb')	
+				dict_writer = csv.DictWriter(fw, writer.keys())
+				dict_writer.writeheader()
+				dict_writer.writerow(writer)
+				fw.close()
+
+			fop.close()
 	
 
 
@@ -571,14 +593,20 @@ while to_loop != 0:
 		pickup = collect.main_prompt()
 		
 		collection_inputs = collect.conversions(pickup)
+		# print 'collection_inputs' , [dictionary for dictionary in collection_inputs]
+
+		for part in collection_inputs:
+			print 'part: ' ,part
+			print tabulate( [ (key, part[key]) for key in part ] )
+			collect.write_to_csv(part)
 		print '\nYou chose to run a pickup, here are the results:\n ' 
-		print tabulate( [ (key, collection_inputs[key] ) for key in collection_inputs] )
+		# print tabulate( [ (key, collection_inputs[key] ) for key in [dictionary for dictionary in collection_inputs] ] )
 		print '\n'
 
 		
 
 		
-		collect.write_to_csv()
+		
 
 
 
