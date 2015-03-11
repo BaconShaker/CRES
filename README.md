@@ -1,19 +1,16 @@
 # CRES
 CRES Python Repo
-This is the main git for CRES' python 
+The main current .py file is called gui_class.py as of 3/9/15.
+
+The program requires there to be a GoogleDrive folder to be in the root file of the filesystem. 
+Check if the file is in the correct directory, open Terminal and type cd then 'enter'
+Next type 'ls'. If you have a file called GDrive, it should pop up in the list provided. The Drive folder needs to be called 'GDrive'
 
 
-v1.py is the latest and greatest version of the CRES program. It should be able to:
-
- add locations to csv files specified by locfile, 
-
- Give directions according to the route_build menu. Still need to insert pickups.py to record the volume at each pickup. 
-
-
-Still need to create csv system to track individual pickup statistics. 
+I will put a list of modules that need to be downloaded here soon. 
 
 
 
+The main menu is still in text form but the pickup is run in GUI format. 
 
-
-This change came from the Linux side!
+I have it set up to build a list of input dictionaries and adds them to /GDrive/cres_sheets/location name
