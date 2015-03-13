@@ -4,7 +4,7 @@
 # This is the Menu script
 from Tkinter import *
 import ttk
-from aaa import *
+from aaa import Robby
 
 
 class FrontPage():
@@ -25,8 +25,8 @@ class FrontPage():
 		mainframe.rowconfigure(0, weight=1)
 
 		
-		ttk.Button(mainframe, text = "Run Pickup", command = pickup() ).grid(column = 1, row = 2)
-		ttk.Button(mainframe, text = "Route Builder", command = alpha.append(ro.jamba ) ).grid(column = 1, row = 3)
+		ttk.Button(mainframe, text = "Run Pickup", command = pickup ).grid(column = 1, row = 2)
+		ttk.Button(mainframe, text = "Route Builder", command = build_route ).grid(column = 1, row = 3)
 		ttk.Button(mainframe, text = "List Locations", command = locations ).grid(column = 1, row = 4)
 		
 		
@@ -41,12 +41,13 @@ class FrontPage():
 			# make a route, alter past submissions and check the price of YG.
 
 			# Get to it! 
-
+		
 
 		page.mainloop()
-		print "This is alpha" , 
-
 		return the_end()
+		
+
+		# return alpha
 
 # -----------------------------------------------------------------
 
@@ -67,7 +68,5 @@ def locations():
 
 
 
-alpha = []
-ro = Robby()
-ro.jamba
-
+def build_route():
+	print "This is where you'll build a route"

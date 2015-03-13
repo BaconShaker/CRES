@@ -1,4 +1,7 @@
 
+
+
+
 class Robby():
 	"""docstring for Robby"""
 	def __init__(self):
@@ -8,4 +11,5 @@ class Robby():
 		print "This is aaa.py! "
 
 	def jamba(self):
-		print "This is jamba! Get some! "
+		return "This is jamba! Get some! "
+

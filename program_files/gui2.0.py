@@ -1,6 +1,17 @@
 #!/usr/bin/python
 
-# This should make a class to run pickups at each location.... Should. 
+# This is the MAIN PAGE for the CRES Program.
+
+# Functionality should include:
+# 	Building a pickup route
+# 		Run the route
+# 		Add Data to CSV files
+# 		Send pickup notices/reciepts 
+# 			prior to pickup?
+# 			post collection results
+# 	Browsing client/location details/statistics
+# 		Provide to website?
+
 
 # Cheating...
 mods = 1
@@ -21,6 +32,7 @@ while mods == 1:
 
 	except ImportError as err:
 		print "Something didn't work right.\n"
+		print "You don't have all the required modules on this computer."
 		print  err.args
 
 	mods = 0
@@ -56,7 +68,7 @@ elif sys.platform.startswith('linux'):
 # -----------------------------------------------------------------
 
 
-mike = Robby()
+# mike = Robby()
 
 options = ["this", 'That', 'Other thing']
 
