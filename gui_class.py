@@ -135,6 +135,7 @@ class Collection():
 		ams_edit = text[text.index('Des') : text.index('2015') + 4 ].replace("     ", "\n Current as of ")
 		self.ams_location = ams_edit
 		self.sp_count = 0
+		spark_count = 0
 
 
 
@@ -176,9 +177,15 @@ class Collection():
 			sparks.insert(self.sp_count, to_return)
 			self.sp_count += 1 
 
+			
 
 
 
+
+
+
+		# Need to make it so the results from finalize are shown in a window, 
+		# 	then add a button to the new screen to actually enter the informaton to the corresponding csv
 		def finalize_disp():
 			# ________
 			route_frame = Tk()
@@ -217,7 +224,6 @@ class Collection():
 
 		root = Tk()
 		root.title("Collection Details")
-
 		mainframe = ttk.Frame(root, padding="3 3 12 12")
 		mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 		mainframe.columnconfigure(0, weight=1)
@@ -310,6 +316,9 @@ class Collection():
 		# Make a button that submits what's in the fields
 		ttk.Button(mainframe, text = 'Finalize', command = finalize).grid(column = 2, row = len(choices) + 2)
 		# ttk.Button(mainframe, text = 'PUSH', command = )
+
+
+		# Need a button for route builder
 
 		# ttk.Label(mainframe, text = "-------------------------------").grid(column = 0, row = len(choices) + 3 )
 		ttk.Label(mainframe, text = "-------------------------------").grid(column = 1, row = len(choices) + 3)
@@ -463,7 +472,14 @@ class Collection():
 				fw.close()
 
 			fop.close()
-	
+
+
+	def route_builder():
+		# Build the list of starts and stops
+
+
+		route = [pt[1] for pt in self.sparks]
+		print route
 
 
 
@@ -534,6 +550,7 @@ class Clients():
 		fo.close()
 
 
+# ----------------------------------------------------------------------------
 
 
 
@@ -552,7 +569,12 @@ class Clients():
 
 pre = 'This is the Main Menu, by all means choose an option:'
 post = 'Thanks, jackass... '
-main_choices = ['EXIT PROGRAM', 'Run Pickup GUI', 'Run Pickup txt' , 'Client List', "yadda y'adda yadda"]
+main_choices = [
+	'EXIT PROGRAM', 
+	'Run Pickup GUI', 
+	'Run Pickup txt' , 
+	'Client List', 
+	"Build Route"]
 
 # Load the Menu to a variable, 
 main_menu = Menu_main(pre, main_choices, post, 1)
@@ -606,7 +628,9 @@ while to_loop != 0:
 		
 
 		
-		
+	elif menu_choice[0] == main_choices.index('Build Route'):
+		rpick = Collection()
+
 
 
 

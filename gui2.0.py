@@ -56,6 +56,7 @@ class FrontPage():
 	"""docstring for FrontPage"""
 	def __init__(self, options):
 		self.options = options
+		
 		print "Options: " ,  self.options
 
 		# Need to make a menu, with a button and see how it returns from 
@@ -68,12 +69,15 @@ class FrontPage():
 		mainframe.columnconfigure(0, weight=1)
 		mainframe.rowconfigure(0, weight=1)
 
-		for i, but in enumerate(options):
-			ttk.Button(mainframe, text = but, command = quit).grid(column = 1, row = len(options) + i)
+		
+		ttk.Button(mainframe, text = "Run Pickup", command = pickup ).grid(column = 1, row = 2)
+		ttk.Button(mainframe, text = "Route Builder", command = alpha.append(robby.blab()) ).grid(column = 1, row = 3)
+		ttk.Button(mainframe, text = "List Locations", command = locations ).grid(column = 1, row = 4)
+		
 		
 		# The way this is working right now:
-			# Makes a window that has buttons in it. The words on the buttons are
-			# input from menu_options. 
+			# Makes a window that has buttons in it. Need to make your own buttons
+			# in order to control the command each button runs.
 
 			# When you hit a button, it runs the function called quit() below which
 			# prints 'this is rob'
@@ -85,25 +89,64 @@ class FrontPage():
 
 
 		page.mainloop()
+		print "This is alpha" , 
 
-
-
-
-	def function():
-		pass
-		
+		return the_end()
 
 # -----------------------------------------------------------------
 
 
-def quit():
+def the_end():
+	print "\n\n\nThis is the end of the FrontPage loop. Whatever is placed here will be returned when the main window is closed"
+	
 
-	print "This is rob"
+# -----------------------------------------------------------------
+
+
+def pickup():
+
+	print "This is run pickup"
+
+def locations():
+	print "This is locations"
+
+
+
+
+
+
+class Collection():
+	"""docstring for ClassName"""
+	def __init__(self):
+		
+		self.count = 0
+		print "This is a Collection"
+
+	def blab(self):
+
+		print "This is a collection function "
+		self.count += 1
+		return "This is the answer #", self.count
+		
 
 menu_options = ['quit', 'Build Route' ,'Run Pickup']
 
 
+# When you hit the button with the robby.blab command, it runs correctly. 
+col = 0 
+robby = Collection()
+
+
+alpha = []
 main = FrontPage(menu_options)
+
+print "ALPHA2:" , alpha
+
+# rob = robby.blab()
+# print rob
+
+
+
 
 
 
