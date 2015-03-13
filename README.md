@@ -30,3 +30,10 @@ Find get-pip.py @ https://bootstrap.pypa.io/get-pip.py
 The main menu is still in text form but the pickup is run in GUI format. 
 
 I have it set up to build a list of input dictionaries and adds them to /GDrive/cres_sheets/location name
+
+
+3/13/15
+Friday the 13th... 
+
+Moved GUI2.0 to it's own folder and added an __init__.py to the directory so I can work with shorter files and import as necessary. 
+
