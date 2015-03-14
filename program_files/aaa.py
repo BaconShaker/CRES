@@ -9,37 +9,18 @@ import ttk
 
 class RouteBuilder():
 	"""docstring for FrontPage"""
+
+	
 	def __init__(self, options):
 		self.options = options
 		self.alpha = []
 		
+
 		print "Options: This list is a placeholder for the locations list " ,  self.options
 		
+
 		# Need to make a menu, with a button and see how it returns from 
 		# the loop when the window is closed... 
-
-
-
-
-		page = Tk()
-		page.title("Route Builder")
-		mainframe = ttk.Frame(page, padding = " 3 3 12 12")
-		mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
-		mainframe.columnconfigure(0, weight=1)
-		mainframe.rowconfigure(0, weight=1)
-
-		
-
-		# Build selectable field populated by the names of restatants
-		restaurant_names = ('Argentina', 'Australia', 'Belgium', 'Brazil', 'Canada', 'China', 'Denmark', \
-        'Finland', 'France', 'Greece', 'India', 'Italy', 'Japan', 'Mexico', 'Netherlands', 'Norway', 'Spain', \
-        'Sweden', 'Switzerland')
-		rnames = StringVar(value=restaurant_names)
-
-
-
-
-		
 		def add_stop(*args):
 			x = lbox.curselection()
 			if len(x)==1:
@@ -47,21 +28,46 @@ class RouteBuilder():
 	        	lbox.see(idx)
 	        	print restaurant_names[idx]
 	        	self.alpha.append( ( int( len(self.alpha) ),restaurant_names[idx] ) )
-		
+
+
+		# Set up the initial window and grid
+		page = Tk()
+		page.title("Route Builder")
+		mainframe = ttk.Frame(page, padding = " 3 3 12 12")
+		mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
+		mainframe.columnconfigure(0, weight=1)
+		mainframe.rowconfigure(0, weight=1)
+
+
+		# Build selectable field populated by the names of restatants
+		restaurant_names = ('Argentina', 'Australia', 'Belgium', 'Brazil', 'Canada', 'China', 'Denmark', \
+        'Finland', 'France', 'Greece', 'India', 'Italy', 'Japan', 'Mexico', 'Netherlands', 'Norway', 'Spain', \
+        'Sweden', 'Switzerland')
+		rnames = StringVar(value=restaurant_names)
 
 		
 		# ttk.Button(mainframe, text = "Run Pickup", command = pickup ).grid(column = 2, row = 2)
 		# ttk.Button(mainframe, text = "Add Stop", command = add_stop ).grid(column = 2, row = 3)
 		# ttk.Button(mainframe, text = "List Locations", command = locations ).grid(column = 2, row = 4)
 
-		# lbox = Listbox(mainframe, listvariable=rnames, height=5)
-		ttk.Button(mainframe, text = "Add Stop", command = add_stop).grid(column = 2, row = 3)
 
+		# Create GUI elements here
+		add_but = ttk.Button(mainframe, text = "Add Stop", command = add_stop)
 		lbox = Listbox(mainframe, listvariable=rnames, height=5)
 
 
+		# Set elements using .grid
 		lbox.grid(column=0, row=0, rowspan=6, sticky=(N,S,E,W))
+		add_but.grid(column = 2, row = 3)
+
+
+		# Set bindings
 		lbox.bind('<Double-1>', add_stop)
+
+
+		# Colorize alternating lines of the listbox
+		for i in range(0,len(restaurant_names),2):
+			lbox.itemconfigure(i, background='#f0f0ff')
 		
 		page.mainloop()
 		
