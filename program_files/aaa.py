@@ -19,13 +19,7 @@ class RouteBuilder():
 		# the loop when the window is closed... 
 
 
-		def add_stop(nothing):
-			x = lbox.curselection()
-			if len(x)==1:
-				idx = int(x[0])
-	        	lbox.see(idx)
-	        	print restaurant_names[idx]
-	        	self.alpha.append( ( int( len(self.alpha) ),restaurant_names[idx] ) )
+
 
 		page = Tk()
 		page.title("Route Builder")
@@ -46,7 +40,13 @@ class RouteBuilder():
 
 
 		
-		lbox = Listbox(mainframe, listvariable=rnames, height=5)
+		def add_stop(*args):
+			x = lbox.curselection()
+			if len(x)==1:
+				idx = int(x[0])
+	        	lbox.see(idx)
+	        	print restaurant_names[idx]
+	        	self.alpha.append( ( int( len(self.alpha) ),restaurant_names[idx] ) )
 		
 
 		
@@ -55,14 +55,12 @@ class RouteBuilder():
 		# ttk.Button(mainframe, text = "List Locations", command = locations ).grid(column = 2, row = 4)
 
 		# lbox = Listbox(mainframe, listvariable=rnames, height=5)
-		ttk.Button(mainframe, text = "Add Stop", command = add_stop ).grid(column = 2, row = 3)
+		ttk.Button(mainframe, text = "Add Stop", command = add_stop).grid(column = 2, row = 3)
+
+		lbox = Listbox(mainframe, listvariable=rnames, height=5)
 
 
 		lbox.grid(column=0, row=0, rowspan=6, sticky=(N,S,E,W))
-		
-
-
-
 		lbox.bind('<Double-1>', add_stop)
 		
 		page.mainloop()
