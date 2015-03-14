@@ -39,8 +39,8 @@ while mods == 1:
 
 
 # These Classes are imported from CRES folder, whereever it may be. 
-from aaa import FrontPage
-from collection import Collection
+from aaa import *
+from collection import *
 
 # First let's check which system is running.
 	# Need to find a way to get the GDrive file on the the Linux side of things. That's going to be hard
@@ -70,7 +70,7 @@ elif sys.platform.startswith('linux'):
 
 options = ["this", 'That', 'Other thing']
 
-mainmenu = FrontPage(options)
+route_map = RouteBuilder(options)
 
 # locs_list = Locations()
 
