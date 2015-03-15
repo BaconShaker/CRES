@@ -152,7 +152,7 @@ class RouteBuilder():
 
 
 def the_end():
-	print "\n\n\nThis is the end of the FrontPage loop. Whatever is placed here will be returned when the main window is closed"
+	print "\n\n\nThis is the end of the RouteBuilder mainframe loop. Whatever is placed here will be returned when the main window is closed"
 	
 
 # -----------------------------------------------------------------

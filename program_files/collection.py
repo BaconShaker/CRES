@@ -84,7 +84,6 @@ class Collection():
 
 		f_surcharge = route_analizer()
 
-		print "\n\n\n\nRoute: " , f_surcharge 
 
 		self.indict['Fuel Surcharge'] = f_surcharge
 
