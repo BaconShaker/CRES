@@ -5,6 +5,7 @@
 from Tkinter import *
 import ttk
 import csv
+from tabulate import tabulate
 
 
 class RouteBuilder():
@@ -21,27 +22,47 @@ class RouteBuilder():
 
 		print self.names
 
-		print "Options: This list is a placeholder for the locations list " ,  self.options
+		print "\nOptions: This list is a placeholder for the locations list " ,  self.options
 		
 
 		# Need to make a menu, with a button and see how it returns from 
 		# the loop when the window is closed... 
+
+
 		def add_stop(*args):
 			x = lbox.curselection()
-			if len(x)==1:
-				idx = int(x[0])
-	        	lbox.see(idx)
-	        	print restaurant_names[idx]
-	        	lbox.delete(idx)
-	        	lbox.update()
+			if len(x) == 1:
 
-	        	self.route.append( ( int( len(self.route) ),restaurant_names[idx] ) )
-	        	routebox.insert(len(self.route) - 1, restaurant_names[idx] )
+				idx = int(x[0])
+	        
+	        	self.route.append( ( int( len(self.route) ), self.names[idx] ) )
+
+	        	routebox.insert(len(self.route) - 1, self.names[idx] )
 	        	routebox.update()
+	        	self.names.pop(idx)
+
+	        	self.rnames.set(value = tuple(self.names))
+
+	        	# lbox.delete(idx)
+	        	lbox.update()
+	        
+	        	for i in range(0,len(self.route),2):
+					routebox.itemconfigure(i, background='#f0f0ff')
+
+			
+
+
+		def remove_stop():
+			y = routebox.curselection()
+			if len(y) == 1: 
+				rem = int(y[0])
+				routebox.see(rem)
+				print "Going to remove " , 
+
+		def exit():
+			page.destroy()
 
 	        	
-
-	        	# It would be nice to have the names disappear from the listbox as they get added to the other list 
 
 
 
@@ -53,7 +74,7 @@ class RouteBuilder():
 		mainframe.columnconfigure(0, weight=1)
 		mainframe.rowconfigure(0, weight=1)
 
-		restaurant_names = tuple(self.names)
+		
 		
 		# Build selectable field populated by the names of restatants
 		# restaurant_names = self.names
@@ -62,9 +83,12 @@ class RouteBuilder():
   		#       'Finland', 'France', 'Greece', 'India', 'Italy', 'Japan', 'Mexico', 'Netherlands', 'Norway', 'Spain', \
  		#       'Sweden', 'Switzerland')
 
-		rnames = StringVar(value = restaurant_names)
-		stops = StringVar(value = tuple(self.route))
+		self.rnames = StringVar()
+		self.rnames.set(value = tuple(self.names))
 
+		self.stops = StringVar()
+		self.stops.set(value = tuple(self.route))
+		
 
 		# ttk.Button(mainframe, text = "Run Pickup", command = pickup ).grid(column = 2, row = 2)
 		# ttk.Button(mainframe, text = "Add Stop", command = add_stop ).grid(column = 2, row = 3)
@@ -73,24 +97,32 @@ class RouteBuilder():
 
 		# Create GUI elements here
 		add_but = ttk.Button(mainframe, text = "Add Stop", command = add_stop)
-		lbox = Listbox(mainframe, listvariable = rnames, height = 10)
+
+		lbox = Listbox(mainframe, listvariable = self.rnames, height = 10)
 		lbox.pack()
-		routebox = Listbox(mainframe, listvariable = stops, height = 10)
+
+		routebox = Listbox(mainframe, listvariable = self.stops, height = 10)
 		routebox.pack()
+
+		quit = ttk.Button(mainframe, text = "Quit" , command = exit)
+
+		# display = 
 
 
 		# Set elements using .grid
 		lbox.grid(column = 0, row = 0, rowspan = 6, sticky = (N,S,E,W) )
-		add_but.grid(column = 2, row = 3)
+		add_but.grid(column = 2, row = 0)
 		routebox.grid(column = 3, row = 0, rowspan = 6, sticky = (N,S,E,W) )
+		quit.grid(column = 3, row = 8)
 
 
 		# Set bindings
 		lbox.bind('<Double-1>', add_stop)
+		routebox.bind('<Double-1>', remove_stop)
 
 
 		# Colorize alternating lines of the listbox
-		for i in range(0,len(restaurant_names),2):
+		for i in range(0,len(self.names),2):
 			lbox.itemconfigure(i, background='#f0f0ff')
 		
 		page.mainloop()
@@ -112,7 +144,8 @@ class RouteBuilder():
 		# -------- FOR DEBUGGING --------
 		
 
-		print "\nalpha list [from end of display()]: " , self.route
+		print "\nalpha list [from end of display()]: " 
+		print tabulate( tuple(self.route) , headers = [" ", "Name"])
 		return the_end()
 
 # -----------------------------------------------------------------
