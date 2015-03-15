@@ -70,7 +70,7 @@ elif sys.platform.startswith('linux'):
 
 options = ["this", 'That', 'Other thing']
 
-route_map = RouteBuilder(options)
+route_map = RouteBuilder(options, locfile)
 
 # locs_list = Locations()
 

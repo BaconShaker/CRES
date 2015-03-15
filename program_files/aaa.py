@@ -4,17 +4,22 @@
 # This is the Menu script
 from Tkinter import *
 import ttk
-
+import csv
 
 
 class RouteBuilder():
 	"""docstring for FrontPage"""
-
-	
-	def __init__(self, options):
+	def __init__(self, options, locfile):
 		self.options = options
-		self.alpha = []
-		
+		self.route = []
+
+		apple = open(locfile + '/master.csv')
+		oranges = csv.DictReader(apple, dialect = 'excel', skipinitialspace = True)
+		self.master_dict = oranges
+		self.names = [x['Name'] for x in oranges]
+		apple.close()
+
+		print self.names
 
 		print "Options: This list is a placeholder for the locations list " ,  self.options
 		
@@ -27,7 +32,17 @@ class RouteBuilder():
 				idx = int(x[0])
 	        	lbox.see(idx)
 	        	print restaurant_names[idx]
-	        	self.alpha.append( ( int( len(self.alpha) ),restaurant_names[idx] ) )
+	        	lbox.delete(idx)
+	        	lbox.update()
+
+	        	self.route.append( ( int( len(self.route) ),restaurant_names[idx] ) )
+	        	routebox.insert(len(self.route) - 1, restaurant_names[idx] )
+	        	routebox.update()
+
+	        	
+
+	        	# It would be nice to have the names disappear from the listbox as they get added to the other list 
+
 
 
 		# Set up the initial window and grid
@@ -38,14 +53,19 @@ class RouteBuilder():
 		mainframe.columnconfigure(0, weight=1)
 		mainframe.rowconfigure(0, weight=1)
 
-
-		# Build selectable field populated by the names of restatants
-		restaurant_names = ('Argentina', 'Australia', 'Belgium', 'Brazil', 'Canada', 'China', 'Denmark', \
-        'Finland', 'France', 'Greece', 'India', 'Italy', 'Japan', 'Mexico', 'Netherlands', 'Norway', 'Spain', \
-        'Sweden', 'Switzerland')
-		rnames = StringVar(value=restaurant_names)
-
+		restaurant_names = tuple(self.names)
 		
+		# Build selectable field populated by the names of restatants
+		# restaurant_names = self.names
+
+		# restaurant_names = ('Argentina', 'Australia', 'Belgium', 'Brazil', 'Canada', 'China', 'Denmark', \
+  		#       'Finland', 'France', 'Greece', 'India', 'Italy', 'Japan', 'Mexico', 'Netherlands', 'Norway', 'Spain', \
+ 		#       'Sweden', 'Switzerland')
+
+		rnames = StringVar(value = restaurant_names)
+		stops = StringVar(value = tuple(self.route))
+
+
 		# ttk.Button(mainframe, text = "Run Pickup", command = pickup ).grid(column = 2, row = 2)
 		# ttk.Button(mainframe, text = "Add Stop", command = add_stop ).grid(column = 2, row = 3)
 		# ttk.Button(mainframe, text = "List Locations", command = locations ).grid(column = 2, row = 4)
@@ -53,12 +73,16 @@ class RouteBuilder():
 
 		# Create GUI elements here
 		add_but = ttk.Button(mainframe, text = "Add Stop", command = add_stop)
-		lbox = Listbox(mainframe, listvariable=rnames, height=5)
+		lbox = Listbox(mainframe, listvariable = rnames, height = 10)
+		lbox.pack()
+		routebox = Listbox(mainframe, listvariable = stops, height = 10)
+		routebox.pack()
 
 
 		# Set elements using .grid
-		lbox.grid(column=0, row=0, rowspan=6, sticky=(N,S,E,W))
+		lbox.grid(column = 0, row = 0, rowspan = 6, sticky = (N,S,E,W) )
 		add_but.grid(column = 2, row = 3)
+		routebox.grid(column = 3, row = 0, rowspan = 6, sticky = (N,S,E,W) )
 
 
 		# Set bindings
@@ -88,7 +112,7 @@ class RouteBuilder():
 		# -------- FOR DEBUGGING --------
 		
 
-		print "\nalpha list [from end of display()]: " , self.alpha
+		print "\nalpha list [from end of display()]: " , self.route
 		return the_end()
 
 # -----------------------------------------------------------------
@@ -105,8 +129,7 @@ def pickup():
 
 	print "This is run pickup"
 
-def locations():
-	print "This is locations\n"
+
 	
 
 
