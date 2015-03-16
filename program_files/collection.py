@@ -1,5 +1,7 @@
 # Just take the inputs and do conversions
 
+from tabulate import tabulate
+
 # Variables we need:
 # 	location
 # 	height on arrivial
@@ -91,8 +93,7 @@ class Collection():
 		self.indict['Stops on Route'] = route['Number of Stops']
 
 		print "\n\n\n"
-		for key in self.indict:
-			print key , ":" , self.indict[key]
+		print tabulate(  [ ( key , self.indict[key] ) for key in self.indict  ]  )
 
 
 

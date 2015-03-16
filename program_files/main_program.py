@@ -72,6 +72,8 @@ options = ["this", 'That', 'Other thing']
 
 route_map = RouteBuilder(options, locfile)
 
+print "This is what RouteBuilder __init__() returns: " , route_map
+
 # locs_list = Locations()
 
 # locs_list.list_locations()

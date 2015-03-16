@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+# Here's what's currently in progress:
+# 	Make the Tk() call happen in a function so it can return something
+# 		or learn how to read class instances.
+
 
 # This is the Menu script
 from Tkinter import *
@@ -39,7 +43,7 @@ class RouteBuilder():
 
 	        	routebox.insert(len(self.route) - 1, self.names[idx] )
 	        	routebox.update()
-	        	self.names.pop(idx)
+	        	r = self.names.pop(idx)
 
 	        	self.rnames.set(value = tuple(self.names))
 
@@ -49,15 +53,20 @@ class RouteBuilder():
 	        	for i in range(0,len(self.route),2):
 					routebox.itemconfigure(i, background='#f0f0ff')
 
-			
-
-
 		def remove_stop():
 			y = routebox.curselection()
 			if len(y) == 1: 
 				rem = int(y[0])
-				routebox.see(rem)
-				print "Going to remove " , 
+				self.names.append( ( int( len(self.names) ), self.route[rem] ) )
+
+				o = self.route.pop(rem)
+				self.rnames.set(value = tuple(self.names))
+				
+
+				lbox.insert(len(self.names) , self.route[idx] )
+
+	        	lbox.update()
+			print "Going to remove " , 
 
 		def exit():
 			page.destroy()
@@ -127,17 +136,6 @@ class RouteBuilder():
 		
 		page.mainloop()
 		
-		# The way this is working right now:
-			# Makes a window that has buttons in it. Need to make your own buttons
-			# in order to control the command each button runs.
-
-			# When you hit a button, it runs the function called quit() below which
-			# prints 'this is rob'
-
-			# Each button should open a new window that can be used to do things like 
-			# make a route, alter past submissions and check the price of YG.
-
-			# Get to it! 
 		
 		
 		
@@ -153,6 +151,7 @@ class RouteBuilder():
 
 def the_end():
 	print "\n\n\nThis is the end of the RouteBuilder mainframe loop. Whatever is placed here will be returned when the main window is closed"
+
 	
 
 # -----------------------------------------------------------------
