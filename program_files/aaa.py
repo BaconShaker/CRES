@@ -24,6 +24,9 @@ class RouteBuilder():
 		self.names = [x['Name'] for x in oranges]
 		apple.close()
 
+	def display(self):
+		
+
 		print self.names
 
 		print "\nOptions: This list is a placeholder for the locations list " ,  self.options
@@ -142,15 +145,20 @@ class RouteBuilder():
 		# -------- FOR DEBUGGING --------
 		
 
-		print "\nalpha list [from end of display()]: " 
-		print tabulate( tuple(self.route) , headers = [" ", "Name"])
-		return the_end()
+		# print "\nalpha list [from end of display()]: " 
+		# print tabulate( tuple(self.route) , headers = [" ", "Name"])
+		# print "\n\n\n"
+		# return the_end()  # Use this if you want to return something from OUTSIDE the class. Otherwise, 
+
+
+		return self.route 
 
 # -----------------------------------------------------------------
 
 
 def the_end():
 	print "\n\n\nThis is the end of the RouteBuilder mainframe loop. Whatever is placed here will be returned when the main window is closed"
+
 
 	
 

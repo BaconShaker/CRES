@@ -96,6 +96,13 @@ class Collection():
 		print tabulate(  [ ( key , self.indict[key] ) for key in self.indict  ]  )
 
 
+	# Make anobject that outside programs can return and use
+	def run(self):
+		return self.indict
+
+		
+
+
 
 
 

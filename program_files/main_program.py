@@ -72,7 +72,13 @@ options = ["this", 'That', 'Other thing']
 
 route_map = RouteBuilder(options, locfile)
 
+the_jungle = route_map.display()
+
 print "This is what RouteBuilder __init__() returns: " , route_map
+print "This is what jungle / routemap.display() returns: " , the_jungle
+
+
+
 
 # locs_list = Locations()
 
@@ -104,6 +110,14 @@ route = {
 
 collect = Collection(inputs, route)
 
+print "\n\n\n\n\n\nHerein lies the content of the Collection(inputs, route) I made up."
+kappys = collect.run()
+print tabulate(  [ ( key , kappys[key] ) for key in kappys  ]  )
+print ""
+
+listofcollections = [  collect.run() for place in the_jungle ]
+for trip in listofcollections:
+	print "Stop Number: " , trip['Location'], trip['Quality'], '\n'
 
 
 
