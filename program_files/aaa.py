@@ -12,19 +12,18 @@ import csv
 from tabulate import tabulate
 
 
-class RouteBuilder():
+class Route():
 	"""docstring for FrontPage"""
 	def __init__(self, options, locfile):
 		self.options = options
 		self.route = []
-
 		apple = open(locfile + '/master.csv')
 		oranges = csv.DictReader(apple, dialect = 'excel', skipinitialspace = True)
 		self.master_dict = oranges
 		self.names = [x['Name'] for x in oranges]
 		apple.close()
 
-	def display(self):
+	def build(self):
 		
 
 		print self.names
@@ -150,8 +149,11 @@ class RouteBuilder():
 		# print "\n\n\n"
 		# return the_end()  # Use this if you want to return something from OUTSIDE the class. Otherwise, 
 
-
 		return self.route 
+
+	def run():
+		pass
+
 
 # -----------------------------------------------------------------
 

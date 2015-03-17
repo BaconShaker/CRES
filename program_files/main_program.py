@@ -70,12 +70,12 @@ elif sys.platform.startswith('linux'):
 
 options = ["this", 'That', 'Other thing']
 
-route_map = RouteBuilder(options, locfile)
+route_map = Route(options, locfile)
 
-the_jungle = route_map.display()
+the_jungle = route_map.build()
 
-print "This is what RouteBuilder __init__() returns: " , route_map
-print "This is what jungle / routemap.display() returns: " , the_jungle
+print "\n\nThis is what RouteBuilder __init__() returns: " , route_map
+print "\n\nThis is what jungle / routemap.display() returns:\n" , tabulate(the_jungle)
 
 
 
@@ -102,13 +102,16 @@ inputs = {
 	"Diesel Price" : 2.75,
 }
 
-route = { 
+route_info = { 
 			"Total Distance" : 30,
-			"Number of Stops" : 3,
+			"Number of Stops" : len(the_jungle),
 		}
 
 
-collect = Collection(inputs, route)
+
+
+
+collect = Collection(inputs, route_info)
 
 print "\n\n\n\n\n\nHerein lies the content of the Collection(inputs, route) I made up."
 kappys = collect.run()
