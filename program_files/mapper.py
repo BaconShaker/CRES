@@ -47,6 +47,8 @@ def google_directions( start, stop ):
 		tab = tabulate(display, headers = tabs, tablefmt = "simple")
 
 		print tab
+	return directions
 
+robby = google_directions(start, stop)
 
-google_directions(start, stop)
+print robby

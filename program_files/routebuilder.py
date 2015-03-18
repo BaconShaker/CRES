@@ -160,7 +160,25 @@ class Route():
 
 		return self.route
 
+
+
 	def run_route(self):
+
+		def	price_of_diesel():
+			diesel= urllib2.urlopen(self.link_diesel)
+			dsoup = BeautifulSoup(diesel)
+			# links = soup.find_all( "Current2")
+			print "This is the price of Fuel today according to: ", self.link_diesel
+			dsoup.prettify()
+			data = dsoup.find_all('td' , 'Current2')
+			length = len(data)
+			# print data[13]
+			temp = str(data[13])
+			print temp
+			price = temp[32:36]
+			return price
+			diesel.close()
+
 		print "This is .run()"
 		print "\n" , self.route
 		self.link_diesel = 'http://www.eia.gov/dnav/pet/pet_pri_gnd_dcus_r20_w.htm'
@@ -187,13 +205,21 @@ class Route():
 
 		# Set up manin Frame for the route display to be shown on. 
 		disp = Tk()
-		disp.title("Route Builder")
+		disp.title("Route Details")
 		dframe = ttk.Frame(disp, padding = " 3 3 12 12")
 		dframe.grid(column=0, row=0, sticky=(N, W, E, S))
 		dframe.columnconfigure(0, weight=1)
 		dframe.rowconfigure(0, weight=1)
 
-		ttk.Label(dframe, text = "Stop #: " , ).grid(column = 1, row = 1)
+		price = price_of_diesel()
+		print "Price of diesel: $" + str( price )
+
+		dprice = ttk.Label(dframe, text = "The price of diesel today is $" + str(price))
+		route_list = ttk.Label(dframe, text = tabulate(self.route))
+
+
+		dprice.grid(column = 1, row = 1)
+		route_list.grid(column = 3, row = 1)
 
 		disp.mainloop()
 
