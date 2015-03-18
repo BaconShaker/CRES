@@ -64,7 +64,7 @@ class Route():
 	        		self.names[idx]  , 
 	        		self.master_list[matchmaker]['Street Address'],
 	        		self.master_list[matchmaker]['City'] ,
-	        		float(self.master_list[matchmaker]['Zip']),
+	        		self.master_list[matchmaker]['Zip'],
 
 	        		))
 
@@ -158,12 +158,6 @@ class Route():
 		print "This is: the_end(): " 
 		print "\n\n\nThis is the end of the RouteBuilder mainframe loop. Whatever is placed here will be returned when the main window is closed"
 
-		# checker = [ r[1] for r in self.route]
-		# route_match = [ [ j['Name'], j['Street Address'] ] for j in self.master_list if j['Name'] in checker ]
-		# for st in self.route:
-
-		# print tabulate(route_match)
-
 		print "This is the_end(), of Route."
 
 		return self.route
@@ -227,22 +221,11 @@ class Route():
 		# Make all the legs of the route from google maps
 
 
-
-		start = '2256 n kedzie blvd 60647'
-		stop = '2804 w logan blvd 60647'
-		ways = "211 S Laflin blvd chicago"
-		# trip = [self.route[0][2:5], self.route[1][2:5], self.route]
-		# print trip
-
-
-		legs = GoogleMap( [ addr[2:5] for addr in self.route ])
+		legs = GoogleMap( [ list(addr[2:5]) for addr in self.route ])
 
 		print "\n\n\n"
 		print legs.google_directions()
 		print "\n\n\n"
-
-
-
 
 		# Assign names to the Labels and Buttons on the Frame
 		dprice = ttk.Label(dframe, text = "The price of diesel today is $" + str(price))

@@ -15,17 +15,23 @@ class GoogleMap():
 	"""docstring for Leg"""
 	def __init__(self, trip, *args):
 		# Trip must be a list of addresses, the class will take care of the waypointing. 
-		self.start = trip[0]
-		self.stop = trip[1]
-		# self.start = trip[0][0] , float(trip[0][1]) , float(trip[0][2])
+
+		tripper = [  field[0] +" "+ field[1]  +" "+ field[2]  for field in trip  ]
+		self.start = tripper[0]
+		self.stop = tripper[len(tripper) - 1 ]
+		# self.start = trip[0][0] , trip[0][1], float(trip[0][2])
 		# self.stop = trip[len(trip) - 1][0] , trip[len(trip) - 1][1] , trip[len(trip) - 1][2]  
+
+		# self.start = 
+		# self.stop = 
 		print trip
-		self.waypoints = [ wp for wp in trip[2:] ]
+		self.waypoints = [ wp[0] +" "+ wp[1]  +" "+ wp[2]  for wp in trip[1:len(trip) - 1] ]
 
 		print "\n\n"
 		print "Start: ", self.start
+		print "Waypoints: " , self.waypoints
 		print "Stop: " , self.stop
-		print "Waypoints: " ,self.waypoints
+		
 		print "________-----------_______"
 		
 		
@@ -35,12 +41,12 @@ class GoogleMap():
 		gmap = Client('AIzaSyCDhR6raMscym9p0VG55-ka_p1IP9Dq9q0')
 
 		print '\n\n'
-		start = self.start
-		stop = self.stop
+		print "This is waypoints::::: " , self.waypoints
+
 		# call the .directions() funciton on Client, save in a list
 		# See if we should use waypoint optimixzing?
 
-		directions = gmap.directions(start, stop, waypoints = self.waypoints)
+		directions = gmap.directions(self.start, self.stop, waypoints = self.waypoints)
 
 		print "\n\n\n******************************\n\n\n"
 
