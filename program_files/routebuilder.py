@@ -13,6 +13,7 @@ from tabulate import tabulate
 import urllib
 import urllib2
 from bs4 import BeautifulSoup 
+from mapper import *
 
 
 class Route():
@@ -58,7 +59,14 @@ class Route():
 				# 	to be compared against the master_list in order to add the correct address, regardless of order in the listbox.
 				# 	Hopefully that allows of self.names to be Sorted before it's displayed by alphabeticle order. 
 				matchmaker = [place['Name'] for place in self.master_list].index(self.names[idx])
-	        	self.route.append(      (       int(len(self.route))   ,   self.names[idx]  , self.master_list[matchmaker]['Street Address'])           )
+	        	self.route.append(      (       
+	        		int(len(self.route))   ,   
+	        		self.names[idx]  , 
+	        		self.master_list[matchmaker]['Street Address'],
+	        		self.master_list[matchmaker]['City'] ,
+	        		float(self.master_list[matchmaker]['Zip']),
+
+	        		))
 
 	        	# Add the selected restaurant to the routebox display. 
 	        	routebox.insert(len(self.route) - 1, self.names[idx] )
@@ -165,16 +173,17 @@ class Route():
 	def run_route(self):
 
 		def	price_of_diesel():
+			print "\nprice of diesel():\n"
 			diesel= urllib2.urlopen(self.link_diesel)
 			dsoup = BeautifulSoup(diesel)
 			# links = soup.find_all( "Current2")
-			print "This is the price of Fuel today according to: ", self.link_diesel
+			# print "This is the price of Fuel today according to: ", self.link_diesel
 			dsoup.prettify()
 			data = dsoup.find_all('td' , 'Current2')
 			length = len(data)
 			# print data[13]
 			temp = str(data[13])
-			print temp
+			
 			price = temp[32:36]
 			return price
 			diesel.close()
@@ -186,7 +195,7 @@ class Route():
 
 		# Need to get work on this parser.  
 		print ""
-		print "Price_lookup():" # Input gallons or inches?
+		print "Route.run_route():" # Input gallons or inches?
 		print ""
 		response = urllib2.urlopen(self.link_ams)
 
@@ -211,16 +220,39 @@ class Route():
 		dframe.columnconfigure(0, weight=1)
 		dframe.rowconfigure(0, weight=1)
 
+		# Get the price of diesel today
 		price = price_of_diesel()
 		print "Price of diesel: $" + str( price )
 
+		# Make all the legs of the route from google maps
+
+
+
+		start = '2256 n kedzie blvd 60647'
+		stop = '2804 w logan blvd 60647'
+		ways = "211 S Laflin blvd chicago"
+		# trip = [self.route[0][2:5], self.route[1][2:5], self.route]
+		# print trip
+
+
+		legs = GoogleMap( [ addr[2:5] for addr in self.route ])
+
+		print "\n\n\n"
+		print legs.google_directions()
+		print "\n\n\n"
+
+
+
+
+		# Assign names to the Labels and Buttons on the Frame
 		dprice = ttk.Label(dframe, text = "The price of diesel today is $" + str(price))
 		route_list = ttk.Label(dframe, text = tabulate(self.route))
 
-
+		# Set everything to the .grid()
 		dprice.grid(column = 1, row = 1)
 		route_list.grid(column = 3, row = 1)
 
+		# Start the mainloop()
 		disp.mainloop()
 
 
