@@ -19,43 +19,76 @@ class Route():
 		self.route = []
 		apple = open(locfile + '/master.csv')
 		oranges = csv.DictReader(apple, dialect = 'excel', skipinitialspace = True)
-		self.master_dict = oranges
-		self.names = [x['Name'] for x in oranges]
+		print oranges.fieldnames
+
+		# Oranges is actually a list of dictionaries, each dictionary has the same keys. Each index is a new restaurant. 
+		self.master_list = [dict(row) for row in oranges]
+		# print self.master_list
+		self.names = [just_names['Name'] for just_names in self.master_list]
+
+
 		apple.close()
+		
+
 
 	def build(self):
 		
 
 		print self.names
 
+
 		print "\nOptions: This list is a placeholder for the locations list " ,  self.options
 		
 
 		# Need to make a menu, with a button and see how it returns from 
 		# the loop when the window is closed... 
-
+	
 
 		def add_stop(*args):
-			x = lbox.curselection()
-			if len(x) == 1:
+			
 
-				idx = int(x[0])
-	        
-	        	self.route.append( ( int( len(self.route) ), self.names[idx] ) )
+			
+			sel = lbox.curselection()
+			# Make sure you're only adding one place to the list at once to establilsh clear order. 
+			print "Length of x" , len(sel)
+			if len(sel) == 1:
 
+				# idx is the integer index of the selected location to add in the listbox loop. 
+				idx = int(sel[0])
+
+				# matchmaker searches for the first occurence of the STRING (in the listbox box) returned by idx above 
+				# 	to be compared against the master_list in order to add the correct address, regardless of order in the listbox.
+				# 	Hopefully that allows of self.names to be Sorted before it's displayed by alphabeticle order. 
+				matchmaker = [place['Name'] for place in self.master_list].index(self.names[idx])
+	        	self.route.append(      (       int(len(self.route))   ,   self.names[idx]  , self.master_list[matchmaker]['Street Address'])           )
+
+	        	# Add the selected restaurant to the routebox display. 
 	        	routebox.insert(len(self.route) - 1, self.names[idx] )
 	        	routebox.update()
+
+	        	# Remove the selection from the choices listbox. 
 	        	r = self.names.pop(idx)
 
+	        	# Re.set() the StringVar()'s so the update() changes the display. 
 	        	self.rnames.set(value = tuple(self.names))
 
 	        	# lbox.delete(idx)
 	        	lbox.update()
-	        
+
+	        	# Make it so the rows' background alternates colors
 	        	for i in range(0,len(self.route),2):
 					routebox.itemconfigure(i, background='#f0f0ff')
+				
+			
+
+					
+		
+		
+				
+
 
 		def remove_stop():
+			# Essentially, this is the same as add route just in reverse. 
 			y = routebox.curselection()
 			if len(y) == 1: 
 				rem = int(y[0])
@@ -105,17 +138,16 @@ class Route():
 		# ttk.Button(mainframe, text = "Add Stop", command = add_stop ).grid(column = 2, row = 3)
 		# ttk.Button(mainframe, text = "List Locations", command = locations ).grid(column = 2, row = 4)
 
-
 		# Create GUI elements here
-		add_but = ttk.Button(mainframe, text = "Add Stop", command = add_stop)
-
 		lbox = Listbox(mainframe, listvariable = self.rnames, height = 10)
 		lbox.pack()
 
 		routebox = Listbox(mainframe, listvariable = self.stops, height = 10)
 		routebox.pack()
 
-		quit = ttk.Button(mainframe, text = "Quit" , command = exit)
+		add_but = ttk.Button(mainframe, text = "Add Stop", command = add_stop )
+		quit = ttk.Button(mainframe, text = "Close Window" , command = exit)
+		remove_but = ttk.Button(mainframe, text = 'Remove Stop', command = remove_stop)
 
 		# display = 
 
@@ -148,6 +180,17 @@ class Route():
 		# print tabulate( tuple(self.route) , headers = [" ", "Name"])
 		# print "\n\n\n"
 		# return the_end()  # Use this if you want to return something from OUTSIDE the class. Otherwise, 
+		print "This is: the_end(): " 
+		print "\n\n\nThis is the end of the RouteBuilder mainframe loop. Whatever is placed here will be returned when the main window is closed"
+
+		# checker = [ r[1] for r in self.route]
+		# route_match = [ [ j['Name'], j['Street Address'] ] for j in self.master_list if j['Name'] in checker ]
+		# for st in self.route:
+
+
+		# print tabulate(route_match)
+
+		print "This is the_end(), of Route."
 
 		return self.route 
 
@@ -159,8 +202,7 @@ class Route():
 
 
 def the_end():
-	print "\n\n\nThis is the end of the RouteBuilder mainframe loop. Whatever is placed here will be returned when the main window is closed"
-
+	pass
 
 	
 
