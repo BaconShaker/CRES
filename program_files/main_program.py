@@ -78,40 +78,33 @@ print "\n\nThis is what RouteBuilder __init__() returns: " , route_master
 print "\n\nThis is what routemap.build() returns:\n" , tabulate(the_route)
 
 
-
-
-# locs_list = Locations()
-
-# locs_list.list_locations()
-# print men
-
-
 # Essentially I need to make it so that instead of just inputs and route being entered, it's going to be
 # 	multiple input dictionaries and the same route being interpreted at one go. 
 
 
 # inputs needs to be built by the GUI menu. 
 
-inputs = {
-	"Location" : 'Robby',
-	"Height on Departure" : 35,
-	"Height on Arrival" : 51, 
-	"Oil Price" : 0.2434, 
-	"Service Fee" : 0.15,
-	"Quality" : 0.95, 
-	"Diesel Price" : 2.75,
-}
+# inputs = {
+# 	"Location" : 'Robby',
+# 	"Height on Departure" : 35,
+# 	"Height on Arrival" : 51, 
+# 	"Oil Price" : 0.2434, 
+# 	"Service Fee" : 0.15,
+# 	"Quality" : 0.95, 
+# 	"Diesel Price" : 2.75,
+# }
 
-route_info = { 
-			"Total Distance" : 30,
-			"Number of Stops" : len(the_route),
-		}
-
-
-# inputs_two = 
+# route_info = { 
+# 			"Total Distance" : 30,
+# 			"Number of Stops" : len(the_route),
+# 		}
 
 
-collect = Collection(inputs_two, route_info)
+inputs_two = route_master.run_route()
+print "inputs_two: " , inputs_two
+
+
+collect = Collection(inputs_two[0], inputs_two[1])
 
 print "\n\n\n\n\n\nHerein lies the content of the Collection(inputs, route) I made up."
 kappys = collect.run()

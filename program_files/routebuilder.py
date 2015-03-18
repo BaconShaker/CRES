@@ -10,6 +10,9 @@ from Tkinter import *
 import ttk
 import csv
 from tabulate import tabulate
+import urllib
+import urllib2
+from bs4 import BeautifulSoup 
 
 
 class Route():
@@ -34,23 +37,18 @@ class Route():
 	def build(self):
 		
 
-		print self.names
+		# print self.names
 
-
-		print "\nOptions: This list is a placeholder for the locations list " ,  self.options
-		
+		# print "\nOptions: This list is a placeholder for the locations list " ,  self.options
 
 		# Need to make a menu, with a button and see how it returns from 
 		# the loop when the window is closed... 
 	
 
 		def add_stop(*args):
-			
-
-			
 			sel = lbox.curselection()
 			# Make sure you're only adding one place to the list at once to establilsh clear order. 
-			print "Length of x" , len(sel)
+			# print "Length of x" , len(sel)
 			if len(sel) == 1:
 
 				# idx is the integer index of the selected location to add in the listbox loop. 
@@ -78,13 +76,6 @@ class Route():
 	        	# Make it so the rows' background alternates colors
 	        	for i in range(0,len(self.route),2):
 					routebox.itemconfigure(i, background='#f0f0ff')
-				
-			
-
-					
-		
-		
-				
 
 
 		def remove_stop():
@@ -96,7 +87,6 @@ class Route():
 
 				o = self.route.pop(rem)
 				self.rnames.set(value = tuple(self.names))
-				
 
 				lbox.insert(len(self.names) , self.route[idx] )
 
@@ -106,10 +96,6 @@ class Route():
 		def exit():
 			page.destroy()
 
-	        	
-
-
-
 		# Set up the initial window and grid
 		page = Tk()
 		page.title("Route Builder")
@@ -118,25 +104,16 @@ class Route():
 		mainframe.columnconfigure(0, weight=1)
 		mainframe.rowconfigure(0, weight=1)
 
-		
-		
+
 		# Build selectable field populated by the names of restatants
 		# restaurant_names = self.names
-
-		# restaurant_names = ('Argentina', 'Australia', 'Belgium', 'Brazil', 'Canada', 'China', 'Denmark', \
-  		#       'Finland', 'France', 'Greece', 'India', 'Italy', 'Japan', 'Mexico', 'Netherlands', 'Norway', 'Spain', \
- 		#       'Sweden', 'Switzerland')
 
 		self.rnames = StringVar()
 		self.rnames.set(value = tuple(self.names))
 
 		self.stops = StringVar()
 		self.stops.set(value = tuple(self.route))
-		
 
-		# ttk.Button(mainframe, text = "Run Pickup", command = pickup ).grid(column = 2, row = 2)
-		# ttk.Button(mainframe, text = "Add Stop", command = add_stop ).grid(column = 2, row = 3)
-		# ttk.Button(mainframe, text = "List Locations", command = locations ).grid(column = 2, row = 4)
 
 		# Create GUI elements here
 		lbox = Listbox(mainframe, listvariable = self.rnames, height = 10)
@@ -148,8 +125,6 @@ class Route():
 		add_but = ttk.Button(mainframe, text = "Add Stop", command = add_stop )
 		quit = ttk.Button(mainframe, text = "Close Window" , command = exit)
 		remove_but = ttk.Button(mainframe, text = 'Remove Stop', command = remove_stop)
-
-		# display = 
 
 
 		# Set elements using .grid
@@ -170,23 +145,14 @@ class Route():
 		
 		page.mainloop()
 		
-		
-		
-		
 		# -------- FOR DEBUGGING --------
 		
-
-		# print "\nalpha list [from end of display()]: " 
-		# print tabulate( tuple(self.route) , headers = [" ", "Name"])
-		# print "\n\n\n"
-		# return the_end()  # Use this if you want to return something from OUTSIDE the class. Otherwise, 
 		print "This is: the_end(): " 
 		print "\n\n\nThis is the end of the RouteBuilder mainframe loop. Whatever is placed here will be returned when the main window is closed"
 
 		# checker = [ r[1] for r in self.route]
 		# route_match = [ [ j['Name'], j['Street Address'] ] for j in self.master_list if j['Name'] in checker ]
 		# for st in self.route:
-
 
 		# print tabulate(route_match)
 
@@ -197,6 +163,55 @@ class Route():
 	def run_route(self):
 		print "This is .run()"
 		print "\n" , self.route
+		self.link_diesel = 'http://www.eia.gov/dnav/pet/pet_pri_gnd_dcus_r20_w.htm'
+		self.link_ams = 'http://www.ams.usda.gov/mnreports/nw_ls442.txt'
+
+		# Need to get work on this parser.  
+		print ""
+		print "Price_lookup():" # Input gallons or inches?
+		print ""
+		response = urllib2.urlopen(self.link_ams)
+
+		# response = urllib2.urlopen('http://www.ams.usda.gov/mnreports/nw_ls442.txt')
+		soup = BeautifulSoup(response)
+
+		# page = response.readline()
+		text = soup.get_text()
+		self.yg_price = text[text.index('Choice white') :text.index('EDBLE LARD')]
+
+		# print text
+
+		print ""
+		ams_edit = text[text.index('Des') : text.index('2015') + 4 ].replace("     ", "\n Current as of ")
+		self.ams_location = ams_edit
+
+		# Set up manin Frame for the route display to be shown on. 
+		disp = Tk()
+		disp.title("Route Builder")
+		dframe = ttk.Frame(disp, padding = " 3 3 12 12")
+		dframe.grid(column=0, row=0, sticky=(N, W, E, S))
+		dframe.columnconfigure(0, weight=1)
+		dframe.rowconfigure(0, weight=1)
+
+		ttk.Label(dframe, text = "Stop #: " , ).grid(column = 1, row = 1)
+
+		disp.mainloop()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		# Need to build a dict like inputs from a GUI window.
 
 		inputs = {
 				"Location" : 'Jason',
@@ -206,9 +221,14 @@ class Route():
 				"Service Fee" : 0.15,
 				"Quality" : 0.95, 
 				"Diesel Price" : 2.75,
-				}
+		}
 		print inputs
-		return inputs
+
+		route_info = { 
+			"Total Distance" : 30,
+			"Number of Stops" : len(self.route),
+		}
+		return (inputs , route_info)
 
 # -----------------------------------------------------------------
 

@@ -28,7 +28,6 @@ class Collection():
 		# Bring in the input dictionary and store it to self for later reference
 		
 		self.route = route
-		
 
 		# Given: 
 		h = 36
