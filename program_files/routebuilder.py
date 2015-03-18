@@ -192,11 +192,23 @@ class Route():
 
 		print "This is the_end(), of Route."
 
-		return self.route 
+		return self.route
 
-	def run():
-		pass
+	def run_route(self):
+		print "This is .run()"
+		print "\n" , self.route
 
+		inputs = {
+				"Location" : 'Jason',
+				"Height on Departure" : 35,
+				"Height on Arrival" : 51, 
+				"Oil Price" : 0.2434, 
+				"Service Fee" : 0.15,
+				"Quality" : 0.95, 
+				"Diesel Price" : 2.75,
+				}
+		print inputs
+		return inputs
 
 # -----------------------------------------------------------------
 

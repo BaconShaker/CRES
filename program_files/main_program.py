@@ -39,7 +39,7 @@ while mods == 1:
 
 
 # These Classes are imported from CRES folder, whereever it may be. 
-from aaa import *
+from routebuilder import *
 from collection import *
 
 # First let's check which system is running.
@@ -70,12 +70,12 @@ elif sys.platform.startswith('linux'):
 
 options = ["this", 'That', 'Other thing']
 
-route_map = Route(options, locfile)
+route_master = Route(options, locfile)
 
-the_jungle = route_map.build()
+the_route = route_master.build()
 
-print "\n\nThis is what RouteBuilder __init__() returns: " , route_map
-print "\n\nThis is what jungle / routemap.display() returns:\n" , tabulate(the_jungle)
+print "\n\nThis is what RouteBuilder __init__() returns: " , route_master
+print "\n\nThis is what routemap.build() returns:\n" , tabulate(the_route)
 
 
 
@@ -104,21 +104,21 @@ inputs = {
 
 route_info = { 
 			"Total Distance" : 30,
-			"Number of Stops" : len(the_jungle),
+			"Number of Stops" : len(the_route),
 		}
 
 
+# inputs_two = 
 
 
-
-collect = Collection(inputs, route_info)
+collect = Collection(inputs_two, route_info)
 
 print "\n\n\n\n\n\nHerein lies the content of the Collection(inputs, route) I made up."
 kappys = collect.run()
 print tabulate(  [ ( key , kappys[key] ) for key in kappys  ]  )
 print ""
 
-listofcollections = [  collect.run() for place in the_jungle ]
+listofcollections = [  collect.run() for place in the_route ]
 for trip in listofcollections:
 	print "Stop Number: " , trip['Location'], trip['Quality'], '\n'
 
