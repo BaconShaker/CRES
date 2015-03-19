@@ -230,11 +230,12 @@ class Route():
 		# Assign names to the Labels and Buttons on the Frame
 		dprice = ttk.Label(dframe, text = "The price of diesel today is $" + str(price))
 		route_list = ttk.Label(dframe, text = tabulate(self.route))
+		map_label = ttk.Label(dframe, text = tabulate(legs.google_directions()) )
 
 		# Set everything to the .grid()
 		dprice.grid(column = 1, row = 1)
 		route_list.grid(column = 3, row = 1)
-
+		map_label.grid(column = 3, row = 3)
 		# Start the mainloop()
 		disp.mainloop()
 
