@@ -7,7 +7,7 @@
 # 		Run the route
 # 		Add Data to CSV files
 # 		Send pickup notices/reciepts 
-# 			prior to pickup?
+# 			prior to pickup? 
 # 			post collection results
 # 	Browsing client/location details/statistics
 # 		Provide to website?
