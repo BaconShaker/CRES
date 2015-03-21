@@ -24,11 +24,11 @@ class Display_Array(object):
 	
 
 
-	def turnmeon(self):
+	def collect_inputs(self):
 		root.mainloop()
 		print "Fuck yeah!" , self.restaurants
 
 
 
 robby = Display_Array(["1","2","3"])
-robby.turnmeon()
+robby.collect_inputs()
