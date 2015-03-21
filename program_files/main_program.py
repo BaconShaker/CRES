@@ -76,6 +76,7 @@ the_route = route_master.build()
 
 print "\n\nThis is what RouteBuilder __init__() returns: " , route_master
 print "\n\nThis is what routemap.build() returns:\n" , tabulate(the_route)
+print "\n\nThis is what routemap.run_route() returns" , route_master.run_route()
 
 
 # Essentially I need to make it so that instead of just inputs and route being entered, it's going to be
@@ -84,23 +85,23 @@ print "\n\nThis is what routemap.build() returns:\n" , tabulate(the_route)
 
 # inputs needs to be built by the GUI menu. 
 
-# inputs = {
-# 	"Location" : 'Robby',
-# 	"Height on Departure" : 35,
-# 	"Height on Arrival" : 51, 
-# 	"Oil Price" : 0.2434, 
-# 	"Service Fee" : 0.15,
-# 	"Quality" : 0.95, 
-# 	"Diesel Price" : 2.75,
-# }
+inputs = {
+	"Location" : 'Robby',
+	"Height on Departure" : 35,
+	"Height on Arrival" : 51, 
+	"Oil Price" : 0.2434, 
+	"Service Fee" : 0.15,
+	"Quality" : 0.95, 
+	"Diesel Price" : 2.75,
+}
 
-# route_info = { 
-# 			"Total Distance" : 30,
-# 			"Number of Stops" : len(the_route),
-# 		}
+route_info = { 
+			"Total Distance" : 30,
+			"Number of Stops" : len(the_route),
+		}
 
 
-inputs_two = route_master.run_route()
+inputs_two = (inputs, route_info)
 print "inputs_two: " , inputs_two
 
 

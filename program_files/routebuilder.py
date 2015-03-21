@@ -14,6 +14,8 @@ import urllib
 import urllib2
 from bs4 import BeautifulSoup 
 from mapper import *
+from collection import *
+
 
 
 class Route():
@@ -24,27 +26,17 @@ class Route():
 		apple = open(locfile + '/master.csv')
 		oranges = csv.DictReader(apple, dialect = 'excel', skipinitialspace = True)
 		print oranges.fieldnames
-
 		# Oranges is actually a list of dictionaries, each dictionary has the same keys. Each index is a new restaurant. 
 		self.master_list = [dict(row) for row in oranges]
 		# print self.master_list
 		self.names = [just_names['Name'] for just_names in self.master_list]
-
-
 		apple.close()
 		
-
-
 	def build(self):
-		
-
 		# print self.names
-
 		# print "\nOptions: This list is a placeholder for the locations list " ,  self.options
-
 		# Need to make a menu, with a button and see how it returns from 
 		# the loop when the window is closed... 
-	
 
 		def add_stop(*args):
 			sel = lbox.curselection()
@@ -219,29 +211,75 @@ class Route():
 		print "Price of diesel: $" + str( price )
 
 		# Make all the legs of the route from google maps
+		route_starts = [ (q[2] + " " + q[3] + " " + str(q[4]) ) for q in self.route]
+		route_starts.insert(0, ("2021 W. Fulton Chicago 60612") )
+		route_stops = [ (p[2] + " " + p[3] + " " + str(p[4]) ) for p in self.route]
+		route_stops.append( ("2021 W. Fulton Chicago 60612") ) 
+		# legs = GoogleMap( [ list(addr[2:5]) for addr in self.route ])
+		legs = zip(route_starts, route_stops)
 
-
-		legs = GoogleMap( [ list(addr[2:5]) for addr in self.route ])
+		print '\nlegs: '
+		for leg in legs:
+			print leg
 
 		print "\n\n\n"
-		print legs.google_directions()
+		# print legs.google_directions()
 		print "\n\n\n"
+
+
+
+
+
+		# Set the second origin in dframe to use for collections inputs
+		start_col = 0
+		start_row = 10
+
+		# Start building list of input dictionaries from GUI form. Add the results to collections.
+		# First, the questions we need to ask at EVERY stop
+		questions = [
+					"Height (ARRIVAL): ",
+					"Height (DEPARTURE): ",
+					"Quality (0 - 100): ",
+					"Duration: ", 
+					"Notes: ",  
+					]
+		# answers = 
+
+		print len(legs) ,len(self.route)
+
+		for stop , dest_pair in enumerate(self.route):
+			# ttk.Label(dframe, text = "Some text").grid(column = start_col, row = start_row + stop)
+			ttk.Label(dframe, text =  "Inputs for " + dest_pair[1] + ":").grid( column = start_col + stop , row = start_row )
+			for question in questions:
+				ttk.Label(dframe, text = question).grid(column = start_col + stop, row = start_row + 1 + questions.index(question) , sticky = 'e' )
+				ttk.Entry(dframe, textvariable = responses[])
+
 
 		# Assign names to the Labels and Buttons on the Frame
 		dprice = ttk.Label(dframe, text = "The price of diesel today is $" + str(price))
 		route_list = ttk.Label(dframe, text = tabulate(self.route))
-		map_label = ttk.Label(dframe, text = tabulate(legs.google_directions()) )
+		directs = ttk.Button(dframe, text = "Get Directions", command = show_directions)
+		lab = ttk.Label(dframe, text = " Use this window to display directions and/or details about the route created")
+		# map_label = ttk.Label(dframe, text = tabulate(legs.google_directions()) )
 
 		# Set everything to the .grid()
 		dprice.grid(column = 1, row = 1)
 		route_list.grid(column = 3, row = 1)
-		map_label.grid(column = 3, row = 3)
-		# Start the mainloop()
+		directs.grid(column = 1, row = 2)
+		lab.grid(column = 3, row = 0)
+		# map_label.grid(column = 3, row = 3)
+		# Start the mainloop() for the route you just made
 		disp.mainloop()
 
+		# print "THIS IS THE END! HERE's self.route, it should not have icnc at the ends. " 
+		# print "\n\n"
+		# for item in self.route:
+		# 	print item
+		# print "\n\n"
 
 
-
+		print "route_run()"
+		print "Congragulations, you have run a route!"
 
 
 
@@ -257,26 +295,28 @@ class Route():
 
 		inputs = {
 				"Location" : 'Jason',
-				"Height on Departure" : 35,
+				"Height on Departure" : 11,
 				"Height on Arrival" : 51, 
 				"Oil Price" : 0.2434, 
 				"Service Fee" : 0.15,
 				"Quality" : 0.95, 
 				"Diesel Price" : 2.75,
 		}
-		print inputs
 
 		route_info = { 
 			"Total Distance" : 30,
 			"Number of Stops" : len(self.route),
 		}
-		return (inputs , route_info)
+		return legs
 
 # -----------------------------------------------------------------
 
 
 def the_end():
 	pass
+
+def show_directions():
+	print "Make it so clicking this button pops a window up to display the route's directions. "
 
 	
 
