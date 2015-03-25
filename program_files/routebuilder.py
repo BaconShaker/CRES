@@ -15,6 +15,7 @@ import urllib2
 from bs4 import BeautifulSoup 
 from mapper import *
 from collection import *
+from mapper import *
 
 
 
@@ -225,7 +226,7 @@ class Route():
 		print "\n\n\n"
 
 
-
+		self.legs = legs
 
 
 		# Set the second origin in dframe to use for collections inputs
@@ -280,7 +281,8 @@ class Route():
 
 		print "route_run()"
 		print "Congragulations, you have run a route!"
-
+		print "This is where we need to use google_map to figure out the total length of the route."
+		route_length = GoogleMap(legs).google_directions()
 
 
 
@@ -304,10 +306,23 @@ class Route():
 		}
 
 		route_info = { 
-			"Total Distance" : 30,
+			"Total Distance" : route_length,
 			"Number of Stops" : len(self.route),
 		}
-		return legs
+
+		finp = {
+				"Location" : 'Robby',
+				"Height on Departure" : 35,
+				"Height on Arrival" : 51, 
+				"Oil Price" : 0.2434, 
+				"Service Fee" : 0.15,
+				"Quality" : 0.95, 
+				"Diesel Price" : 2.75,
+				"Total Distance" : route_length,
+				"Number of Stops" : len(self.route),
+				}
+				
+		return finp
 
 # -----------------------------------------------------------------
 

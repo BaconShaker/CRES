@@ -24,10 +24,13 @@ from tabulate import tabulate
 class Collection():
 	"""docstring for Collection"""
 	
-	def __init__(self, inputs, route):
+	def __init__(self, inputs):
 		# Bring in the input dictionary and store it to self for later reference
 		
-		self.route = route
+		self.route = {
+						"Total Distance" : inputs["Total Distance"],
+						"Number of Stops" : inputs["Number of Stops"]
+						}
 
 		# Given: 
 		h = 36
@@ -76,7 +79,7 @@ class Collection():
 			tdist = self.route['Total Distance']
 			num_stops = self.route['Number of Stops']
 			diesel_price = self.indict['Diesel Price']
-			mpg_truck = 13.5
+			mpg_truck = 8
 
 			fuel_surcharge = tdist / mpg_truck * diesel_price / num_stops
 
@@ -88,8 +91,8 @@ class Collection():
 
 		self.indict['Fuel Surcharge'] = f_surcharge
 
-		self.indict['Miles in Route'] = route['Total Distance']
-		self.indict['Stops on Route'] = route['Number of Stops']
+		self.indict['Miles in Route'] = self.route['Total Distance']
+		self.indict['Stops on Route'] = self.route['Number of Stops']
 
 		print "\n\n\n"
 		print tabulate(  [ ( key , self.indict[key] ) for key in self.indict  ]  )

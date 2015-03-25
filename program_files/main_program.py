@@ -77,7 +77,7 @@ legs = route_master.run_route()
 
 print "\n\nThis is what RouteBuilder __init__() returns: " , route_master
 print "\n\nThis is what routemap.build() returns:\n" , tabulate(the_route)
-print "\n\nThis is what routemap.run_route() returns" , legs
+print "\n\nThis should be a list of inputs to be written to each csv file:" , legs , "\n\n"
 
 
 # Essentially I need to make it so that instead of just inputs and route being entered, it's going to be
@@ -106,7 +106,7 @@ inputs_two = (inputs, route_info)
 print "inputs_two: " , inputs_two
 
 
-collect = Collection(inputs_two[0], inputs_two[1])
+collect = Collection(legs)
 
 print "\n\n\n\n\n\nHerein lies the content of the Collection(inputs, route) I made up."
 kappys = collect.run()

@@ -94,7 +94,7 @@ class GoogleMap():
 #-------------------------------
 # FOR DEBUGGING:
 # 	inp is a replica of the input to to be expected from main_program. 
-	
+
 # inp = [ 
 # 		('2021 W Fulton 60612', '2256 n kedzie blvd 60647'),
 # 		('2256 n kedzie blvd 60647', '2804 w logan chicago 60647') ,
