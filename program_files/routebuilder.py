@@ -174,14 +174,13 @@ class Route():
 			return price
 			diesel.close()
 
-		print "This is .run()"
+		print "This is the beginning of .run()"
 		print "\n" , self.route
 		self.link_diesel = 'http://www.eia.gov/dnav/pet/pet_pri_gnd_dcus_r20_w.htm'
 		self.link_ams = 'http://www.ams.usda.gov/mnreports/nw_ls442.txt'
 
 		# Need to get work on this parser.  
-		print ""
-		print "Route.run_route():" # Input gallons or inches?
+		# Input gallons or inches?
 		print ""
 		response = urllib2.urlopen(self.link_ams)
 
@@ -194,7 +193,6 @@ class Route():
 
 		# print text
 
-		print ""
 		ams_edit = text[text.index('Des') : text.index('2015') + 4 ].replace("     ", "\n Current as of ")
 		self.ams_location = ams_edit
 
@@ -244,15 +242,17 @@ class Route():
 					"Notes: ",  
 					]
 		# answers = 
+		# Shortcut here but it makes notes an IntVar(), I think it needs to be a StringVar()... 
+		# responses =  { questions[y] : IntVar() for y, x in enumerate(questions) } 
+		responses = [ { questions[y] : IntVar() for y, x in enumerate(questions) } for leg in legs]
 
-		print len(legs) ,len(self.route)
 
 		for stop , dest_pair in enumerate(self.route):
 			# ttk.Label(dframe, text = "Some text").grid(column = start_col, row = start_row + stop)
 			ttk.Label(dframe, text =  "Inputs for " + dest_pair[1] + ":").grid( column = start_col + stop , row = start_row )
 			for question in questions:
 				ttk.Label(dframe, text = question).grid(column = start_col + stop, row = start_row + 1 + questions.index(question) , sticky = 'e' )
-				ttk.Entry(dframe, textvariable = responses[])
+				ttk.Entry(dframe, textvariable = responses[stop][question]).grid(column = start_col + stop + 1, row = start_row + 1 + questions.index(question))
 
 
 		# Assign names to the Labels and Buttons on the Frame

@@ -73,10 +73,11 @@ options = ["this", 'That', 'Other thing']
 route_master = Route(options, locfile)
 
 the_route = route_master.build()
+legs = route_master.run_route()
 
 print "\n\nThis is what RouteBuilder __init__() returns: " , route_master
 print "\n\nThis is what routemap.build() returns:\n" , tabulate(the_route)
-print "\n\nThis is what routemap.run_route() returns" , route_master.run_route()
+print "\n\nThis is what routemap.run_route() returns" , legs
 
 
 # Essentially I need to make it so that instead of just inputs and route being entered, it's going to be
