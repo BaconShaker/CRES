@@ -250,10 +250,13 @@ class Route():
 
 		for stop , dest_pair in enumerate(self.route):
 			# ttk.Label(dframe, text = "Some text").grid(column = start_col, row = start_row + stop)
-			ttk.Label(dframe, text =  "Inputs for " + dest_pair[1] + ":").grid( column = start_col + stop , row = start_row )
+			cols = start_col + 1 + stop
+			
+			ttk.Label(dframe, text =  dest_pair[1] + ":").grid( column =  cols , row = start_row )
 			for question in questions:
-				ttk.Label(dframe, text = question).grid(column = start_col + stop, row = start_row + 1 + questions.index(question) , sticky = 'e' )
-				ttk.Entry(dframe, textvariable = responses[stop][question]).grid(column = start_col + stop + 1, row = start_row + 1 + questions.index(question))
+				rws = start_row + 1 + questions.index(question)
+				ttk.Label(dframe, text = question).grid(column = start_col , row = rws , sticky = 'e' )
+				ttk.Entry(dframe, textvariable = responses[stop][question]).grid(column = start_col + stop + 1, row = rws)
 
 
 		# Assign names to the Labels and Buttons on the Frame
@@ -265,7 +268,7 @@ class Route():
 
 		# Set everything to the .grid()
 		dprice.grid(column = 1, row = 1)
-		route_list.grid(column = 3, row = 1)
+		route_list.grid(column = 1, row = 0)
 		directs.grid(column = 1, row = 2)
 		lab.grid(column = 3, row = 0)
 		# map_label.grid(column = 3, row = 3)
@@ -278,6 +281,17 @@ class Route():
 		# 	print item
 		# print "\n\n"
 
+		
+		# ------------------------------------------------------------------------
+		# This is where I left off... Trying to mimic the inputs from the GUI thing I made. 
+		# Need to make what this for loop makes into a dicitonary. 
+
+		fart = 0
+		for ind , dic in enumerate(responses):
+			print "\n\nInputs for leg #" , fart
+			fart += 1
+			for d in questions:
+				print d, responses[ind][d].get()
 
 		print "route_run()"
 		print "Congragulations, you have run a route!"
@@ -285,30 +299,9 @@ class Route():
 		route_length = GoogleMap(legs).google_directions()
 
 
-
-
-
-
-
-
-
-
 		# Need to build a dict like inputs from a GUI window.
 
-		inputs = {
-				"Location" : 'Jason',
-				"Height on Departure" : 11,
-				"Height on Arrival" : 51, 
-				"Oil Price" : 0.2434, 
-				"Service Fee" : 0.15,
-				"Quality" : 0.95, 
-				"Diesel Price" : 2.75,
-		}
-
-		route_info = { 
-			"Total Distance" : route_length,
-			"Number of Stops" : len(self.route),
-		}
+		
 
 		finp = {
 				"Location" : 'Robby',
@@ -321,7 +314,7 @@ class Route():
 				"Total Distance" : route_length,
 				"Number of Stops" : len(self.route),
 				}
-				
+
 		return finp
 
 # -----------------------------------------------------------------
@@ -338,12 +331,10 @@ def show_directions():
 # -----------------------------------------------------------------
 
 
-def pickup():
-
-	print "This is run pickup"
 
 
 	
+
 
 
 

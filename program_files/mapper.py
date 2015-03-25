@@ -46,9 +46,9 @@ class GoogleMap():
 
 
 		# print directions['Directions']['Distance']["meters"]
-		for thing in list_of_maps:
-			print "\n\n\n\n"
-			print thing
+		# for thing in list_of_maps:
+		# 	print "\n\n\n\n"
+		# 	print thing
 
 
 		print "\n\n\n******************************\n\n\n"
@@ -77,7 +77,7 @@ class GoogleMap():
 			tabs = ["Turn", "Distance", "Instruction"]
 
 			tab = tabulate(display, headers = tabs, tablefmt = "simple")
-			print "LEG # " , count
+			print "LEG # " , count , "\n"
 			print tab
 			final = []
 			final.append(tab)

@@ -86,24 +86,24 @@ print "\n\nThis should be a list of inputs to be written to each csv file:" , le
 
 # inputs needs to be built by the GUI menu. 
 
-inputs = {
-	"Location" : 'Robby',
-	"Height on Departure" : 35,
-	"Height on Arrival" : 51, 
-	"Oil Price" : 0.2434, 
-	"Service Fee" : 0.15,
-	"Quality" : 0.95, 
-	"Diesel Price" : 2.75,
-}
+# inputs = {
+# 	"Location" : 'Robby',
+# 	"Height on Departure" : 35,
+# 	"Height on Arrival" : 51, 
+# 	"Oil Price" : 0.2434, 
+# 	"Service Fee" : 0.15,
+# 	"Quality" : 0.95, 
+# 	"Diesel Price" : 2.75,
+# }
 
-route_info = { 
-			"Total Distance" : 30,
-			"Number of Stops" : len(the_route),
-		}
+# route_info = { 
+# 			"Total Distance" : 30,
+# 			"Number of Stops" : len(the_route),
+# 		}
 
 
-inputs_two = (inputs, route_info)
-print "inputs_two: " , inputs_two
+# inputs_two = (inputs, route_info)
+# print "inputs_two: " , inputs_two
 
 
 collect = Collection(legs)
