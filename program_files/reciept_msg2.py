@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # Send an HTML email with an embedded image and a plain text message for
 # email clients that don't want to display the HTML.
 
@@ -6,12 +7,14 @@ from email.MIMEText import MIMEText
 from email.MIMEImage import MIMEImage
 
 # Define these once; use them twice!
-strFrom = 'renewablechicago@gmail.com'
-strTo = 'rshintani@gmail.com'
+adline = "Your boy, Blue"
+rline = "That Guy"
+strFrom = adline + '<renewablechicago@gmail.com>'
+strTo = rline + '<mmirabelli88@gmail.com>'
 
 # Create the root message and fill in the from, to, and subject headers
 msgRoot = MIMEMultipart('related')
-msgRoot['Subject'] = 'img should be on the right'
+msgRoot['Subject'] = "Robby sent this, it's ok to open"
 msgRoot['From'] = strFrom
 msgRoot['To'] = strTo
 msgRoot.preamble = 'This is a multi-part message in MIME format.'
