@@ -310,7 +310,7 @@ class Route():
 				"Oil Price" : 0.2434, 
 				"Service Fee" : 0.15,
 				"Quality" : 0.95, 
-				"Diesel Price" : 2.75,
+				"Diesel Price" : price_of_diesel(),
 				"Total Distance" : route_length,
 				"Number of Stops" : len(self.route),
 				}

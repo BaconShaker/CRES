@@ -81,7 +81,12 @@ class Collection():
 			diesel_price = self.indict['Diesel Price']
 			mpg_truck = 8
 
-			fuel_surcharge = tdist / mpg_truck * diesel_price / num_stops
+			print tdist
+			print num_stops
+			print diesel_price
+
+
+			fuel_surcharge = float(tdist)/ mpg_truck * float(diesel_price) / int(num_stops)
 
 			return fuel_surcharge
 
