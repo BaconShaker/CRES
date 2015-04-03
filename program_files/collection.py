@@ -1,6 +1,7 @@
 # Just take the inputs and do conversions
 
 from tabulate import tabulate
+from datetime import *
 
 # Variables we need:
 # 	location
@@ -106,6 +107,7 @@ class Collection():
 
 	# Make anobject that outside programs can return and use
 	def run(self):
+		self.indict['Date'] = datetime.now()
 		return self.indict
 
 		

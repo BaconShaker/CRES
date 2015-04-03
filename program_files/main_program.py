@@ -30,6 +30,7 @@ while mods == 1:
 		from datetime import date
 
 
+
 	except ImportError as err:
 		print "Something didn't work right.\n"
 		print "You don't have all the required modules on this computer."
@@ -41,6 +42,7 @@ while mods == 1:
 # These Classes are imported from CRES folder, whereever it may be. 
 from routebuilder import *
 from collection import *
+from msg_reciept2 import *
 
 # First let's check which system is running.
 	# Need to find a way to get the GDrive file on the the Linux side of things. That's going to be hard
@@ -94,6 +96,9 @@ collections = [ Collection(leg).run() for leg in user_inputs]
 # 	collection.run()
 print collections
 
+details = [ ]
+for collection in collections:
+	Mailer(collection).send_reciept()
 
 # Need to take each collect in collections and grab only the info we want to 
 # get mailed to the restaurants  
