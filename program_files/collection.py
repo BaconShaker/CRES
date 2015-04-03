@@ -39,14 +39,14 @@ class Collection():
 
 		t_vol = 0.0043290 * l * w * h
 
-		inputs['Gallons on Arrival'] = round(0.0043290 * l * w * inputs['Height on Arrival'] , 2)
-		inputs['Gallons on Departure'] = round(0.0043290 * l * w * inputs['Height on Departure'] , 2)
+		inputs['Gallons on Arrival'] = round(0.0043290 * l * w * inputs['Height (ARRIVAL): '] , 2)
+		inputs['Gallons on Departure'] = round(0.0043290 * l * w * inputs['Height (DEPARTURE): '] , 2)
 		inputs['Gallons Collected'] = round(inputs['Gallons on Arrival'] - inputs['Gallons on Departure'] , 2)
-		score = inputs['Gallons on Departure'] / inputs['Gallons on Arrival'] 
+		score = inputs['Gallons Collected'] / inputs['Gallons on Arrival'] 
 		inputs['Pickup Score'] = round(score * 100 , 2)
 
 		# 7.75 lbs per gallon is set here
-		lbs_collected = inputs['Gallons Collected'] * 7.75 * inputs['Quality']
+		lbs_collected = inputs['Gallons Collected'] * 7.75 * inputs['Quality (0 - 100): '] / 100
 
 		inputs['Expected Revenue'] = round(inputs['Oil Price'] * lbs_collected , 2)
 
@@ -55,6 +55,7 @@ class Collection():
 		inputs['Donation Rate'] = round(donation , 2) 
 		inputs['Expected Income'] = inputs['Service Fee'] * lbs_collected
 		inputs['Expected Donation'] = donation * lbs_collected
+		inputs['Collectable Material'] = lbs_collected
 
 		# inputs['Diesel Price'] = 
 

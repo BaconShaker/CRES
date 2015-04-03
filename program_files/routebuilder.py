@@ -245,8 +245,8 @@ class Route():
 		# answers = 
 		# Shortcut here but it makes notes an IntVar(), I think it needs to be a StringVar()... 
 		# responses =  { questions[y] : IntVar() for y, x in enumerate(questions) } 
-		responses = [ { questions[y] : IntVar() for y, x in enumerate(questions) } for leg in legs]
-
+		responses = [ { questions[y] : IntVar() for y, x in enumerate(questions) } for leg in legs ]
+		responses.pop()
 
 		for stop , dest_pair in enumerate(self.route):
 			# ttk.Label(dframe, text = "Some text").grid(column = start_col, row = start_row + stop)
@@ -300,22 +300,38 @@ class Route():
 
 
 		# Need to build a dict like inputs from a GUI window.
+		print "\n" * 10
+		print "This is responses: \n"
+		# print responses 
+		usr_inp = [{} for res in responses]
+		count = 0
+		d_price = price_of_diesel()
+		for response in responses:
+			for key in response.keys():
+				usr_inp[count][key] = response[key].get()
+				usr_inp[count]['Diesel Price'] = d_price
+				usr_inp[count]["Total Distance"] = route_length
+				usr_inp[count]['Number of Stops'] = len(self.route)
+				usr_inp[count]["Service Fee"] = 0.15
+				usr_inp[count]["Oil Price"] = 0.2434
+			count += 1
+		print "this is legs"
+		print legs
+		print self.legs
+		return usr_inp # This is legs in main_program
+		# finp = {
+		# 		"Location" : 'Robby',
+		# 		"Height on Departure" : 35,
+		# 		"Height on Arrival" : 51, 
+		# 		"Oil Price" : 0.2434, 
+		# 		"Service Fee" : 0.15,
+		# 		"Quality" : 0.95, 
+		# 		"Diesel Price" : price_of_diesel(),
+		# 		"Total Distance" : route_length,
+		# 		"Number of Stops" : len(self.route),
+		# 		}
 
-		
-
-		finp = {
-				"Location" : 'Robby',
-				"Height on Departure" : 35,
-				"Height on Arrival" : 51, 
-				"Oil Price" : 0.2434, 
-				"Service Fee" : 0.15,
-				"Quality" : 0.95, 
-				"Diesel Price" : price_of_diesel(),
-				"Total Distance" : route_length,
-				"Number of Stops" : len(self.route),
-				}
-
-		return finp
+		# return finp
 
 # -----------------------------------------------------------------
 

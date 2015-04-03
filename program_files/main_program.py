@@ -73,11 +73,11 @@ options = ["this", 'That', 'Other thing']
 route_master = Route(options, locfile)
 
 the_route = route_master.build()
-legs = route_master.run_route()
+user_inputs = route_master.run_route() # This is the user inputs from the collection GUI!
 
 print "\n\nThis is what RouteBuilder __init__() returns: " , route_master
 print "\n\nThis is what routemap.build() returns:\n" , tabulate(the_route)
-print "\n\nThis should be a list of inputs to be written to each csv file:" , legs , "\n\n"
+print "\n\nThis should be a list of inputs to be written to each csv file:" , user_inputs , "\n\n"
 
 
 # Essentially I need to make it so that instead of just inputs and route being entered, it's going to be
@@ -86,41 +86,17 @@ print "\n\nThis should be a list of inputs to be written to each csv file:" , le
 
 # inputs needs to be built by the GUI menu. 
 
-# inputs = {
-# 	"Location" : 'Robby',
-# 	"Height on Departure" : 35,
-# 	"Height on Arrival" : 51, 
-# 	"Oil Price" : 0.2434, 
-# 	"Service Fee" : 0.15,
-# 	"Quality" : 0.95, 
-# 	"Diesel Price" : 2.75,
-# }
 
-# route_info = { 
-# 			"Total Distance" : 30,
-# 			"Number of Stops" : len(the_route),
-# 		}
+print 'USER INPUTS: ' , user_inputs , '\n'
+collections = [ Collection(leg).run() for leg in user_inputs]
+# collect = Collection(legs)
+# for collection in collections:
+# 	collection.run()
+print collections
 
 
-# inputs_two = (inputs, route_info)
-# print "inputs_two: " , inputs_two
-
-
-collect = Collection(legs)
-
-print "\n\n\n\n\n\nHerein lies the content of the Collection(inputs, route) I made up."
-kappys = collect.run()
-print tabulate(  [ ( key , kappys[key] ) for key in kappys  ]  )
-print ""
-
-listofcollections = [  collect.run() for place in the_route ]
-for trip in listofcollections:
-	print "Stop Number: " , trip['Location'], trip['Quality'], '\n'
-
-
-
-
-
+# Need to take each collect in collections and grab only the info we want to 
+# get mailed to the restaurants  
 
 
 print "\n\n\n\nThis is the end of Main Program"
