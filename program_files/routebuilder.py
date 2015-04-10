@@ -31,6 +31,7 @@ class Route():
 		self.master_list = [dict(row) for row in oranges]
 		# print self.master_list
 		self.names = [just_names['Name'] for just_names in self.master_list]
+		
 		apple.close()
 		
 	def build(self):
@@ -58,6 +59,8 @@ class Route():
 	        		self.master_list[matchmaker]['Street Address'],
 	        		self.master_list[matchmaker]['City'] ,
 	        		self.master_list[matchmaker]['Zip'],
+	        		self.master_list[matchmaker]['Contact_Person'],
+	        		self.master_list[matchmaker]['Contact Email']
 
 	        		))
 
@@ -152,6 +155,8 @@ class Route():
 		print "\n\n\nThis is the end of the RouteBuilder mainframe loop. Whatever is placed here will be returned when the main window is closed"
 
 		print "This is the_end(), of Route."
+		
+
 
 		return self.route
 
@@ -263,7 +268,8 @@ class Route():
 		dprice = ttk.Label(dframe, text = "The price of diesel today is $" + str(price))
 		route_list = ttk.Label(dframe, text = tabulate(self.route))
 		directs = ttk.Button(dframe, text = "Get Directions", command = show_directions)
-		lab = ttk.Label(dframe, text = " Use this window to display directions and/or details about the route created")
+		lab = ttk.Label(dframe, text = self.ams_location)
+		greasy = ttk.Label(dframe, text = self.yg_price)
 		# map_label = ttk.Label(dframe, text = tabulate(legs.google_directions()) )
 
 		# Set everything to the .grid()
@@ -271,6 +277,7 @@ class Route():
 		route_list.grid(column = 1, row = 0)
 		directs.grid(column = 1, row = 2)
 		lab.grid(column = 3, row = 0)
+		greasy.grid(column = 3, row = 1)
 		# map_label.grid(column = 3, row = 3)
 		# Start the mainloop() for the route you just made
 		disp.mainloop()
@@ -314,6 +321,8 @@ class Route():
 				usr_inp[count]['Number of Stops'] = len(self.route)
 				usr_inp[count]["Service Fee"] = 0.15
 				usr_inp[count]["Oil Price"] = 0.2434
+				usr_inp[count]['Contact Person'] = self.route[count][5]
+				usr_inp[count]['Contact Email'] = self.route[count][6]
 			count += 1
 		print "this is legs"
 		print legs

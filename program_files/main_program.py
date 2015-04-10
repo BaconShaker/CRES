@@ -96,8 +96,13 @@ collections = [ Collection(leg).run() for leg in user_inputs]
 # 	collection.run()
 print collections
 
-details = [ ]
+# Make a list of keys to send in the email reciept
+
+
+# This is going to send emails to everyone about the pickup
 for collection in collections:
+	print ""
+	print collection
 	Mailer(collection).send_reciept()
 
 # Need to take each collect in collections and grab only the info we want to 
