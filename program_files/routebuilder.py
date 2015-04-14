@@ -22,16 +22,16 @@ from mapper import *
 class Route():
 	"""docstring for FrontPage"""
 	def __init__(self, options, locfile):
+		print "\n\nRoute() initialized...\n"
 		self.options = options
 		self.route = []
 		apple = open(locfile + '/master.csv')
 		oranges = csv.DictReader(apple, dialect = 'excel', skipinitialspace = True)
-		print oranges.fieldnames
+		print "This is the list of fieldnames in the master.csv file, oranges[...] = " , oranges.fieldnames
 		# Oranges is actually a list of dictionaries, each dictionary has the same keys. Each index is a new restaurant. 
 		self.master_list = [dict(row) for row in oranges]
 		# print self.master_list
 		self.names = [just_names['Name'] for just_names in self.master_list]
-		
 		apple.close()
 		
 	def build(self):
@@ -150,13 +150,10 @@ class Route():
 		page.mainloop()
 		
 		# -------- FOR DEBUGGING --------
-		
-		print "This is: the_end(): " 
-		print "\n\n\nThis is the end of the RouteBuilder mainframe loop. Whatever is placed here will be returned when the main window is closed"
 
-		print "This is the_end(), of Route."
-		
+		# This is the end of the RouteBuilder mainframe loop. Whatever is placed here will be returned when the main window is closed
 
+		print "\nYour route.build() was a success!\n\n"
 
 		return self.route
 
@@ -164,8 +161,9 @@ class Route():
 
 	def run_route(self):
 
+
 		def	price_of_diesel():
-			print "\nprice of diesel():\n"
+			print "\nStart of price_of_diesel()\n"
 			diesel= urllib2.urlopen(self.link_diesel)
 			dsoup = BeautifulSoup(diesel)
 			# links = soup.find_all( "Current2")
@@ -175,34 +173,36 @@ class Route():
 			length = len(data)
 			# print data[13]
 			temp = str(data[13])
-			
 			price = temp[32:36]
-			return price
 			diesel.close()
+			print "End of price_of_diesel()\n"
+			return price
 
-		print "This is the beginning of .run()"
-		print "\n" , self.route
+
+		print "This is the beginning of .run_route()"
+		print "Need to make this run in the background..."
+
+		print "\nself.route:" , self.route
 		self.link_diesel = 'http://www.eia.gov/dnav/pet/pet_pri_gnd_dcus_r20_w.htm'
 		self.link_ams = 'http://www.ams.usda.gov/mnreports/nw_ls442.txt'
+		print "\nDiesel source:" , self.link_diesel
+		print "AMS source:" , self.link_ams , '\n'
 
-		# Need to get work on this parser.  
-		# Input gallons or inches?
-		print ""
+
+		# Need to look up the AMS, I think this can be threaded in the init of the class... 
+		# But it wasn't so here we are now
 		response = urllib2.urlopen(self.link_ams)
-
-		# response = urllib2.urlopen('http://www.ams.usda.gov/mnreports/nw_ls442.txt')
 		soup = BeautifulSoup(response)
-
-		# page = response.readline()
+		# Ruh-roh the ams gives us a .txt file to parse
 		text = soup.get_text()
+		# Start at the index where Choice white appears, go to EDIBLE LARD 
 		self.yg_price = text[text.index('Choice white') :text.index('EDBLE LARD')]
-
-		# print text
-
+		# Do the same thing for the report location
 		ams_edit = text[text.index('Des') : text.index('2015') + 4 ].replace("     ", "\n Current as of ")
 		self.ams_location = ams_edit
 
-		# Set up manin Frame for the route display to be shown on. 
+
+		# Set up main Frame for the route display to be shown on. 
 		disp = Tk()
 		disp.title("Route Details")
 		dframe = ttk.Frame(disp, padding = " 3 3 12 12")
@@ -220,18 +220,16 @@ class Route():
 		route_stops = [ (p[2] + " " + p[3] + " " + str(p[4]) ) for p in self.route]
 		route_stops.append( ("2021 W. Fulton Chicago 60612") ) 
 		# legs = GoogleMap( [ list(addr[2:5]) for addr in self.route ])
-		legs = zip(route_starts, route_stops)
+		self.legs = zip(route_starts, route_stops)
 
 		print '\nlegs: '
-		for leg in legs:
+		for leg in self.legs:
 			print leg
 
-		print "\n\n\n"
+
+
 		# print legs.google_directions()
-		print "\n\n\n"
-
-
-		self.legs = legs
+	
 
 
 		# Set the second origin in dframe to use for collections inputs
@@ -247,37 +245,46 @@ class Route():
 					"Duration: ", 
 					"Notes: ",  
 					]
-		# answers = 
-		# Shortcut here but it makes notes an IntVar(), I think it needs to be a StringVar()... 
-		# responses =  { questions[y] : IntVar() for y, x in enumerate(questions) } 
-		responses = [ { questions[y] : IntVar() for y, x in enumerate(questions) } for leg in legs ]
+		
+		# Now the list of dictionary tuples for the responses.
+		responses = [ { questions[y] : IntVar() for y, x in enumerate(questions) } for leg in self.legs ]
+
+		# Need to pop the last stop off the list because it's the ICNC.
 		responses.pop()
 
 		for stop , dest_pair in enumerate(self.route):
 			# ttk.Label(dframe, text = "Some text").grid(column = start_col, row = start_row + stop)
 			cols = start_col + 1 + stop
-			
 			ttk.Label(dframe, text =  dest_pair[1] + ":").grid( column =  cols , row = start_row )
+			
 			for question in questions:
 				rws = start_row + 1 + questions.index(question)
 				ttk.Label(dframe, text = question).grid(column = start_col , row = rws , sticky = 'e' )
 				ttk.Entry(dframe, textvariable = responses[stop][question]).grid(column = start_col + stop + 1, row = rws)
 
+		# Assign the entry variable for the AMS price we want to use for ALL of the stops on the route
+		self.yellow_grease_ent = IntVar()
+		self.yellow_grease_ent.set(21)
 
 		# Assign names to the Labels and Buttons on the Frame
+		ams_location_text = ttk.Label(dframe, text = self.ams_location)
+		ams_price_text = ttk.Label(dframe, text = self.yg_price)
 		dprice = ttk.Label(dframe, text = "The price of diesel today is $" + str(price))
-		route_list = ttk.Label(dframe, text = tabulate(self.route))
+		# route_list = ttk.Label(dframe, text = tabulate(self.route))
 		directs = ttk.Button(dframe, text = "Get Directions", command = show_directions)
-		lab = ttk.Label(dframe, text = self.ams_location)
-		greasy = ttk.Label(dframe, text = self.yg_price)
+		yellow_grease_in = ttk.Label(dframe, text = " What is the AMS price today?")
+		yellow_grease_ent = ttk.Entry(dframe, textvariable = self.yellow_grease_ent)
 		# map_label = ttk.Label(dframe, text = tabulate(legs.google_directions()) )
 
 		# Set everything to the .grid()
-		dprice.grid(column = 1, row = 1)
-		route_list.grid(column = 1, row = 0)
-		directs.grid(column = 1, row = 2)
-		lab.grid(column = 3, row = 0)
-		greasy.grid(column = 3, row = 1)
+		# route_list.grid 		(column = 1, row = 0)
+		ams_location_text.grid	(column = 0, row = 1)
+		ams_price_text.grid		(column = 1, row = 1)
+		dprice.grid				(column = 1, row = 2)
+		directs.grid			(column = 1, row = 3)
+		yellow_grease_in.grid	(column = 1, row = 4)
+		yellow_grease_ent.grid	(column = 2, row = 4)
+		
 		# map_label.grid(column = 3, row = 3)
 		# Start the mainloop() for the route you just made
 		disp.mainloop()
@@ -299,11 +306,11 @@ class Route():
 			fart += 1
 			for d in questions:
 				print d, responses[ind][d].get()
-
+		gotyg = self.yellow_grease_ent.get()
 		print "route_run()"
 		print "Congragulations, you have run a route!"
 		print "This is where we need to use google_map to figure out the total length of the route."
-		route_length = GoogleMap(legs).google_directions()
+		route_length = GoogleMap(self.legs).google_directions()
 
 
 		# Need to build a dict like inputs from a GUI window.
@@ -320,13 +327,13 @@ class Route():
 				usr_inp[count]["Total Distance"] = route_length
 				usr_inp[count]['Number of Stops'] = len(self.route)
 				usr_inp[count]["Service Fee"] = 0.15
-				usr_inp[count]["Oil Price"] = 0.2434
 				usr_inp[count]['Contact Person'] = self.route[count][5]
 				usr_inp[count]['Contact Email'] = self.route[count][6]
+				usr_inp[count]['Oil Price'] = int( gotyg ) / 100 
 			count += 1
-		print "this is legs"
-		print legs
-		print self.legs
+		
+		
+		
 		return usr_inp # This is legs in main_program
 		# finp = {
 		# 		"Location" : 'Robby',

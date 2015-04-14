@@ -57,7 +57,9 @@ class Collection():
 		inputs['Expected Income'] = inputs['Service Fee'] * lbs_collected
 		inputs['Expected Donation'] = donation * lbs_collected
 		inputs['Collectable Material'] = lbs_collected
-
+		for i in inputs:
+			print ""
+			print i, inputs[i]
 		# inputs['Diesel Price'] = 
 
 		# income * weight
