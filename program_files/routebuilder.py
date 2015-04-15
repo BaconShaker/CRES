@@ -153,14 +153,14 @@ class Route():
 
 		# This is the end of the RouteBuilder mainframe loop. Whatever is placed here will be returned when the main window is closed
 
-		print "\nYour route.build() was a success!\n\n"
+		print "\nYour route.build() was a success!\n"
 
 		return self.route
 
 
 
 	def run_route(self):
-
+		print "Start of run_route()"
 
 		def	price_of_diesel():
 			print "\nStart of price_of_diesel()\n"
@@ -263,8 +263,8 @@ class Route():
 				ttk.Entry(dframe, textvariable = responses[stop][question]).grid(column = start_col + stop + 1, row = rws)
 
 		# Assign the entry variable for the AMS price we want to use for ALL of the stops on the route
-		self.yellow_grease_ent = IntVar()
-		self.yellow_grease_ent.set(21)
+		yellow_grease_ent = IntVar()
+		yellow_grease_ent.set(21)
 
 		# Assign names to the Labels and Buttons on the Frame
 		ams_location_text = ttk.Label(dframe, text = self.ams_location)
@@ -272,8 +272,8 @@ class Route():
 		dprice = ttk.Label(dframe, text = "The price of diesel today is $" + str(price))
 		# route_list = ttk.Label(dframe, text = tabulate(self.route))
 		directs = ttk.Button(dframe, text = "Get Directions", command = show_directions)
-		yellow_grease_in = ttk.Label(dframe, text = " What is the AMS price today?")
-		yellow_grease_ent = ttk.Entry(dframe, textvariable = self.yellow_grease_ent)
+		yellow_grease_in = ttk.Label(dframe, text = "What is the AMS price today?")
+		yellow_grease_set = ttk.Entry(dframe, textvariable = yellow_grease_ent)
 		# map_label = ttk.Label(dframe, text = tabulate(legs.google_directions()) )
 
 		# Set everything to the .grid()
@@ -283,7 +283,7 @@ class Route():
 		dprice.grid				(column = 1, row = 2)
 		directs.grid			(column = 1, row = 3)
 		yellow_grease_in.grid	(column = 1, row = 4)
-		yellow_grease_ent.grid	(column = 2, row = 4)
+		yellow_grease_set.grid	(column = 2, row = 4)
 		
 		# map_label.grid(column = 3, row = 3)
 		# Start the mainloop() for the route you just made
@@ -306,33 +306,30 @@ class Route():
 			fart += 1
 			for d in questions:
 				print d, responses[ind][d].get()
-		gotyg = self.yellow_grease_ent.get()
-		print "route_run()"
-		print "Congragulations, you have run a route!"
-		print "This is where we need to use google_map to figure out the total length of the route."
+		
+		print "\nCongragulations, you have run a route!\n\n"
+		
 		route_length = GoogleMap(self.legs).google_directions()
 
 
 		# Need to build a dict like inputs from a GUI window.
-		print "\n" * 10
-		print "This is responses: \n"
-		# print responses 
+		
 		usr_inp = [{} for res in responses]
 		count = 0
-		d_price = price_of_diesel()
+
 		for response in responses:
 			for key in response.keys():
 				usr_inp[count][key] = response[key].get()
-				usr_inp[count]['Diesel Price'] = d_price
+				usr_inp[count]['Diesel Price'] = price
 				usr_inp[count]["Total Distance"] = route_length
 				usr_inp[count]['Number of Stops'] = len(self.route)
 				usr_inp[count]["Service Fee"] = 0.15
 				usr_inp[count]['Contact Person'] = self.route[count][5]
 				usr_inp[count]['Contact Email'] = self.route[count][6]
-				usr_inp[count]['Oil Price'] = int( gotyg ) / 100 
+				usr_inp[count]['Oil Price'] = yellow_grease_ent.get() / float(100)
 			count += 1
 		
-		
+		print "\nEnd of run_route()"
 		
 		return usr_inp # This is legs in main_program
 		# finp = {

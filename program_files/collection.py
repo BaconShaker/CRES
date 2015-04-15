@@ -57,9 +57,9 @@ class Collection():
 		inputs['Expected Income'] = inputs['Service Fee'] * lbs_collected
 		inputs['Expected Donation'] = donation * lbs_collected
 		inputs['Collectable Material'] = lbs_collected
-		for i in inputs:
-			print ""
-			print i, inputs[i]
+		# for i in inputs:
+		# 	print ""
+		# 	print i, inputs[i]
 		# inputs['Diesel Price'] = 
 
 		# income * weight
@@ -85,10 +85,6 @@ class Collection():
 			diesel_price = self.indict['Diesel Price']
 			mpg_truck = 8
 
-			print tdist
-			print num_stops
-			print diesel_price
-
 
 			fuel_surcharge = float(tdist)/ mpg_truck * float(diesel_price) / int(num_stops)
 
@@ -103,8 +99,8 @@ class Collection():
 		self.indict['Miles in Route'] = self.route['Total Distance']
 		self.indict['Stops on Route'] = self.route['Number of Stops']
 
-		print "\n\n\n"
-		print tabulate(  [ ( key , self.indict[key] ) for key in self.indict  ]  )
+		
+		# print tabulate(  [ ( key , self.indict[key] ) for key in self.indict  ]  )
 
 
 	# Make anobject that outside programs can return and use

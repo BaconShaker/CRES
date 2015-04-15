@@ -77,34 +77,23 @@ route_master = Route(options, locfile)
 the_route = route_master.build()
 user_inputs = route_master.run_route() # This is the user inputs from the collection GUI!
 
-print "\n\nThis is what RouteBuilder __init__() returns: " , route_master
 print "\n\nThis is what routemap.build() returns:\n" , tabulate(the_route)
-print "\n\nThis should be a list of inputs to be written to each csv file:" , user_inputs , "\n\n"
 
+print '\nUSER INPUTS: ' , user_inputs , '\n'
 
-# Essentially I need to make it so that instead of just inputs and route being entered, it's going to be
-# 	multiple input dictionaries and the same route being interpreted at one go. 
+# Essentially, collections is a list of dictionaries created by the Collection class.
+# Each dict gets turned into a Collection by run().
+collections = [ Collection(leg).run() for leg in user_inputs ]
 
+print "\n\nReciepts for collections:"
 
-# inputs needs to be built by the GUI menu. 
-
-
-print 'USER INPUTS: ' , user_inputs , '\n'
-collections = [ Collection(leg).run() for leg in user_inputs]
-# collect = Collection(legs)
-# for collection in collections:
-# 	collection.run()
-print collections
-
-# Make a list of keys to send in the email reciept
-
-
-# This is going to send emails to everyone about the pickup
+# The control list for the email reciept is in Mailer
+# Mailer sends emails to everyone about the pickup
 for collection in collections:
-	print ""
-	print collection
-	Mailer(collection).send_reciept()
-
+	print "\nEmail sent to: " , collection["Contact Person"] , "at" , collection['Contact Email']
+	print tabulate(  [ ( key , collection[key] ) for key in collection  ]  )
+	# Mailer(collection).send_reciept()
+	
 # Need to take each collect in collections and grab only the info we want to 
 # get mailed to the restaurants  
 

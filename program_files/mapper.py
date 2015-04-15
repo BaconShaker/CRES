@@ -50,9 +50,6 @@ class GoogleMap():
 		# 	print "\n\n\n\n"
 		# 	print thing
 
-
-		print "\n\n\n******************************\n\n\n"
-
 		total_distance = 0
 		for count, gmap in enumerate(list_of_maps): 
 			# Iterate through the list
@@ -72,7 +69,6 @@ class GoogleMap():
 				words = words.replace( '</div>' , ' ' )
 				display.append([turn,  to_go, words])
 			# print display
-			
 
 			tabs = ["Turn", "Distance", "Instruction"]
 
@@ -84,6 +80,7 @@ class GoogleMap():
 			# print tab
 		# return directions
 		print "\n\nDistance: ", total_distance
+		print "\n\n\n******************************\n\n\n"
 		# return final
 		return total_distance
 
