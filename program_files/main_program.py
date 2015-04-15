@@ -92,7 +92,7 @@ print "\n\nReciepts for collections:"
 for collection in collections:
 	print "\nEmail sent to: " , collection["Contact Person"] , "at" , collection['Contact Email']
 	print tabulate(  [ ( key , collection[key] ) for key in collection  ]  )
-	# Mailer(collection).send_reciept()
+	Mailer(collection).send_reciept()
 	
 # Need to take each collect in collections and grab only the info we want to 
 # get mailed to the restaurants  
