@@ -75,24 +75,36 @@ options = ["this", 'That', 'Other thing']
 route_master = Route(options, locfile)
 
 the_route = route_master.build()
-user_inputs = route_master.run_route() # This is the user inputs from the collection GUI!
+menu2 = ""
+while menu2 != "allow":
+	user_inputs = route_master.run_route() # This is the user inputs from the collection GUI!
 
-print "\n\nThis is what routemap.build() returns:\n" , tabulate(the_route)
+	print "\n\nThis is what routemap.build() returns:\n" , tabulate(the_route)
 
-print '\nUSER INPUTS: ' , user_inputs , '\n'
+	print '\nUSER INPUTS: ' , user_inputs , '\n'
 
-# Essentially, collections is a list of dictionaries created by the Collection class.
-# Each dict gets turned into a Collection by run().
-collections = [ Collection(leg).run() for leg in user_inputs ]
+	# Essentially, collections is a list of dictionaries created by the Collection class.
+	# Each dict gets turned into a Collection by run().
+	collections = [ Collection(leg).run() for leg in user_inputs ]
 
-print "\n\nReciepts for collections:"
+	print "\n\nReciepts for collections:"
 
-# The control list for the email reciept is in Mailer
-# Mailer sends emails to everyone about the pickup
-for collection in collections:
-	print "\nEmail sent to: " , collection["Contact Person"] , "at" , collection['Contact Email']
-	print tabulate(  [ ( key , collection[key] ) for key in collection  ]  )
-	# Mailer(collection).send_reciept()
+	# The control list for the email reciept is in Mailer
+	# Mailer sends emails to everyone about the pickup
+	for collection in collections:
+		print "\nEmail sent to: " , collection["Contact Person"] , "at" , collection['Contact Email']
+		print tabulate(  [ ( key , collection[key] ) for key in collection  ]  )
+		sure = raw_input( "\n Send? ")
+
+		if sure == 'y' or sure == 'yes':
+			Mailer(collection).send_reciept()
+
+
+		elif sure == "inputs": 
+			break
+
+
+
 	
 # Need to take each collect in collections and grab only the info we want to 
 # get mailed to the restaurants  

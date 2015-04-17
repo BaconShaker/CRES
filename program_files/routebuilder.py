@@ -16,6 +16,8 @@ from bs4 import BeautifulSoup
 from mapper import *
 from collection import *
 from mapper import *
+import thread
+import time
 
 
 
@@ -33,7 +35,10 @@ class Route():
 		# print self.master_list
 		self.names = [just_names['Name'] for just_names in self.master_list]
 		apple.close()
-		
+		self.link_diesel = 'http://www.eia.gov/dnav/pet/pet_pri_gnd_dcus_r20_w.htm'
+		self.link_ams = 'http://www.ams.usda.gov/mnreports/nw_ls442.txt'
+		self.check = 1
+
 	def build(self):
 		# print self.names
 		# print "\nOptions: This list is a placeholder for the locations list " ,  self.options
@@ -98,7 +103,24 @@ class Route():
 			print "Going to remove " , 
 
 		def exit():
+
 			page.destroy()
+			self.check = 0
+
+		def ams_lookup():
+			response = urllib2.urlopen(self.link_ams)
+			soup = BeautifulSoup(response)
+			# Ruh-roh the ams gives us a .txt file to parse
+			text = soup.get_text()
+			# Start at the index where Choice white appears, go to EDIBLE LARD 
+			self.yg_price = text[text.index('Choice white') :text.index('EDBLE LARD')]
+			# Do the same thing for the report location
+			ams_edit = text[text.index('Des') : text.index('2015') + 4 ].replace("     ", "\n Current as of ")
+			self.ams_location = ams_edit
+			print self.ams_location
+			
+		
+
 
 		# Set up the initial window and grid
 		page = Tk()
@@ -147,6 +169,19 @@ class Route():
 		for i in range(0,len(self.names),2):
 			lbox.itemconfigure(i, background='#f0f0ff')
 		
+		# Start a thread for the window and another to get the fuel... 
+		page.mainloop()
+
+		print "\nThis is where the threads don't catch"
+
+		if '__name__' =='__name__':
+			thread.start_new_thread( ams_lookup, () )
+			# thread.start_new_thread( page.mainloop, () )
+			
+		
+			print "Error! Unable to start thread..."
+		
+
 		page.mainloop()
 		
 		# -------- FOR DEBUGGING --------
@@ -155,10 +190,15 @@ class Route():
 
 		print "\nYour route.build() was a success!\n"
 
+
+		while self.check == 1:
+			print "hello work"
+			pass
+
 		return self.route
 
 
-
+   
 	def run_route(self):
 		print "Start of run_route()"
 
@@ -191,15 +231,15 @@ class Route():
 
 		# Need to look up the AMS, I think this can be threaded in the init of the class... 
 		# But it wasn't so here we are now
-		response = urllib2.urlopen(self.link_ams)
-		soup = BeautifulSoup(response)
-		# Ruh-roh the ams gives us a .txt file to parse
-		text = soup.get_text()
-		# Start at the index where Choice white appears, go to EDIBLE LARD 
-		self.yg_price = text[text.index('Choice white') :text.index('EDBLE LARD')]
-		# Do the same thing for the report location
-		ams_edit = text[text.index('Des') : text.index('2015') + 4 ].replace("     ", "\n Current as of ")
-		self.ams_location = ams_edit
+		# response = urllib2.urlopen(self.link_ams)
+		# soup = BeautifulSoup(response)
+		# # Ruh-roh the ams gives us a .txt file to parse
+		# text = soup.get_text()
+		# # Start at the index where Choice white appears, go to EDIBLE LARD 
+		# self.yg_price = text[text.index('Choice white') :text.index('EDBLE LARD')]
+		# # Do the same thing for the report location
+		# ams_edit = text[text.index('Des') : text.index('2015') + 4 ].replace("     ", "\n Current as of ")
+		# self.ams_location = ams_edit
 
 
 		# Set up main Frame for the route display to be shown on. 
