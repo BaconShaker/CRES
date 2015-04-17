@@ -121,15 +121,7 @@ while menu2 != "skip":
 		print "\n" , menu2
 		print "Not all of the receipts were sent and you got spit back to the inputs menu or quit"
 
-<<<<<<< HEAD
-# The control list for the email reciept is in Mailer
-# Mailer sends emails to everyone about the pickup
-for collection in collections:
-	print "\nEmail sent to: " , collection["Contact Person"] , "at" , collection['Contact Email']
-	print tabulate(  [ ( key , collection[key] ) for key in collection  ]  )
-	Mailer(collection).send_reciept()
-=======
->>>>>>> origin/add_csv
+
 	
 # Need to take each collect in collections and grab only the info we want to 
 # get mailed to the restaurants  
