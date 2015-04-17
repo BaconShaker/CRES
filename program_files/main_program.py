@@ -76,7 +76,7 @@ route_master = Route(options, locfile)
 
 the_route = route_master.build()
 menu2 = ""
-while menu2 != "allow":
+while menu2 != "skip":
 	user_inputs = route_master.run_route() # This is the user inputs from the collection GUI!
 
 	print "\n\nThis is what routemap.build() returns:\n" , tabulate(the_route)
@@ -89,21 +89,37 @@ while menu2 != "allow":
 
 	print "\n\nReciepts for collections:"
 
+	all_sent = 0
+
 	# The control list for the email reciept is in Mailer
 	# Mailer sends emails to everyone about the pickup
 	for collection in collections:
 		print "\nEmail sent to: " , collection["Contact Person"] , "at" , collection['Contact Email']
 		print tabulate(  [ ( key , collection[key] ) for key in collection  ]  )
+
+		print "Choices are skip, back, [anything] = next"
 		sure = raw_input( "\n Send? ")
 
-		if sure == 'y' or sure == 'yes':
-			Mailer(collection).send_reciept()
+		if sure == 'y' or sure == 'yes' or sure == '':
+			all_sent += 1 
+		# 	Mailer(collection).send_reciept()
 
 
-		elif sure == "inputs": 
+		elif sure == "back": 
 			break
 
+		elif sure == "q":
+			menu2 = "skip"
+			break
 
+	if all_sent == len(collections):
+		menu2 = "skip"
+		send = [ Mailer(collection).send_reciept() for collection in collections ]
+		print "\nAll the receipts were sent successfully!\n"
+
+	else:
+		print "\n" , menu2
+		print "Not all of the receipts were sent and you got spit back to the inputs menu or quit"
 
 	
 # Need to take each collect in collections and grab only the info we want to 
