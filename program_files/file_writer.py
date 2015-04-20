@@ -242,11 +242,12 @@ class Keeper():
 
 
 
-if "__name__" == "__main__":
+if "__name__" == "__name__":
 	locfile = os.path.expanduser( "~/GDrive/cres_sheets" ) 
 	main = Keeper(locfile)
-	main.load_csv()
+	print main.load_csv()
 	main.write_pickups_csv(collections_list)
+	print "This is working!"
 
 
 	# main.loaditup()
