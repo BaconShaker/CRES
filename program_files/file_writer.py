@@ -32,7 +32,7 @@ collections_list = [
 		'Expected Income'		: 2.976,
 		'Quality (0 - 100): '	: 4,
 		'Expected Donation'		: 1.1904,
-		'Location'				:"Robby's Place",
+		'Location'				:"Cobra Lounge",
 	} ,
 	{
 		"Height (DEPARTURE): " 	: 43,
@@ -100,6 +100,8 @@ import csv
 # from openpyxl import load_workbook
 # from openpyxl import Workbook
 from openpyxl import *
+from Tkinter import *
+import ttk
 
 
 
@@ -110,13 +112,13 @@ class Keeper():
 		self.locfile = locfile
 
 
-	def load_csv(self):
+	def load_csv(self, filename):
 		print '\nStarting	load_csv():'
 		print "\n********************************\n"
 		print "locfile:" , self.locfile
-		apple = open(locfile + '/master.csv')
+		apple = open(locfile + "/" + filename + '.csv')
 		oranges = csv.DictReader(apple, dialect = 'excel', skipinitialspace = True)
-		print "This is the list of fieldnames in the master.csv file, oranges[...] = " , oranges.fieldnames
+		print "This is the list of fieldnames in the " + filename + ".csv file, oranges[...] = " , oranges.fieldnames
 		# Oranges is actually a list of dictionaries, each dictionary has the same keys. Each index is a new restaurant. 
 		self.master_list = [dict(row) for row in oranges]
 		# print self.master_list
@@ -163,12 +165,30 @@ class Keeper():
 				writer.writeheader()
 				writer.writerow(collection)
 				fw.close()
-
 			r.close()
 		print "\n********************************\n"
 		print "End of		write_pickups_csv():"
 
+	def show_master(self):
+		
+		print ""
+		
 
+		# Need to set up the details Frame
+		page = Tk()
+		page.title("Master File")
+		details = ttk.Frame(page, padding = " 3 3 12 12")
+		details.grid(column = 0, row = 0, sticky = (N, W, E, S))
+		details.columnconfigure(0, weight = 1)
+		details.rowconfigure(0, weight = 1)
+		row = 0
+		for thing in self.master_list:
+			row += 1
+			to_show = ttk.Label(details, text = self.master_list).grid(column = 0, row = row)
+
+
+		details.mainloop()
+		print "That's all folks!"
 
 
 
@@ -245,9 +265,10 @@ class Keeper():
 if "__name__" == "__name__":
 	locfile = os.path.expanduser( "~/GDrive/cres_sheets" ) 
 	main = Keeper(locfile)
-	print main.load_csv()
-	main.write_pickups_csv(collections_list)
+	print main.load_csv("master")
+	# main.write_pickups_csv(collections_list)
 	print "This is working!"
+	main.show_master()
 
 
 	# main.loaditup()

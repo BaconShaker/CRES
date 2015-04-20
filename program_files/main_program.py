@@ -98,7 +98,7 @@ while menu2 != "skip":
 		print "\nEmail sent to: " , collection["Contact Person"] , "at" , collection['Contact Email']
 		print tabulate(  [ ( key , collection[key] ) for key in collection  ]  )
 
-		print "Choices are skip, back, [anything] = next"
+		print "Choices are q, back, [anything, y, yes] = next"
 		sure = raw_input( "\n Send? ")
 
 		if sure == 'y' or sure == 'yes' or sure == '':
@@ -106,10 +106,10 @@ while menu2 != "skip":
 		# 	Mailer(collection).send_reciept()
 
 
-		elif sure == "back": 
+		elif sure == "back" or sure == 'b': 
 			break
 
-		elif sure == "q":
+		elif sure == "q" or sure == 'quit':
 			menu2 = "skip"
 			break
 
