@@ -368,6 +368,7 @@ class Route():
 				usr_inp[count]['Contact Person'] = self.route[count][5]
 				usr_inp[count]['Contact Email'] = self.route[count][6]
 				usr_inp[count]['Oil Price'] = yellow_grease_ent.get() / float(100)
+				usr_inp[count]['Location'] = self.route[count][1]
 			count += 1
 		
 		print "\nEnd of run_route()"

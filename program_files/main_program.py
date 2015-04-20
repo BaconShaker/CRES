@@ -43,6 +43,7 @@ while mods == 1:
 from routebuilder import *
 from collection import *
 from msg_reciept2 import *
+from file_writer import *
 
 # First let's check which system is running.
 	# Need to find a way to get the GDrive file on the the Linux side of things. That's going to be hard
@@ -56,8 +57,8 @@ if sys.platform.startswith('darwin'):
 
 	locfile = os.path.expanduser( "~/GDrive/cres_sheets" )  #mac
 	print "Locfile: ", locfile, '\n'
-	sheets = [ f for f in listdir(locfile)   ]
-	sheets.remove('.DS_Store') # Not sure what this is but we don't want it.
+	# sheets = [ f for f in listdir(locfile)   ]
+	# sheets.remove('.DS_Store') # Not sure what this is but we don't want it.
 
 elif sys.platform.startswith('linux'):
 	print ""
@@ -114,8 +115,9 @@ while menu2 != "skip":
 
 	if all_sent == len(collections):
 		menu2 = "skip"
-		send = [ Mailer(collection).send_reciept() for collection in collections ]
+		# send = [ Mailer(collection).send_reciept() for collection in collections ]
 		print "\nAll the receipts were sent successfully!\n"
+		record = Keeper(locfile).write_pickups_csv( collections )
 
 	else:
 		print "\n" , menu2
