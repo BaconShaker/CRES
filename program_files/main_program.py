@@ -70,7 +70,7 @@ elif sys.platform.startswith('linux'):
 
 # -----------------------------------------------------------------
 
-
+record = Keeper(locfile)
 options = ["this", 'That', 'Other thing']
 
 route_master = Route(options, locfile)
@@ -117,7 +117,7 @@ while menu2 != "skip":
 		menu2 = "skip"
 		# send = [ Mailer(collection).send_reciept() for collection in collections ]
 		print "\nAll the receipts were sent successfully!\n"
-		record = Keeper(locfile).write_pickups_csv( collections )
+		record.write_pickups_csv( collections )
 
 	else:
 		print "\n" , menu2

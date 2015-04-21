@@ -18,23 +18,29 @@ from collection import *
 from mapper import *
 import thread
 import time
-
+from file_writer import *
 
 
 class Route():
 	"""docstring for FrontPage"""
 	def __init__(self, options, locfile):
+		self.locfile = locfile
 		print "\n\nRoute() initialized...\n"
 		self.options = options
 		self.route = []
-		apple = open(locfile + '/master.csv')
-		oranges = csv.DictReader(apple, dialect = 'excel', skipinitialspace = True)
-		print "This is the list of fieldnames in the master.csv file, oranges[...] = " , oranges.fieldnames
-		# Oranges is actually a list of dictionaries, each dictionary has the same keys. Each index is a new restaurant. 
-		self.master_list = [dict(row) for row in oranges]
-		# print self.master_list
-		self.names = [just_names['Name'] for just_names in self.master_list]
-		apple.close()
+		self.deets = Keeper(locfile)
+		self.names = self.deets.all_names()
+		self.master_list = self.deets.master_lister()
+
+
+		# apple = open(locfile + '/master.csv')
+		# oranges = csv.DictReader(apple, dialect = 'excel', skipinitialspace = True)
+		# print "This is the list of fieldnames in the master.csv file, oranges[...] = " , oranges.fieldnames
+		# # Oranges is actually a list of dictionaries, each dictionary has the same keys. Each index is a new restaurant. 
+		# self.master_list = [dict(row) for row in oranges]
+		# # print self.master_list
+		# self.names = [just_names['Name'] for just_names in self.master_list]
+		# apple.close()
 		self.link_diesel = 'http://www.eia.gov/dnav/pet/pet_pri_gnd_dcus_r20_w.htm'
 		self.link_ams = 'http://www.ams.usda.gov/mnreports/nw_ls442.txt'
 		self.check = 1
@@ -148,21 +154,24 @@ class Route():
 		routebox = Listbox(mainframe, listvariable = self.stops, height = 10)
 		routebox.pack()
 
+
 		add_but = ttk.Button(mainframe, text = "Add Stop", command = add_stop )
 		quit = ttk.Button(mainframe, text = "Close Window" , command = exit)
 		remove_but = ttk.Button(mainframe, text = 'Remove Stop', command = remove_stop)
-
+		details_but = ttk.Button(mainframe, text = 'Master List', command = self.deets.show_master)
 
 		# Set elements using .grid
 		lbox.grid(column = 0, row = 0, rowspan = 6, sticky = (N,S,E,W) )
 		add_but.grid(column = 2, row = 0)
 		routebox.grid(column = 3, row = 0, rowspan = 6, sticky = (N,S,E,W) )
 		quit.grid(column = 3, row = 8)
-
+		details_but.grid(column = 0, row = 8)
 
 		# Set bindings
 		lbox.bind('<Double-1>', add_stop)
 		routebox.bind('<Double-1>', remove_stop)
+
+
 
 
 		# Colorize alternating lines of the listbox
