@@ -115,7 +115,7 @@ while menu2 != "skip":
 
 	if all_sent == len(collections):
 		menu2 = "skip"
-		send = [ Mailer(collection).send_reciept() for collection in collections ]
+		# send = [ Mailer(collection).send_reciept() for collection in collections ]
 		print "\nAll the receipts were sent successfully!\n"
 		record.write_pickups_csv( collections )
 
