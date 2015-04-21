@@ -71,11 +71,13 @@ elif sys.platform.startswith('linux'):
 # -----------------------------------------------------------------
 
 record = Keeper(locfile)
-options = ["this", 'That', 'Other thing']
+options = [record, record.all_names(), record.master_lister()]
 
 route_master = Route(options, locfile)
 
+# This is where you'd need to start a loop to make it so you can quit at the first screen
 the_route = route_master.build()
+
 menu2 = ""
 while menu2 != "skip":
 	user_inputs = route_master.run_route() # This is the user inputs from the collection GUI!
@@ -106,7 +108,7 @@ while menu2 != "skip":
 		# 	Mailer(collection).send_reciept()
 
 
-		elif sure == "back" or sure == 'b': 
+		elif sure == "back" or sure == 'b' or sure == 'n': 
 			break
 
 		elif sure == "q" or sure == 'quit':

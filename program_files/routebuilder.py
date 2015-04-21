@@ -28,9 +28,9 @@ class Route():
 		print "\n\nRoute() initialized...\n"
 		self.options = options
 		self.route = []
-		self.deets = Keeper(locfile)
-		self.names = self.deets.all_names()
-		self.master_list = self.deets.master_lister()
+		# self.deets = Keeper(locfile)
+		self.names = options[1]
+		self.master_list = options[2]
 
 
 		# apple = open(locfile + '/master.csv')
@@ -158,7 +158,7 @@ class Route():
 		add_but = ttk.Button(mainframe, text = "Add Stop", command = add_stop )
 		quit = ttk.Button(mainframe, text = "Close Window" , command = exit)
 		remove_but = ttk.Button(mainframe, text = 'Remove Stop', command = remove_stop)
-		details_but = ttk.Button(mainframe, text = 'Master List', command = self.deets.show_master)
+		details_but = ttk.Button(mainframe, text = 'Master List', command = self.options[0].show_master)
 
 		# Set elements using .grid
 		lbox.grid(column = 0, row = 0, rowspan = 6, sticky = (N,S,E,W) )
