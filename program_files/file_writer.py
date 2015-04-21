@@ -102,6 +102,7 @@ import csv
 from openpyxl import *
 from Tkinter import *
 import ttk
+import tkFont
 
 
 
@@ -126,6 +127,8 @@ class Keeper():
 		apple.close()
 		print "\n********************************\n"
 		print "End of		load_csv():"
+
+
 
 	def write_pickups_csv(self, collections_list):
 		# This funciton takes the usr_inputs in main_program.py and adds them
@@ -169,6 +172,16 @@ class Keeper():
 		print "\n********************************\n"
 		print "End of		write_pickups_csv():"
 
+
+	def __scrollHandler(self, *L):
+	        op, howMany = L[0], L[1]
+
+	        if op == 'scroll':
+	            units = L[2]
+	            self.details.xview_scroll(howMany, units)
+	        elif op == 'moveto':
+	            self.details.xview_moveto(howMany)
+
 	def show_master(self):
 		
 		print ""
@@ -177,17 +190,34 @@ class Keeper():
 		# Need to set up the details Frame
 		page = Tk()
 		page.title("Master File")
-		details = ttk.Frame(page, padding = " 3 3 12 12")
-		details.grid(column = 0, row = 0, sticky = (N, W, E, S))
-		details.columnconfigure(0, weight = 1)
-		details.rowconfigure(0, weight = 1)
+		self.details = ttk.Frame(page, padding = " 3 3 12 12")
+		self.details.grid(column = 0, row = 0, sticky = (N, W, E, S))
+		# scroll = ttk.Scrollbar(self.details, orient= 'horizontal', command=self.__scrollHandler).grid(row=50, columnspan = len(self.master_list[0]), sticky= E+W)
+		# print self.details
+		# s = ttk.Scrollbar( page, orient="horizontal" , command=self.details.xview)
+		# page.configure(xscrollcommand=s.set)
+		# details.columnconfigure(0, weight = 1)
+		# details.rowconfigure(0, weight = 1)
 		row = 0
-		for thing in self.master_list:
+		col = 0
+		for key in self.master_list[0]:
+			print key
+			head = ttk.Label(self.details, text = key, font = 'bold').grid(row = 0, column = 2 * col) 
+
+			# head.configure(hunderline = True)
+			col += 1
+			
+
+		rob = 0
+		for place in self.master_list:
 			row += 1
-			to_show = ttk.Label(details, text = self.master_list).grid(column = 0, row = row)
-
-
-		details.mainloop()
+			rob = 0
+			for loc in place:
+				self.entry = ttk.Label(self.details, text = place[loc]).grid(row = row, column = 2 * rob )
+				ttk.Separator().grid(row = row , column = 2 * rob + 1)
+				rob += 1 
+			
+		self.details.mainloop()
 		print "That's all folks!"
 
 
