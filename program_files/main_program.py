@@ -71,8 +71,10 @@ elif sys.platform.startswith('linux'):
 # -----------------------------------------------------------------
 
 record = Keeper(locfile)
-options = [record, record.all_names(), record.master_lister()]
+record.update_donation_total()
 
+options = [record, record.all_names(), record.master_lister()]
+# record.update_donation_total()
 route_master = Route(options, locfile)
 
 # This is where you'd need to start a loop to make it so you can quit at the first screen
@@ -110,7 +112,7 @@ while menu2 != "skip":
 
 		if sure == 'y' or sure == 'yes' or sure == '':
 			all_sent += 1 
-			Mailer(collection).send_reciept()
+			
 
 
 		elif sure == "back" or sure == 'b' or sure == 'n': 
@@ -126,6 +128,7 @@ while menu2 != "skip":
 		print "\nAll the receipts were sent successfully!\n"
 		record.write_pickups_csv( collections )
 		record.update_donation_total()
+
 
 	else:
 		print "\n" , menu2

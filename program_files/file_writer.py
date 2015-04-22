@@ -104,12 +104,14 @@ from Tkinter import *
 import ttk
 import tkFont
 
-def update_master(locfile, heads, in_dict):
+def update_master(locfile, heads, in_dict2):
 	fmaster = locfile + '/master2.csv'
 	op = open(fmaster, 'wb')
 	mast = csv.DictWriter(op, heads)
 	mast.writeheader()
-	for row in in_dict:
+	print in_dict2
+	for row in in_dict2:
+		print row
 		mast.writerow(row)
 	op.close
 
@@ -131,7 +133,7 @@ class Keeper():
 	def __init__(self, locfile):
 		# Open master.csv and read the contents, store it for later use. 
 		self.locfile = locfile
-		apple = open(self.locfile + "/master.csv")
+		apple = open(self.locfile + "/master2.csv")
 		oranges = csv.DictReader(apple, dialect = 'excel', skipinitialspace = True)
 		print "This is the list of fieldnames in the master.csv file, oranges[...] = " , oranges.fieldnames
 		# Oranges is actually a list of dictionaries, each dictionary has the same keys. Each index is a new restaurant. 
@@ -291,12 +293,19 @@ class Keeper():
 			d['Money To Charity'] = totals[ d['Name'] ]
 			
 		update_master(self.locfile, self.master_list[0].keys()  ,self.master_list )
+		self.pickup_keys = reader.fieldnames
+		picker.close()
 
 	def read_pickups():
 		pass
 
 	def add_client(self, to_add):
-		add_master(self.locfile, "master", to_add  )
+		add_master(self.locfile, "master2", to_add  )
+		new_file = open(self.locfile + '/' + to_add['Name'] + ".csv", "wb")
+		wri = csv.DictWriter(new_file, self.pickup_keys)
+		wri.writeheader()
+		wri.writerow()
+		new_file.close()
 
 
 
