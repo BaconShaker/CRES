@@ -124,10 +124,41 @@ class Route():
 			ams_edit = text[text.index('Des') : text.index('2015') + 4 ].replace("     ", "\n Current as of ")
 			self.ams_location = ams_edit
 			print self.ams_location
+
+		def add_row_gui(filename, categories):
+			page.destroy()
+			print "This is the beginning of add_row_gui"
+			print "You are trying to amend: " + filename + '.csv' 
 			
+
+			adder = Tk()
+			adder.title("Add Client")
+			addframe = ttk.Frame(adder, padding = " 3 3 12 12 ")
+			addframe.grid(column=0, row=0, sticky=(N, W, E, S))
+			addframe.columnconfigure(0, weight=1)
+			addframe.rowconfigure(0, weight=1)
+			print categories
+			sparks = StringVar(value = categories)
+			gui_out = { x : StringVar() for y, x in enumerate(categories) }
 		
 
+			rw = 0
+			for cat in categories:
+				print rw, cat
 
+				ttk.Label(addframe, text = cat).grid(row = rw, column = 0, sticky = W)
+				ttk.Entry(addframe, textvariable = gui_out[cat]).grid(row = rw, column = 2)
+				rw += 1
+			ttk.Button(addframe, text = "CLOSE", command = adder.destroy).grid(row = rw, column = 2)
+			adder.mainloop()
+
+			print "This is the end of add_row_gui()"
+			for g in gui_out:
+				print g, gui_out[g].get()
+			self.new_row = { g : gui_out[g].get() for g in gui_out}
+			self.add_check = 1
+
+		self.add_check = 0
 		# Set up the initial window and grid
 		page = Tk()
 		page.title("Route Builder")
@@ -154,12 +185,14 @@ class Route():
 		routebox = Listbox(mainframe, listvariable = self.stops, height = 10)
 		routebox.pack()
 
+		def new_client():
+			add_row_gui("master", self.master_list[0].keys() )
 
 		add_but = ttk.Button(mainframe, text = "Add Stop", command = add_stop )
 		quit = ttk.Button(mainframe, text = "Close Window" , command = exit)
 		remove_but = ttk.Button(mainframe, text = 'Remove Stop', command = remove_stop)
 		details_but = ttk.Button(mainframe, text = 'Master List', command = self.options[0].show_master)
-		# new_place = ttk.Button(mainframe, text = "Add Client", command = )
+		new_place = ttk.Button(mainframe, text = "Add Client", command = new_client)
 
 		# Set elements using .grid
 		lbox.grid(column = 0, row = 0, rowspan = 6, sticky = (N,S,E,W) )
@@ -167,13 +200,11 @@ class Route():
 		routebox.grid(column = 3, row = 0, rowspan = 6, sticky = (N,S,E,W) )
 		quit.grid(column = 3, row = 8)
 		details_but.grid(column = 0, row = 8)
+		new_place.grid(column = 0, row = 9)
 
 		# Set bindings
 		lbox.bind('<Double-1>', add_stop)
 		routebox.bind('<Double-1>', remove_stop)
-
-
-
 
 		# Colorize alternating lines of the listbox
 		for i in range(0,len(self.names),2):
@@ -193,7 +224,9 @@ class Route():
 		
 
 		page.mainloop()
-		
+
+		if self.add_check == 1:
+			self.options[0].add_client(self.new_row)
 		# -------- FOR DEBUGGING --------
 
 		# This is the end of the RouteBuilder mainframe loop. Whatever is placed here will be returned when the main window is closed
@@ -411,6 +444,13 @@ def show_directions():
 
 # -----------------------------------------------------------------
 
+if __name__ == '__main__':
+	print "I'm running!"
+	locfile = os.path.expanduser( "~/GDrive/cres_sheets" )
+	keep = Keeper(locfile)
+	ops = [keep, keep.all_names(), keep.master_lister()]
+	route = Route(ops, locfile )
+	route.build()
 
 
 

@@ -113,13 +113,13 @@ def update_master(locfile, heads, in_dict):
 		mast.writerow(row)
 	op.close
 
-def add_master(locfile, filename, heads, in_dict):
+def add_master(locfile, filename,  in_dict):
 	fmaster = locfile + '/' + filename + '.csv'
 	opt = open(fmaster, 'a')
-	mast = csv.DictWriter(opt, heads)
+	mast = csv.DictWriter(opt, in_dict.keys())
 	# mast.writeheader()
-	for row in in_dict:
-		mast.writerow(row)
+	
+	mast.writerow(in_dict)
 	opt.close
 
 
@@ -295,8 +295,8 @@ class Keeper():
 	def read_pickups():
 		pass
 
-	def new_client(self):
-		add_master(self.locfile, "master2", self.master_list[0].keys(), self.master_list )
+	def add_client(self, to_add):
+		add_master(self.locfile, "master", to_add  )
 
 
 
@@ -313,6 +313,5 @@ if __name__ == "__main__":
 		"jason" : "Is at work"}
 	work.update_donation_total()
 
-
-	work.new_client()
+	work.add_client()
 

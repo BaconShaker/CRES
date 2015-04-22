@@ -77,8 +77,13 @@ route_master = Route(options, locfile)
 
 # This is where you'd need to start a loop to make it so you can quit at the first screen
 the_route = route_master.build()
+if len(the_route) == 0:
+	menu2 = 'skip'
 
-menu2 = ""
+else:
+	menu2 = ""
+
+
 while menu2 != "skip":
 	user_inputs = route_master.run_route() # This is the user inputs from the collection GUI!
 
@@ -105,7 +110,7 @@ while menu2 != "skip":
 
 		if sure == 'y' or sure == 'yes' or sure == '':
 			all_sent += 1 
-		# 	Mailer(collection).send_reciept()
+			Mailer(collection).send_reciept()
 
 
 		elif sure == "back" or sure == 'b' or sure == 'n': 
