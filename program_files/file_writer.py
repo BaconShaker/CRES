@@ -104,12 +104,32 @@ from Tkinter import *
 import ttk
 import tkFont
 
+def update_master(locfile, heads, in_dict):
+	fmaster = locfile + '/master2.csv'
+	op = open(fmaster, 'wb')
+	mast = csv.DictWriter(op, heads)
+	mast.writeheader()
+	for row in in_dict:
+		mast.writerow(row)
+	op.close
+
+def add_master(locfile, filename, heads, in_dict):
+	fmaster = locfile + '/' + filename + '.csv'
+	opt = open(fmaster, 'a')
+	mast = csv.DictWriter(opt, heads)
+	# mast.writeheader()
+	for row in in_dict:
+		mast.writerow(row)
+	opt.close
+
+
+
 
 
 class Keeper():
 	"""docstring for ClassName"""
 	def __init__(self, locfile):
-		
+		# Open master.csv and read the contents, store it for later use. 
 		self.locfile = locfile
 		apple = open(self.locfile + "/master.csv")
 		oranges = csv.DictReader(apple, dialect = 'excel', skipinitialspace = True)
@@ -118,25 +138,24 @@ class Keeper():
 		self.master_list = [dict(row) for row in oranges]
 		apple.close()
 
+		print "\n********************************\n"
+
 	def master_lister(self):
+		print "\nmaster_lister():\n"
+		# Returns a list of dictionaries that are the rows in master.csv
 		return self.master_list
 
-	def all_names(self):
 
+	def all_names(self):
+		# makes a list of all the names only and returns it
 		print '\nStarting	all_names():'
 		print "\n********************************\n"
 		print "locfile:" , self.locfile
-		
 		# print self.master_list
 		self.names = [just_names['Name'] for just_names in self.master_list]
-		
 		print "\n********************************\n"
 		print "End of		all_names():"
-
 		return self.names
-
-
-
 
 	def write_pickups_csv(self, collections_list):
 		# This funciton takes the usr_inputs in main_program.py and adds them
@@ -177,13 +196,15 @@ class Keeper():
 				writer.writerow(collection)
 				fw.close()
 			r.close()
+
 		print "\n********************************\n"
 		print "End of		write_pickups_csv():"
 
 
 	def __scrollHandler(self, *L):
+		# This doesn't work
+		# It should add a scroll bar to the bottom of the show_master() screen
 	        op, howMany = L[0], L[1]
-
 	        if op == 'scroll':
 	            units = L[2]
 	            self.details.xview_scroll(howMany, units)
@@ -191,8 +212,8 @@ class Keeper():
 	            self.details.xview_moveto(howMany)
 
 	def show_master(self):
+		# Displays the contents of master.csv 
 		print ""
-
 		# Need to set up the details Frame
 		page = Tk()
 		page.title("Master File")
@@ -209,7 +230,6 @@ class Keeper():
 		for key in self.master_list[0]:
 			print key
 			head = ttk.Label(self.details, text = key, font = 'bold').grid(row = 0, column = 2 * col) 
-
 			# head.configure(hunderline = True)
 			col += 1
 			
@@ -221,83 +241,78 @@ class Keeper():
 				self.entry = ttk.Label(self.details, text = place[loc]).grid(row = row, column = 2 * rob )
 				ttk.Separator().grid(row = row , column = 2 * rob + 1)
 				rob += 1 
-			
 		self.details.mainloop()
 		print "That's all folks!"
 
 
 
-
-	def loaditup(self):
-		print "\nStarting	loaditup():"
-		print '\n********************************\n'
-		master = load_workbook(self.locfile + '/mordor.xlsx')
-		self.master = master
-		print master.get_sheet_names()
-		print "\n********************************\n"
-		print "End of		loaditup():"
+	def make_donation():
+		# Use this funciton to take money out of restaurant's accounts
+		pass
+		
+	def collect_donation():
+		# Use this to sum up the expected current (not paid out) donations
+		pass
 
 
-	def checks_worksheet(self, temp_dict):
-		print "\nStarting	check_worksheet():"
-		print '\n********************************\n'
-		if "All Pickups" in self.master.get_sheet_names():
-			print "All Pickups is a worksheet!"
-			print ""
+
+	def robby(self):
+		for restaurant in self.master_list:
+			print restaurant['Name']
 			
-		else:
-			pickup_sheet = self.master.create_sheet(1)
-			pickup_sheet.title = "All Pickups"
-			pickup_sheet.append(temp_dict.keys())
-			print "Header row added to All Pickups:", temp_dict.keys()
-			self.master.save(self.locfile + '/mordor.xlsx')
+	def write_master_csv(self):
+		hea = self.master_list[0].keys()
+		hea += ["Total Donation"]
+		# hea.remove('Money To Charity')
+		update_master(self.locfile, hea , self.master_list)
+	# 	fmaster = self.locfile + '/master2.csv'
+	# 	op = open(fmaster, 'wb')
+	# 	mast = csv.DictWriter(op, self.master_list[0].keys())
+	# 	mast.writeheader()
+	# 	for row in self.master_list:
+	# 		mast.writerow(row)
+	# 	op.close
+
+	def update_donation_total(self):
+		# Returns a list of dictionaries, each dictionary is a single locaiton.file
+		totals = {}
+		for location in self.master_list:
+			totals[location['Name']] = 0
+			picker = open(self.locfile + '/' + location['Name'] + '.csv')
+			reader = csv.DictReader(picker, dialect = 'excel', skipinitialspace = True)
+			for collection in reader:
+				print "------------------------\n"
+				# print collection["Location"], collection['Expected Donation']
+				totals[location['Name']] += float(collection['Expected Donation'])
+				totals[location['Name']] = round(totals[location['Name']], 2)
+		print "\nnew totals: ", totals
+
+		for d in self.master_list:
+			d['Money To Charity'] = totals[ d['Name'] ]
 			
-		print "\n********************************\n"
-		print "End of		check_worksheet():"
-
-
-	def write_collections(self, collections_list):
-		print "\nStarting	write_collections():"
-		print '\n********************************\n'
-		# for collection in collections:
-		# 	print "------------------- "
-		# 	for key in collection:
-		# 		print key , ":	" , collection[key]
-
-		# Check the headers on the master pickups file
-		pickups = self.master.get_sheet_by_name('All Pickups')
-		for col in range( 1, len(collections_list[1] ) + 1 ):
-			print pickups.cell(row = 1 , column = col).value()
-
-		# for collection in collections_list:
-			# pickups.append(collection)
-
-
-
-		print "\n********************************\n"
-		print "End of		write_collections():"
-	
+		update_master(self.locfile, self.master_list[0].keys()  ,self.master_list )
 
 	def read_pickups():
 		pass
 
-	def new_client():
-		pass
+	def new_client(self):
+		add_master(self.locfile, "master2", self.master_list[0].keys(), self.master_list )
+
 
 
 
 if __name__ == "__main__":
 	locfile = os.path.expanduser( "~/GDrive/cres_sheets" ) 
-	main = Keeper(locfile)
-	
+	work = Keeper(locfile)
 	# main.write_pickups_csv(collections_list)
 	print "This is working!"
-	main.show_master()
+	work.robby()
+	# work.write_master_csv()
+	robster = {
+		"robby" : "Is here", 
+		"jason" : "Is at work"}
+	work.update_donation_total()
 
 
-	# main.loaditup()
-	# main.checks_worksheet(collections_list[1])
-	# main.write_collections(collections_list)
-
-
+	work.new_client()
 

@@ -159,6 +159,7 @@ class Route():
 		quit = ttk.Button(mainframe, text = "Close Window" , command = exit)
 		remove_but = ttk.Button(mainframe, text = 'Remove Stop', command = remove_stop)
 		details_but = ttk.Button(mainframe, text = 'Master List', command = self.options[0].show_master)
+		# new_place = ttk.Button(mainframe, text = "Add Client", command = )
 
 		# Set elements using .grid
 		lbox.grid(column = 0, row = 0, rowspan = 6, sticky = (N,S,E,W) )

@@ -120,6 +120,7 @@ while menu2 != "skip":
 		# send = [ Mailer(collection).send_reciept() for collection in collections ]
 		print "\nAll the receipts were sent successfully!\n"
 		record.write_pickups_csv( collections )
+		record.update_donation_total()
 
 	else:
 		print "\n" , menu2
