@@ -1,0 +1,14 @@
+Ok so the first thing you're going to want to do is open
+up Terminal, just open up spotlight and type "terminal" then hit enter.
+
+You should see a shell window open, that's good! 
+
+type 'cd ~/the/path/to/where/you/unzipped'
+
+Type 'ls'
+
+If you are in the right directory a list of all the unzipped files should pop up. If not type 'pwd' to see where you are and cd to change directory to the path you want. 
+
+Once you're in the right dir, type 'python setup.py install'
+and let it do its thing. 
+
