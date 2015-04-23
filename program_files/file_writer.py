@@ -304,7 +304,6 @@ class Keeper():
 		new_file = open(self.locfile + '/' + to_add['Name'] + ".csv", "wb")
 		wri = csv.DictWriter(new_file, self.pickup_keys)
 		wri.writeheader()
-		wri.writerow()
 		new_file.close()
 
 
