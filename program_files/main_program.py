@@ -1,4 +1,5 @@
-#!/Users/AsianCheddar/CRES/program_files/bin/python
+#!/usr/bin/python
+#/Users/AsianCheddar/the_matrix/bin/python
 #/usr/bin/python
 
 # This is the MAIN PAGE for the CRES Program.
