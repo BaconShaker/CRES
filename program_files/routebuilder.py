@@ -19,6 +19,7 @@ from mapper import *
 import thread
 import time
 from file_writer import *
+from file_writer import pickup_reader
 
 
 class Route():
@@ -129,7 +130,6 @@ class Route():
 			page.destroy()
 			print "This is the beginning of add_row_gui"
 			print "You are trying to amend: " + filename + '.csv' 
-			
 
 			adder = Tk()
 			adder.title("Add Client")
@@ -141,7 +141,6 @@ class Route():
 			sparks = StringVar(value = categories)
 			gui_out = { x : StringVar() for y, x in enumerate(categories) }
 		
-
 			rw = 0
 			for cat in categories:
 				print rw, cat
@@ -157,6 +156,28 @@ class Route():
 				print g, gui_out[g].get()
 			self.new_row = { g : gui_out[g].get() for g in gui_out}
 			self.add_check = 1
+
+		def deletethis(*args):
+			
+			for stp in self.route:
+				location_details = Tk()
+				location_details.title(stp[1] + " Pickups")
+				detailframe = ttk.Frame(location_details, padding = "3 3 12 12")
+				detailframe.grid( column = 0, row = 0, sticky = (N,W,E,S))
+				detailframe.columnconfigure(0, weight = 1)
+				detailframe.rowconfigure(0, weight = 1)
+
+				guys = pickup_reader(self.locfile, stp[1])
+				i = 0
+				for guy in guys:
+					# pickup in pickup_reader
+					head = ttk.Label(detailframe, text = guy, font = 'bold').grid(row = 0, column = 2 * i)
+
+
+				location_details.mainloop()	
+				self.add_check = 2
+
+
 
 		self.add_check = 0
 		# Set up the initial window and grid
@@ -193,6 +214,7 @@ class Route():
 		remove_but = ttk.Button(mainframe, text = 'Remove Stop', command = remove_stop)
 		details_but = ttk.Button(mainframe, text = 'Master List', command = self.options[0].show_master)
 		new_place = ttk.Button(mainframe, text = "Add Client", command = new_client)
+		pickups = ttk.Button(mainframe, text = "List Pickups", command = deletethis )
 
 		# Set elements using .grid
 		lbox.grid(column = 0, row = 0, rowspan = 6, sticky = (N,S,E,W) )
@@ -201,6 +223,7 @@ class Route():
 		quit.grid(column = 3, row = 8)
 		details_but.grid(column = 0, row = 8)
 		new_place.grid(column = 0, row = 9)
+		pickups.grid(column = 0, row = 10)
 
 		# Set bindings
 		lbox.bind('<Double-1>', add_stop)
@@ -230,14 +253,18 @@ class Route():
 		# -------- FOR DEBUGGING --------
 
 		# This is the end of the RouteBuilder mainframe loop. Whatever is placed here will be returned when the main window is closed
+		elif self.add_check == 2:
+			print "You looked at details, need to start over to rebuild the route. "
+			self.route = []
+		
 
 		print "\nYour route.build() was a success!\n"
 
 
-		while self.check == 1:
-			print "hello work"
+		# while self.check == 1:
+		# 	print "hello work"
 
-			break
+		# 	break
 
 		return self.route
 

@@ -124,6 +124,12 @@ def add_master(locfile, filename,  in_dict):
 	mast.writerow(in_dict)
 	opt.close
 
+def pickup_reader(locfile, filename):
+	print "Starting pickup_reader()"
+	opn = open(locfile + "/" + filename + ".csv")
+	reads = csv.DictReader(opn, dialect = 'excel', skipinitialspace = True)
+	return [dict(pickup) for pickup in reads]
+	opn.close()
 
 
 
@@ -296,11 +302,20 @@ class Keeper():
 		self.pickup_keys = reader.fieldnames
 		picker.close()
 
-	def read_pickups():
-		pass
+	def read_pickups(self, name):
+		# Read the pickupfile for a specific restaurant and return it
+		# 	to routebuilder to be dispayed.
+		self.pickups_single_location = pickup_reader(self.locfile, name)
+		return self.pickups_single_location
+
+
+
+		
 
 	def add_client(self, to_add):
+		# Add the new client info to the master.csv
 		add_master(self.locfile, "master2", to_add  )
+		# Create a new locationfile for all the pickups
 		new_file = open(self.locfile + '/' + to_add['Name'] + ".csv", "wb")
 		wri = csv.DictWriter(new_file, self.pickup_keys)
 		wri.writeheader()
@@ -319,7 +334,9 @@ if __name__ == "__main__":
 	robster = {
 		"robby" : "Is here", 
 		"jason" : "Is at work"}
-	work.update_donation_total()
+	# work.update_donation_total()
 
-	work.add_client()
+	# work.add_client()
+
+	work.read_pickups()
 
