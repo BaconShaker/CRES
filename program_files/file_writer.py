@@ -104,16 +104,22 @@ from Tkinter import *
 import ttk
 import tkFont
 
-def update_master(locfile, heads, in_dict2):
-	fmaster = locfile + '/master2.csv'
+def update_master(locfile, filen,  heads, in_dict2):
+	print '\nStart update_master()'
+	fmaster = locfile + '/' + filen + '.csv'
 	op = open(fmaster, 'wb')
 	mast = csv.DictWriter(op, heads)
 	mast.writeheader()
 	print in_dict2
-	for row in in_dict2:
-		print row
-		mast.writerow(row)
+	print len (in_dict2)
+	if isinstance(in_dict2, list):
+		for row in in_dict2:
+			print row
+			mast.writerow(row)
+	else:
+		mast.writerow(in_dict2)
 	op.close
+	print "Stop update_master()"
 
 def add_master(locfile, filename,  in_dict):
 	fmaster = locfile + '/' + filename + '.csv'
@@ -130,6 +136,9 @@ def pickup_reader(locfile, filename):
 	reads = csv.DictReader(opn, dialect = 'excel', skipinitialspace = True)
 	return [dict(pickup) for pickup in reads]
 	opn.close()
+	print 'End of pickup_reader()'
+
+
 
 
 
@@ -254,15 +263,6 @@ class Keeper():
 
 
 
-	def make_donation():
-		# Use this funciton to take money out of restaurant's accounts
-		pass
-		
-	def collect_donation():
-		# Use this to sum up the expected current (not paid out) donations
-		pass
-
-
 
 	def robby(self):
 		for restaurant in self.master_list:
@@ -272,7 +272,7 @@ class Keeper():
 		hea = self.master_list[0].keys()
 		hea += ["Total Donation"]
 		# hea.remove('Money To Charity')
-		update_master(self.locfile, hea , self.master_list)
+		update_master(self.locfile, "master2", hea , self.master_list)
 	# 	fmaster = self.locfile + '/master2.csv'
 	# 	op = open(fmaster, 'wb')
 	# 	mast = csv.DictWriter(op, self.master_list[0].keys())
@@ -310,8 +310,6 @@ class Keeper():
 
 
 
-		
-
 	def add_client(self, to_add):
 		# Add the new client info to the master.csv
 		add_master(self.locfile, "master2", to_add  )
@@ -320,6 +318,36 @@ class Keeper():
 		wri = csv.DictWriter(new_file, self.pickup_keys)
 		wri.writeheader()
 		new_file.close()
+
+
+
+
+	def read_donations(self):
+		print "\nStarting read_donations()"
+		print pickup_reader(self.locfile, "donations")
+
+	def write_donation(self):
+		# update_master(locfile, filen,  heads, in_dict2):
+		# Right now this adds the donation to the appropriate csv file but 
+		# 	need it to get all the info from the collection, not this made up dict
+		donation_dict = {
+			"From" : "Robby's Place",
+			"To" : "Boy's Club Logan Square",
+			"Collection Date" : "11/3/1111",
+			"Gallons Collected" : 300.34,
+			"Donation Amount" : 100.25,
+			"CRES Amount" : 199.75,
+			"Donation Date" : "12/2/1111",
+		}
+
+		cols = donation_dict.keys()
+		add_master(self.locfile, "donations", donation_dict)
+		
+
+
+
+
+
 
 
 
@@ -338,5 +366,7 @@ if __name__ == "__main__":
 
 	# work.add_client()
 
-	work.read_pickups()
+	# work.read_pickups()
+	work.write_donation()
+	print work.read_donations()
 

@@ -18,7 +18,7 @@ from collection import *
 from mapper import *
 import thread
 import time
-from file_writer import *
+from file_writer import * # Not sure I need either of these...
 from file_writer import pickup_reader
 
 
@@ -159,6 +159,7 @@ class Route():
 
 		def deletethis(*args):
 			
+			
 			for stp in self.route:
 				location_details = Tk()
 				location_details.title(stp[1] + " Pickups")
@@ -176,6 +177,7 @@ class Route():
 
 				location_details.mainloop()	
 				self.add_check = 2
+
 
 
 
