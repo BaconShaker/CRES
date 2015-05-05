@@ -83,6 +83,7 @@ route_master = Route(options, locfile)
 the_route = route_master.build()
 if len(the_route) == 0:
 	menu2 = 'skip'
+	print "You didn't add anything to the route! ROUTE LENGTH: ", len(the_route)
 
 else:
 	menu2 = ""
@@ -128,7 +129,7 @@ while menu2 != "skip":
 		menu2 = "skip"
 		# send = [ Mailer(collection).send_reciept() for collection in collections ]
 		print "\nAll the receipts were sent successfully!\n"
-		# record.write_pickups_csv( collections )
+		record.write_pickups_csv( collections )
 		# record.update_donation_total()
 
 

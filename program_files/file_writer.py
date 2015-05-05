@@ -103,6 +103,7 @@ from openpyxl import *
 from Tkinter import *
 import ttk
 import tkFont
+from datetime import date
 
 def update_master(locfile, filen,  heads, in_dict2):
 	print '\nStart update_master()'
@@ -126,11 +127,11 @@ def add_master(locfile, filename,  in_dict):
 	opt = open(fmaster, 'a')
 	mast = csv.DictWriter(opt, in_dict.keys())
 	# mast.writeheader()
-	
 	mast.writerow(in_dict)
 	opt.close
 
 def pickup_reader(locfile, filename):
+	# Reads the given csv file and returns a list of dictionaries from the file
 	print "Starting pickup_reader()"
 	opn = open(locfile + "/" + filename + ".csv")
 	reads = csv.DictReader(opn, dialect = 'excel', skipinitialspace = True)
@@ -187,6 +188,7 @@ class Keeper():
 		print collections_list[0].keys() , '\n'
 		for collection in collections_list:
 			target = self.locfile + "/" + collection['Location'] + '.csv'
+			target2 = self.locfile + "/" + collection['Location'] + str(date.today()) + '.csv'
 			r = open(target)
 			fdr = csv.DictReader(r, dialect = 'excel', skipinitialspace = True)
 			pickup_count = 1
@@ -204,14 +206,16 @@ class Keeper():
 				writer = csv.DictWriter(fw, collection.keys())
 				writer.writerow(collection)
 				fw.close()
+
 			else:
 				# This overwrites the file completely, may be a good idea to make a script here that 
 				# moves the file that's being replaced to a safe location?
-				fw = open(target, 'wb')	
+				fw = open(target2, 'wb')	
 				writer = csv.DictWriter(fw, collection.keys())
 				writer.writeheader()
 				writer.writerow(collection)
 				fw.close()
+
 			r.close()
 
 		print "\n********************************\n"
@@ -262,8 +266,6 @@ class Keeper():
 		print "That's all folks!"
 
 
-
-
 	def robby(self):
 		for restaurant in self.master_list:
 			print restaurant['Name']
@@ -298,7 +300,7 @@ class Keeper():
 		for d in self.master_list:
 			d['Money To Charity'] = totals[ d['Name'] ]
 			
-		update_master(self.locfile, self.master_list[0].keys()  ,self.master_list )
+		update_master(self.locfile, "master2", self.master_list[0].keys()  ,self.master_list )
 		self.pickup_keys = reader.fieldnames
 		picker.close()
 
@@ -345,7 +347,8 @@ class Keeper():
 		
 
 
-
+	def total_donations():
+		pass
 
 
 
@@ -359,9 +362,7 @@ if __name__ == "__main__":
 	print "This is working!"
 	work.robby()
 	# work.write_master_csv()
-	robster = {
-		"robby" : "Is here", 
-		"jason" : "Is at work"}
+
 	# work.update_donation_total()
 
 	# work.add_client()
