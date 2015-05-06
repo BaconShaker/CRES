@@ -179,31 +179,24 @@ class Route():
 
 		def pickup_lister(*args):
 			page.destroy()
-			subprocess.call(["open -a 'Numbers", self.locfile+"/"+stp[1]+".csv" ])
-			for stp in self.route:
-				location_details = Tk()
-				location_details.title(stp[1] + " Pickups")
-				detailframe = ttk.Frame(location_details, padding = "3 3 12 12")
-				detailframe.grid( column = 0, row = 10, sticky = (N,W,E,S))
-				detailframe.columnconfigure(0, weight = 1)
-				detailframe.rowconfigure(0, weight = 1)
+			os.system('clear')
+			import desktop
+			
 
-				list_of_pickups = csv_reader(self.locfile, stp[1])
-				print tabulate(list_of_pickups)
-				
-				i = 0
-				x = 1 
-				for pickup in list_of_pickups:
-					print "pickup: ", pickup
-					# pickup in csv_reader
-					for category in pickup:
+			for stpr in self.route:
+				print "route", self.route
+				stringy = '/Users/AsianCheddar/GDrive/cres_sheets/' + stpr[1] + '.csv'
+				# stringy = stringy.encode("utf-8")
+				stringy = str(stringy)
+				print stringy
+				stringy = stringy.replace(" ", "\\ ")
+				stringy = stringy.replace("'"  , "\\'" )
+				# stringy = "open -a 'Numbers' " + stringy
+				stringy = 'open -a "Numbers" ' + stringy
+				print "\n\nthis is stringy: ", stringy
 
-						ttk.Label(detailframe, text = category, font = 'bold').grid(row = 0, column = i)
-						ttk.Label(detailframe, text = pickup[category], font = 'bold').grid(row = x, column = i)
-						i += 1
-						x += 1
-
-				location_details.mainloop()	
+				os.system(stringy)
+					
 				self.add_check = 2
 
 		self.add_check = 0
