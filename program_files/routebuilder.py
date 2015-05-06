@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/Users/AsianCheddar/the_matrix/bin/python
 
 # Here's what's currently in progress:
 # 	Make the Tk() call happen in a function so it can return something
@@ -16,10 +16,13 @@ from bs4 import BeautifulSoup
 from mapper import *
 from collection import *
 from mapper import *
+# from threading import *
+# import threading
 import thread
 import time
 from file_writer import * # Not sure I need either of these...
-from file_writer import pickup_reader
+from file_writer import csv_reader
+import subprocess
 
 
 class Route():
@@ -114,6 +117,23 @@ class Route():
 			page.destroy()
 			self.check = 0
 
+		def	price_of_diesel():
+			print "\nStart of price_of_diesel()\n"
+			diesel= urllib2.urlopen(self.link_diesel)
+			dsoup = BeautifulSoup(diesel)
+			# links = soup.find_all( "Current2")
+			# print "This is the price of Fuel today according to: ", self.link_diesel
+			dsoup.prettify()
+			data = dsoup.find_all('td' , 'Current2')
+			length = len(data)
+			# print data[13]
+			temp = str(data[13])
+			price = temp[32:36]
+			diesel.close()
+			print "End of price_of_diesel()\n"
+			self.price_of_diesel = price
+			return price
+
 		def ams_lookup():
 			response = urllib2.urlopen(self.link_ams)
 			soup = BeautifulSoup(response)
@@ -157,29 +177,34 @@ class Route():
 			self.new_row = { g : gui_out[g].get() for g in gui_out}
 			self.add_check = 1
 
-		def deletethis(*args):
-			
-			
+		def pickup_lister(*args):
+			page.destroy()
+			subprocess.call(["open -a 'Numbers", self.locfile+"/"+stp[1]+".csv" ])
 			for stp in self.route:
 				location_details = Tk()
 				location_details.title(stp[1] + " Pickups")
 				detailframe = ttk.Frame(location_details, padding = "3 3 12 12")
-				detailframe.grid( column = 0, row = 0, sticky = (N,W,E,S))
+				detailframe.grid( column = 0, row = 10, sticky = (N,W,E,S))
 				detailframe.columnconfigure(0, weight = 1)
 				detailframe.rowconfigure(0, weight = 1)
 
-				guys = pickup_reader(self.locfile, stp[1])
+				list_of_pickups = csv_reader(self.locfile, stp[1])
+				print tabulate(list_of_pickups)
+				
 				i = 0
-				for guy in guys:
-					# pickup in pickup_reader
-					head = ttk.Label(detailframe, text = guy, font = 'bold').grid(row = 0, column = 2 * i)
+				x = 1 
+				for pickup in list_of_pickups:
+					print "pickup: ", pickup
+					# pickup in csv_reader
+					for category in pickup:
 
+						ttk.Label(detailframe, text = category, font = 'bold').grid(row = 0, column = i)
+						ttk.Label(detailframe, text = pickup[category], font = 'bold').grid(row = x, column = i)
+						i += 1
+						x += 1
 
 				location_details.mainloop()	
 				self.add_check = 2
-
-
-
 
 		self.add_check = 0
 		# Set up the initial window and grid
@@ -189,7 +214,6 @@ class Route():
 		mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 		mainframe.columnconfigure(0, weight=1)
 		mainframe.rowconfigure(0, weight=1)
-
 
 		# Build selectable field populated by the names of restatants
 		# restaurant_names = self.names
@@ -216,7 +240,7 @@ class Route():
 		remove_but = ttk.Button(mainframe, text = 'Remove Stop', command = remove_stop)
 		details_but = ttk.Button(mainframe, text = 'Master List', command = self.options[0].show_master)
 		new_place = ttk.Button(mainframe, text = "Add Client", command = new_client)
-		pickups = ttk.Button(mainframe, text = "List Pickups", command = deletethis )
+		pickups = ttk.Button(mainframe, text = "List Pickups", command = pickup_lister )
 
 		# Set elements using .grid
 		lbox.grid(column = 0, row = 0, rowspan = 6, sticky = (N,S,E,W) )
@@ -225,7 +249,7 @@ class Route():
 		quit.grid(column = 3, row = 8)
 		details_but.grid(column = 0, row = 8)
 		new_place.grid(column = 0, row = 9)
-		pickups.grid(column = 0, row = 10)
+		pickups.grid(column = 3, row = 10)
 
 		# Set bindings
 		lbox.bind('<Double-1>', add_stop)
@@ -236,18 +260,10 @@ class Route():
 			lbox.itemconfigure(i, background='#f0f0ff')
 		
 		# Start a thread for the window and another to get the fuel... 
-		page.mainloop()
-
-		print "\nThis is where the threads don't catch"
-
-		if '__name__' =='__name__':
-			thread.start_new_thread( ams_lookup, () )
-			# thread.start_new_thread( page.mainloop, () )
+	
+		thread.start_new_thread( ams_lookup, () )
+		thread.start_new_thread( price_of_diesel, () )
 			
-		
-			print "Error! Unable to start thread..."
-		
-
 		page.mainloop()
 
 		if self.add_check == 1:
@@ -258,10 +274,8 @@ class Route():
 		elif self.add_check == 2:
 			print "You looked at details, need to start over to rebuild the route. "
 			self.route = []
-		
 
 		print "\nYour route.build() was a success!\n"
-
 
 		# while self.check == 1:
 		# 	print "hello work"
@@ -275,22 +289,6 @@ class Route():
 	def run_route(self):
 		print "Start of run_route()"
 
-		def	price_of_diesel():
-			print "\nStart of price_of_diesel()\n"
-			diesel= urllib2.urlopen(self.link_diesel)
-			dsoup = BeautifulSoup(diesel)
-			# links = soup.find_all( "Current2")
-			# print "This is the price of Fuel today according to: ", self.link_diesel
-			dsoup.prettify()
-			data = dsoup.find_all('td' , 'Current2')
-			length = len(data)
-			# print data[13]
-			temp = str(data[13])
-			price = temp[32:36]
-			diesel.close()
-			print "End of price_of_diesel()\n"
-			return price
-
 
 		print "This is the beginning of .run_route()"
 		print "Need to make this run in the background..."
@@ -302,19 +300,6 @@ class Route():
 		print "AMS source:" , self.link_ams , '\n'
 
 
-		# Need to look up the AMS, I think this can be threaded in the init of the class... 
-		# But it wasn't so here we are now
-		# response = urllib2.urlopen(self.link_ams)
-		# soup = BeautifulSoup(response)
-		# # Ruh-roh the ams gives us a .txt file to parse
-		# text = soup.get_text()
-		# # Start at the index where Choice white appears, go to EDIBLE LARD 
-		# self.yg_price = text[text.index('Choice white') :text.index('EDBLE LARD')]
-		# # Do the same thing for the report location
-		# ams_edit = text[text.index('Des') : text.index('2015') + 4 ].replace("     ", "\n Current as of ")
-		# self.ams_location = ams_edit
-
-
 		# Set up main Frame for the route display to be shown on. 
 		disp = Tk()
 		disp.title("Route Details")
@@ -323,8 +308,8 @@ class Route():
 		dframe.columnconfigure(0, weight=1)
 		dframe.rowconfigure(0, weight=1)
 
-		# Get the price of diesel today
-		price = price_of_diesel()
+		# Got the price in the new threads created with page.mainloop() in build(). 
+		price = self.price_of_diesel
 		print "Price of diesel: $" + str( price )
 
 		# Make all the legs of the route from google maps
@@ -339,11 +324,7 @@ class Route():
 		for leg in self.legs:
 			print leg
 
-
-
 		# print legs.google_directions()
-	
-
 
 		# Set the second origin in dframe to use for collections inputs
 		start_col = 0

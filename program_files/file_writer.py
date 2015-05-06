@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/Users/AsianCheddar/the_matrix/bin/python
 
 # This is going to be the main writer class for 
 # 	csv
@@ -130,14 +130,16 @@ def add_master(locfile, filename,  in_dict):
 	mast.writerow(in_dict)
 	opt.close
 
-def pickup_reader(locfile, filename):
+def csv_reader(locfile, filename):
 	# Reads the given csv file and returns a list of dictionaries from the file
-	print "Starting pickup_reader()"
+	print "Starting csv_reader()"
 	opn = open(locfile + "/" + filename + ".csv")
 	reads = csv.DictReader(opn, dialect = 'excel', skipinitialspace = True)
-	return [dict(pickup) for pickup in reads]
+	to_return = [dict(pickup) for pickup in reads]
+	print 'End of csv_reader()'
 	opn.close()
-	print 'End of pickup_reader()'
+	return to_return
+	
 
 
 
@@ -206,6 +208,7 @@ class Keeper():
 				writer = csv.DictWriter(fw, collection.keys())
 				writer.writerow(collection)
 				fw.close()
+				print "Should have only added one line tothe pickup file"
 
 			else:
 				# This overwrites the file completely, may be a good idea to make a script here that 
@@ -215,6 +218,7 @@ class Keeper():
 				writer.writeheader()
 				writer.writerow(collection)
 				fw.close()
+				print "somehting didn't work on line 212 in file_writer"
 
 			r.close()
 
@@ -270,18 +274,12 @@ class Keeper():
 		for restaurant in self.master_list:
 			print restaurant['Name']
 			
-	def write_master_csv(self):
+	def create_master_csv(self):
 		hea = self.master_list[0].keys()
 		hea += ["Total Donation"]
 		# hea.remove('Money To Charity')
 		update_master(self.locfile, "master2", hea , self.master_list)
-	# 	fmaster = self.locfile + '/master2.csv'
-	# 	op = open(fmaster, 'wb')
-	# 	mast = csv.DictWriter(op, self.master_list[0].keys())
-	# 	mast.writeheader()
-	# 	for row in self.master_list:
-	# 		mast.writerow(row)
-	# 	op.close
+
 
 	def update_donation_total(self):
 		# Returns a list of dictionaries, each dictionary is a single locaiton.file
@@ -307,7 +305,7 @@ class Keeper():
 	def read_pickups(self, name):
 		# Read the pickupfile for a specific restaurant and return it
 		# 	to routebuilder to be dispayed.
-		self.pickups_single_location = pickup_reader(self.locfile, name)
+		self.pickups_single_location = csv_reader(self.locfile, name)
 		return self.pickups_single_location
 
 
@@ -326,21 +324,23 @@ class Keeper():
 
 	def read_donations(self):
 		print "\nStarting read_donations()"
-		print pickup_reader(self.locfile, "donations")
+		print csv_reader(self.locfile, "donations")
 
-	def write_donation(self):
+	def write_donation(self, user_input):
 		# update_master(locfile, filen,  heads, in_dict2):
 		# Right now this adds the donation to the appropriate csv file but 
 		# 	need it to get all the info from the collection, not this made up dict
 		donation_dict = {
-			"From" : "Robby's Place",
-			"To" : "Boy's Club Logan Square",
-			"Collection Date" : "11/3/1111",
-			"Gallons Collected" : 300.34,
-			"Donation Amount" : 100.25,
-			"CRES Amount" : 199.75,
-			"Donation Date" : "12/2/1111",
+			"From" : user_input['Name'],
+			"To" : "Need to add this to the master file columns",
+			"Collection Date" : user_input['Date'],
+			"Gallons Collected" : user_input['Gallons Collected'],
+			"Expeceted Donation" : user_input["Expected Donation"],
+			"CRES Amount" : user_input['Expected Income'],
+			
 		}
+
+	
 
 		cols = donation_dict.keys()
 		add_master(self.locfile, "donations", donation_dict)
