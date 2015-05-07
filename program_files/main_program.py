@@ -113,7 +113,8 @@ while menu2 != "skip":
 		sure = raw_input( "\n Send? ")
 
 		if sure == 'y' or sure == 'yes' or sure == '':
-			all_sent += 1 
+			all_sent += 1
+			collection["Receipt Sent"] = "NO" 
 			
 
 

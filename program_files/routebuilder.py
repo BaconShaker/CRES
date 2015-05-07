@@ -180,23 +180,17 @@ class Route():
 		def pickup_lister(*args):
 			page.destroy()
 			os.system('clear')
-			import desktop
-			
-
+			# Use Numbers for now to open each pickup file. 
 			for stpr in self.route:
-				print "route", self.route
 				stringy = '/Users/AsianCheddar/GDrive/cres_sheets/' + stpr[1] + '.csv'
 				# stringy = stringy.encode("utf-8")
 				stringy = str(stringy)
-				print stringy
 				stringy = stringy.replace(" ", "\\ ")
 				stringy = stringy.replace("'"  , "\\'" )
 				# stringy = "open -a 'Numbers' " + stringy
 				stringy = 'open -a "Numbers" ' + stringy
-				print "\n\nthis is stringy: ", stringy
-
-				os.system(stringy)
-					
+				# stringy = 'tabview ' + stringy
+				os.system(stringy)	
 				self.add_check = 2
 
 		self.add_check = 0
@@ -242,7 +236,7 @@ class Route():
 		quit.grid(column = 3, row = 8)
 		details_but.grid(column = 0, row = 8)
 		new_place.grid(column = 0, row = 9)
-		pickups.grid(column = 3, row = 10)
+		pickups.grid(column = 3, row = 9)
 
 		# Set bindings
 		lbox.bind('<Double-1>', add_stop)
