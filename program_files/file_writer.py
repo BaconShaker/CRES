@@ -184,14 +184,20 @@ class Keeper():
 		# If you change the fieldnames however, it WILL ERASE THE ENTIRE FILE 
 		# 	and re write over with the same name.
 
+		# :::::EDIT:::::
+		# This function should write the full pickup details to a single file,
+		# 	then for the individual location files print an abbreviated dictionary
+		# 	in an order so it's also easier to read.
+
 
 		print '\nStarting	write_pickups_csv():'
 		print "\n********************************\n"
 		print collections_list[0].keys() , '\n'
 		for collection in collections_list:
+			main_pickup_file = self.locfile + '/pickup_master.csv'
 			target = self.locfile + "/" + collection['Location'] + '.csv'
 			target2 = self.locfile + "/" + collection['Location'] + str(date.today()) + '.csv'
-			r = open(target)
+			r = open(main_pickup_file)
 			fdr = csv.DictReader(r, dialect = 'excel', skipinitialspace = True)
 			pickup_count = 1
 			for line in fdr:
@@ -204,22 +210,25 @@ class Keeper():
 			print "to_add: " , howlong_add 
 			if howlong_fdr == howlong_add:
 				# This one only writes the INPUT ROW.
-				fw = open(target, 'a')	
-				writer = csv.DictWriter(fw, collection.keys())
-				writer.writerow(collection)
-				fw.close()
+				# fw = open(main_pickup_file, 'a')	
+				# writer = csv.DictWriter(fw, collection.keys())
+				# writer.writerow(collection)
+				# fw.close()
 				print "Should have only added one line tothe pickup file"
+				add_master(self.locfile, "pickup_master", collection)
+				add_master(self.locfile, collection['Location'], collection)
 
 			else:
 				# This overwrites the file completely, may be a good idea to make a script here that 
 				# moves the file that's being replaced to a safe location?
-				fw = open(target2, 'wb')	
+				fw = open(main_pickup_file, 'wb')	
 				writer = csv.DictWriter(fw, collection.keys())
 				writer.writeheader()
 				writer.writerow(collection)
 				fw.close()
 				print "somehting didn't work on line 212 in file_writer"
 
+				update_master(self.locfile, 'pickup_master ' + str(date.today().year),  collection.keys(), collection )
 			r.close()
 
 		print "\n********************************\n"
