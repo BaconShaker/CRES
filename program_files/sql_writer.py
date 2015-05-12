@@ -66,12 +66,17 @@ class Sql_Writer():
 		cursor.execute(sql)
 		db.commit()
 
-	def delete_row(self, tablename, column_to_del, chooser):
+	def delete_row(self, tablename, column_to_del, value):
 		db = mysql.connector.connect(**self.config)
 		cursor = db.cursor()
-		deleter = "DELETE FROM %s WHERE %s = `%s`" % (tablename, column_to_del, chooser) 
+		deleter = "DELETE FROM %s WHERE `%s` = '%s'" % (tablename, column_to_del, value) 
+		print "Deleter: ", deleter
 		cursor.execute(deleter)
 		db.commit()
+
+	def new_table(self):
+		db = mysql.connector.connect(**self.config)
+		cursor = 
 
 
 
@@ -79,5 +84,5 @@ if "__main__" == '__main__':
 	print "hello"
 	writer = Sql_Writer()
 	# writer.add_row("Locations", loc)
-	writer.delete_row("Locations", "Name", loc['Name'])
+	# writer.delete_row("Locations", "Name", loc['Name'])
 
