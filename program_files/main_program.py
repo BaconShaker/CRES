@@ -1,5 +1,4 @@
 #!/Users/AsianCheddar/the_matrix/bin/python
-#/usr/bin/python
 
 # This is the MAIN PAGE for the CRES Program.
 
@@ -45,6 +44,7 @@ from routebuilder import *
 from collection import *
 from msg_reciept2 import *
 from file_writer import *
+from sql_writer import *
 
 # First let's check which system is running.
 	# Need to find a way to get the GDrive file on the the Linux side of things. That's going to be hard
@@ -70,11 +70,23 @@ elif sys.platform.startswith('linux'):
 
 
 # -----------------------------------------------------------------
+config = {
+	  'user': 'root',
+	  'password': 'Illini032',
+	  'host': 'localhost',
+	  'database': 'CRES',
+	  'raise_on_warnings': True,
+	  'port': 8888
+		}
+
+cres_database = Sql_Writer(config)
+
+
 
 record = Keeper(locfile)
 record.update_donation_total()
 
-options = [record, record.all_names(), record.master_lister()]
+options = [cres_database, cres_database.names()]
 # record.update_donation_total()
 route_master = Route(options, locfile)
 

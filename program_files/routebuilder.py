@@ -34,17 +34,9 @@ class Route():
 		self.route = []
 		# self.deets = Keeper(locfile)
 		self.names = options[1]
-		self.master_list = options[2]
+		self.master_list = options[1]
+		self.client_fields = options[0].fields("Locations")
 
-
-		# apple = open(locfile + '/master.csv')
-		# oranges = csv.DictReader(apple, dialect = 'excel', skipinitialspace = True)
-		# print "This is the list of fieldnames in the master.csv file, oranges[...] = " , oranges.fieldnames
-		# # Oranges is actually a list of dictionaries, each dictionary has the same keys. Each index is a new restaurant. 
-		# self.master_list = [dict(row) for row in oranges]
-		# # print self.master_list
-		# self.names = [just_names['Name'] for just_names in self.master_list]
-		# apple.close()
 		self.link_diesel = 'http://www.eia.gov/dnav/pet/pet_pri_gnd_dcus_r20_w.htm'
 		self.link_ams = 'http://www.ams.usda.gov/mnreports/nw_ls442.txt'
 		self.check = 1
@@ -60,24 +52,28 @@ class Route():
 			# Make sure you're only adding one place to the list at once to establilsh clear order. 
 			# print "Length of x" , len(sel)
 			if len(sel) == 1:
-
+				print "\n\nThis is SEL: ", sel
 				# idx is the integer index of the selected location to add in the listbox loop. 
 				idx = int(sel[0])
 
 				# matchmaker searches for the first occurence of the STRING (in the listbox box) returned by idx above 
 				# 	to be compared against the master_list in order to add the correct address, regardless of order in the listbox.
 				# 	Hopefully that allows of self.names to be Sorted before it's displayed by alphabeticle order. 
-				matchmaker = [place['Name'] for place in self.master_list].index(self.names[idx])
-	        	self.route.append(      (       
-	        		int(len(self.route))   ,   
-	        		self.names[idx]  , 
-	        		self.master_list[matchmaker]['Street Address'],
-	        		self.master_list[matchmaker]['City'] ,
-	        		self.master_list[matchmaker]['Zip'],
-	        		self.master_list[matchmaker]['Contact_Person'],
-	        		self.master_list[matchmaker]['Contact Email']
+				matchmaker = [place for place in self.master_list].index(self.names[idx])
+				print matchmaker, self.master_list[matchmaker]
+				chop = self.master_list[matchmaker]
+				newthing = tuple( [int(len(self.route) ) , self.names[idx] ]) + self.options[0].route_informer( str(chop) )
+	        	self.route.append(  newthing    )
 
-	        		))
+
+
+	        		# self.master_list[matchmaker]['Street Address'],
+	        		# self.master_list[matchmaker]['City'] ,
+	        		# self.master_list[matchmaker]['Zip'],
+	        		# self.master_list[matchmaker]['Contact_Person'],
+	        		# self.master_list[matchmaker]['Contact Email']
+
+	        		
 
 	        	# Add the selected restaurant to the routebox display. 
 	        	routebox.insert(len(self.route) - 1, self.names[idx] )
@@ -220,12 +216,25 @@ class Route():
 		routebox.pack()
 
 		def new_client():
-			add_row_gui("master", self.master_list[0].keys() )
+			# Need to parse the list of keys in the sql database
+			to_show = [
+				"City", 
+				"Name" ,
+				"Zip" ,
+				"Phone Number",
+				"Email", 
+				"Contact", 
+				"Address" ,
+				"Charity" ,
+				"Notes" ,
+			]
+			fields = self.client_fields.intersection(to_show)
+			add_row_gui("master", fields )
 
 		add_but = ttk.Button(mainframe, text = "Add Stop", command = add_stop )
 		quit = ttk.Button(mainframe, text = "Close Window" , command = exit)
 		remove_but = ttk.Button(mainframe, text = 'Remove Stop', command = remove_stop)
-		details_but = ttk.Button(mainframe, text = 'Master List', command = self.options[0].show_master)
+		# details_but = ttk.Button(mainframe, text = 'Master List', command = self.options[0].show_master)
 		new_place = ttk.Button(mainframe, text = "Add Client", command = new_client)
 		pickups = ttk.Button(mainframe, text = "List Pickups", command = pickup_lister )
 
@@ -234,7 +243,7 @@ class Route():
 		add_but.grid(column = 2, row = 0)
 		routebox.grid(column = 3, row = 0, rowspan = 6, sticky = (N,S,E,W) )
 		quit.grid(column = 3, row = 8)
-		details_but.grid(column = 0, row = 8)
+		# details_but.grid(column = 0, row = 8)
 		new_place.grid(column = 0, row = 9)
 		pickups.grid(column = 3, row = 9)
 
@@ -254,7 +263,10 @@ class Route():
 		page.mainloop()
 
 		if self.add_check == 1:
-			self.options[0].add_client(self.new_row)
+			print "\n\nTHIS IS WHERER WE ARE\n\n"
+			# Need to do some formatting on the dictionary values from string to float
+
+			self.options[0].add_row( "Locations" , self.new_row)
 		# -------- FOR DEBUGGING --------
 
 		# This is the end of the RouteBuilder mainframe loop. Whatever is placed here will be returned when the main window is closed
