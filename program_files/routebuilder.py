@@ -34,6 +34,7 @@ class Route():
 		self.route = []
 		# self.deets = Keeper(locfile)
 		self.names = options[1]
+		self.names.sort()
 		self.master_list = options[1]
 		self.client_fields = options[0].fields("Locations")
 
