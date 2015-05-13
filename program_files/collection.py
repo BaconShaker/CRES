@@ -57,6 +57,7 @@ class Collection():
 		inputs['Expected Income'] = inputs['Service Fee'] * lbs_collected
 		inputs['Expected Donation'] = donation * lbs_collected
 		inputs['Collectable Material'] = lbs_collected
+
 		# for i in inputs:
 		# 	print ""
 		# 	print i, inputs[i]
@@ -105,8 +106,10 @@ class Collection():
 
 	# Make anobject that outside programs can return and use
 	def run(self):
-		da = datetime.now() 
-		self.indict['Date'] = da.date()
+		if len(self.indict["Pickup Date"]) == 0:
+			da = datetime.now().date()
+			self.indict['Pickup Date'] = str(da)
+			
 		return self.indict
 
 		

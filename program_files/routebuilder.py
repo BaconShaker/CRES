@@ -322,15 +322,29 @@ class Route():
 		# Start building list of input dictionaries from GUI form. Add the results to collections.
 		# First, the questions we need to ask at EVERY stop
 		questions = [
+					"Pickup Date",
 					"Arrival",
 					"Departure",
 					"Quality",
 					"Duration", 
+					"Charity",
 					"Notes",  
 					]
 		
 		# Now the list of dictionary tuples for the responses.
-		responses = [ { questions[y] : IntVar() for y, x in enumerate(questions) } for leg in self.legs ]
+		responses = []
+		for leg in self.legs:
+			print '\n\nleg: ', len(responses)
+			responses.append({
+					'Pickup Date' : StringVar(),
+					"Arrival" : IntVar(),
+					"Departure": IntVar(),
+					"Quality": IntVar(),
+					"Duration": IntVar(),
+					"Charity": StringVar(value = str(self.route[len(responses)-1][9] )),
+					"Notes": StringVar(),
+			})
+		# responses = [ { questions[y] : IntVar() for y, x in enumerate(questions) } for leg in self.legs ]
 
 		# Need to pop the last stop off the list because it's the ICNC.
 		responses.pop()
