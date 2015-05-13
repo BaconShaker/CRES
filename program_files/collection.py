@@ -40,14 +40,14 @@ class Collection():
 
 		t_vol = 0.0043290 * l * w * h
 
-		inputs['Gallons on Arrival'] = round(0.0043290 * l * w * inputs['Height (ARRIVAL): '] , 2)
-		inputs['Gallons on Departure'] = round(0.0043290 * l * w * inputs['Height (DEPARTURE): '] , 2)
-		inputs['Gallons Collected'] = round(inputs['Gallons on Arrival'] - inputs['Gallons on Departure'] , 2)
-		score = inputs['Gallons Collected'] / inputs['Gallons on Arrival'] 
-		inputs['Pickup Score'] = round(score * 100 , 2)
+		inputs['Gallons Arrival'] = round(0.0043290 * l * w * inputs['Arrival'] , 2)
+		inputs['Gallons Departure'] = round(0.0043290 * l * w * inputs['Departure'] , 2)
+		inputs['Gallons Collected'] = round(inputs['Gallons Arrival'] - inputs['Gallons Departure'] , 2)
+		score = inputs['Gallons Collected'] / inputs['Gallons Arrival'] 
+		inputs['Score'] = round(score * 100 , 2)
 
 		# 7.75 lbs per gallon is set here
-		lbs_collected = inputs['Gallons Collected'] * 7.75 * inputs['Quality (0 - 100): '] / 100
+		lbs_collected = inputs['Gallons Collected'] * 7.75 * inputs['Quality'] / 100
 
 		inputs['Expected Revenue'] = round(inputs['Oil Price'] * lbs_collected , 2)
 
@@ -87,7 +87,7 @@ class Collection():
 
 
 			fuel_surcharge = float(tdist)/ mpg_truck * float(diesel_price) / int(num_stops)
-
+			print "\nFuel Surcharge(): ", fuel_surcharge
 			return fuel_surcharge
 
 
@@ -97,7 +97,7 @@ class Collection():
 		self.indict['Fuel Surcharge'] = f_surcharge
 
 		self.indict['Miles in Route'] = self.route['Total Distance']
-		self.indict['Stops on Route'] = self.route['Number of Stops']
+		self.indict['Stops in Route'] = self.route['Number of Stops']
 
 		
 		# print tabulate(  [ ( key , self.indict[key] ) for key in self.indict  ]  )
@@ -105,7 +105,8 @@ class Collection():
 
 	# Make anobject that outside programs can return and use
 	def run(self):
-		self.indict['Date'] = datetime.now()
+		da = datetime.now() 
+		self.indict['Date'] = da.date()
 		return self.indict
 
 		

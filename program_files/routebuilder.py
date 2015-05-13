@@ -59,21 +59,11 @@ class Route():
 				# matchmaker searches for the first occurence of the STRING (in the listbox box) returned by idx above 
 				# 	to be compared against the master_list in order to add the correct address, regardless of order in the listbox.
 				# 	Hopefully that allows of self.names to be Sorted before it's displayed by alphabeticle order. 
-				matchmaker = [place for place in self.master_list].index(self.names[idx])
-				print matchmaker, self.master_list[matchmaker]
-				chop = self.master_list[matchmaker]
-				newthing = tuple( [int(len(self.route) ) , self.names[idx] ]) + self.options[0].route_informer( str(chop) )
+				# matchmaker = [place for place in self.master_list].index(self.names[idx])
+				print idx, self.master_list[idx]
+				chop = self.master_list[idx]
+				newthing = tuple( [int(len(self.route) ) , str(self.names[idx]) ]) + self.options[0].route_informer( str(chop) )
 	        	self.route.append(  newthing    )
-
-
-
-	        		# self.master_list[matchmaker]['Street Address'],
-	        		# self.master_list[matchmaker]['City'] ,
-	        		# self.master_list[matchmaker]['Zip'],
-	        		# self.master_list[matchmaker]['Contact_Person'],
-	        		# self.master_list[matchmaker]['Contact Email']
-
-	        		
 
 	        	# Add the selected restaurant to the routebox display. 
 	        	routebox.insert(len(self.route) - 1, self.names[idx] )
@@ -332,11 +322,11 @@ class Route():
 		# Start building list of input dictionaries from GUI form. Add the results to collections.
 		# First, the questions we need to ask at EVERY stop
 		questions = [
-					"Height (ARRIVAL): ",
-					"Height (DEPARTURE): ",
-					"Quality (0 - 100): ",
-					"Duration: ", 
-					"Notes: ",  
+					"Arrival",
+					"Departure",
+					"Quality",
+					"Duration", 
+					"Notes",  
 					]
 		
 		# Now the list of dictionary tuples for the responses.
@@ -352,7 +342,7 @@ class Route():
 			
 			for question in questions:
 				rws = start_row + 1 + questions.index(question)
-				ttk.Label(dframe, text = question).grid(column = start_col , row = rws , sticky = 'e' )
+				ttk.Label(dframe, text = question + ": ").grid(column = start_col , row = rws , sticky = 'e' )
 				ttk.Entry(dframe, textvariable = responses[stop][question]).grid(column = start_col + stop + 1, row = rws)
 
 		# Assign the entry variable for the AMS price we want to use for ALL of the stops on the route

@@ -50,7 +50,7 @@ class Sql_Writer():
 
 		if len(rowdict) > len(keys):
 			unknown_keys = set(rowdict) - allowed_keys
-			print "skipping keys:", ", ".join(unknown_keys)
+			print "\n\nskipping keys:", ", ".join(unknown_keys)
 
 		columns = "`" + "`,`".join(keys) + "`"
 

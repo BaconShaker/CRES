@@ -126,7 +126,7 @@ while menu2 != "skip":
 
 		if sure == 'y' or sure == 'yes' or sure == '':
 			all_sent += 1
-			collection["Receipt Sent"] = "NO" 
+			collection["Receipt Sent"] = 0
 			
 
 
@@ -141,8 +141,9 @@ while menu2 != "skip":
 		menu2 = "skip"
 		# send = [ Mailer(collection).send_reciept() for collection in collections ]
 		print "\nAll the receipts were sent successfully!\n"
-		record.write_pickups_csv( collections )
+		# record.write_pickups_csv( collections )
 		# record.update_donation_total()
+		[cres_database.add_row("Pickups", collection) for collection in collections]
 
 
 	else:
