@@ -157,12 +157,19 @@ class Route():
 				rw += 1
 			ttk.Button(addframe, text = "CLOSE", command = adder.destroy).grid(row = rw, column = 2)
 			adder.mainloop()
-
-			print "This is the end of add_row_gui()"
+			
 			for g in gui_out:
 				print g, gui_out[g].get()
+
 			self.new_row = { g : gui_out[g].get() for g in gui_out}
-			self.add_check = 1
+			
+			chex = len(self.new_row['Name'])
+			print "This is the end of add_row_gui()"
+			print "The length of new client dict: ", chex
+			if chex >= 1:
+				self.add_check = 1
+
+
 
 		def pickup_lister(*args):
 			page.destroy()
@@ -200,8 +207,14 @@ class Route():
 
 
 		# Create GUI elements here
-		lbox = Listbox(mainframe, listvariable = self.rnames, height = 10)
-		lbox.pack()
+		lbox = Listbox(
+			mainframe, 
+			listvariable = self.rnames, 
+			height = 15
+			)
+
+		lbox.pack(side = LEFT, fill = BOTH )
+
 
 		routebox = Listbox(mainframe, listvariable = self.stops, height = 10)
 		routebox.pack()
@@ -235,7 +248,7 @@ class Route():
 		routebox.grid(column = 3, row = 0, rowspan = 6, sticky = (N,S,E,W) )
 		quit.grid(column = 3, row = 8)
 		# details_but.grid(column = 0, row = 8)
-		new_place.grid(column = 0, row = 9)
+		new_place.grid(column = 2, row = 9)
 		pickups.grid(column = 3, row = 9)
 
 		# Set bindings
@@ -250,7 +263,8 @@ class Route():
 	
 		thread.start_new_thread( ams_lookup, () )
 		thread.start_new_thread( price_of_diesel, () )
-			
+		
+		print "Are we here yet?"
 		page.mainloop()
 
 		if self.add_check == 1:
