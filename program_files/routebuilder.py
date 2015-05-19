@@ -16,8 +16,6 @@ from bs4 import BeautifulSoup
 from mapper import *
 from collection import *
 from mapper import *
-# from threading import *
-# import threading
 import thread
 import time
 from file_writer import * # Not sure I need either of these...
@@ -133,10 +131,9 @@ class Route():
 			self.ams_location = ams_edit
 			print self.ams_location
 
-		def add_row_gui(filename, categories):
+		def add_row_gui(categories):
 			page.destroy()
 			print "This is the beginning of add_row_gui"
-			print "You are trying to amend: " + filename + '.csv' 
 
 			adder = Tk()
 			adder.title("Add Client")
@@ -168,8 +165,6 @@ class Route():
 			print "The length of new client dict: ", chex
 			if chex >= 1:
 				self.add_check = 1
-
-
 
 		def pickup_lister(*args):
 			page.destroy()
@@ -222,18 +217,33 @@ class Route():
 		def new_client():
 			# Need to parse the list of keys in the sql database
 			to_show = [
-				"City", 
 				"Name" ,
+				"Address",
+				"City", 
 				"Zip" ,
 				"Phone Number",
 				"Email", 
 				"Contact", 
-				"Address" ,
 				"Charity" ,
 				"Notes" ,
 			]
-			fields = self.client_fields.intersection(to_show)
-			add_row_gui("master", fields )
+			# fields = self.client_fields.intersection(to_show)
+			add_row_gui( to_show )
+
+		def add_charity():
+			fields = [
+				"Name" ,
+				"Street",
+				"City", 
+				"Zip" ,
+				"Phone Number",
+				"Email", 
+				"Contact", 
+				"Notes" ,
+				]
+			add_row_gui(fields)
+			self.add_check = 3
+
 
 		add_but = ttk.Button(mainframe, text = "Add Stop", command = add_stop )
 		quit = ttk.Button(mainframe, text = "Close Window" , command = exit)
@@ -241,6 +251,8 @@ class Route():
 		# details_but = ttk.Button(mainframe, text = 'Master List', command = self.options[0].show_master)
 		new_place = ttk.Button(mainframe, text = "Add Client", command = new_client)
 		pickups = ttk.Button(mainframe, text = "List Pickups", command = pickup_lister )
+		add_charity_button = ttk.Button(mainframe, text = "Add Charity", command = add_charity)
+
 
 		# Set elements using .grid
 		lbox.grid(column = 0, row = 0, rowspan = 6, sticky = (N,S,E,W) )
@@ -250,6 +262,7 @@ class Route():
 		# details_but.grid(column = 0, row = 8)
 		new_place.grid(column = 2, row = 9)
 		pickups.grid(column = 3, row = 9)
+		add_charity_button.grid(column = 2, row = 8)
 
 		# Set bindings
 		lbox.bind('<Double-1>', add_stop)
@@ -268,10 +281,12 @@ class Route():
 		page.mainloop()
 
 		if self.add_check == 1:
-			print "\n\nTHIS IS WHERER WE ARE\n\n"
 			# Need to do some formatting on the dictionary values from string to float
 
 			self.options[0].add_row( "Locations" , self.new_row)
+			print "\n\nTHIS IS WHERER WE ARE\n"
+			print "You added a new_row: ", self.new_row
+			self.route = []
 		# -------- FOR DEBUGGING --------
 
 		# This is the end of the RouteBuilder mainframe loop. Whatever is placed here will be returned when the main window is closed
@@ -279,7 +294,18 @@ class Route():
 			print "You looked at details, need to start over to rebuild the route. "
 			self.route = []
 
-		print "\nYour route.build() was a success!\n"
+		elif self.add_check == 0:
+			if len(self.route) == 0:
+				print "You have chosen to exit the program early, or at least without building a route."
+			else:
+				print "\nYour route.build() was a success!\n"
+				print'\nThis is your route: ', self.route
+
+		elif self.add_check == 3:
+			print "You added a CHARITY"
+			self.options[0].add_row( "Charities" , self.new_row)
+			print "You added a new_row: ", self.new_row
+			self.route = []
 
 		# while self.check == 1:
 		# 	print "hello work"
@@ -352,10 +378,10 @@ class Route():
 			print '\n\nleg: ', len(responses)
 			responses.append({
 					'Pickup Date' : StringVar(),
-					"Arrival" : IntVar(),
-					"Departure": IntVar(),
-					"Quality": IntVar(),
-					"Duration": IntVar(),
+					"Arrival" : IntVar(value = 1),
+					"Departure": IntVar(value = 1),
+					"Quality": IntVar(value = 80),
+					"Duration": IntVar(value = 60),
 					"Charity": StringVar(value = str(self.route[len(responses)-1][9] )),
 					"Notes": StringVar(),
 			})

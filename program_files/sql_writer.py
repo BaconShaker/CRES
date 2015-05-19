@@ -29,16 +29,17 @@ config = {
 	  'raise_on_warnings': True,
 	  'port': 8888
 	}
+
+
+
 db = mysql.connector.connect(**config)
 cursor = db.cursor()
-
-
 
 
 class Sql_Writer():
 	def __init__(self, config):
 		self.config = config
-		pass
+		
 
 
 	def add_row(self, tablename, rowdict):
@@ -77,16 +78,25 @@ class Sql_Writer():
 
 	def delete_row(self, tablename, column_to_del, value):
 		print "delete_row(self, tablename, column_to_del, value)"
-		print '\n tablename: ', tablename
+		print '\ntablename: ', tablename
 		print 'column_to_del: ', column_to_del
 		print "value: ", value
 
-		db = mysql.connector.connect(**self.config)
-		cursor = db.cursor()
-		deleter = "DELETE FROM %s WHERE `%s` = '%s'" % (tablename, column_to_del, value) 
+		# db = mysql.connector.connect(**self.config)
+		# cursor = db.cursor()
+		deleter = 'DELETE FROM %s WHERE `%s` = "%s"' % (tablename, column_to_del, value) 
+		
+		print '\n  ------************------'
 		print "\nDeleter: ", deleter
-		cursor.execute(deleter)
-		db.commit()
+		print "\n 	Are you sure?"
+		ask = raw_input("	YES OR NO\n\n  ------************------\n\n")
+
+		if ask == "" or ask == "y":
+			cursor.execute(deleter)
+			db.commit()
+
+		else:
+			"You did not confirm the deletion, try again bro!"
 		# db.close()
 
 	def fields(self, tablename):
@@ -119,14 +129,17 @@ class Sql_Writer():
 		# db.close()
 		return route_info[0]
 
+	def update_supporters():
+		# This attribute goes through all the locations and allocates the locations
+		# to their respective Charity
+		pass
 
 
 
-
-	# if "__main__" == '__main__':
-
-	# 	writer = Sql_Writer(config)
-	# 	writer.add_row("Locations", loc)
-	# 	writer.delete_row("Locations", "Name", loc['Name'])
-	# 	writer.names()
+if __name__ == '__main__':
+	print "You're running the py itself."
+	writer = Sql_Writer(config)
+# 	writer.add_row("Locations", loc)
+	writer.delete_row("Pickups", "Location", "Robby's Place")
+# 	writer.names()
 
