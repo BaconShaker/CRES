@@ -22,8 +22,8 @@ loc = {
 
 print "hello"
 config = {
-	  'user': 'root',
-	  'password': 'Illini032',
+	  'user': 'robby',
+	  'password': 'cres1234',
 	  'host': 'localhost',
 	  'database': 'CRES',
 	  'raise_on_warnings': True,
