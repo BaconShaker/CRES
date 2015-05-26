@@ -47,7 +47,7 @@ class Collection():
 		inputs['Score'] = round(score * 100 , 2)
 
 		# 7.75 lbs per gallon is set here
-		lbs_collected = inputs['Gallons Collected'] * 7.75 * inputs['Quality'] / 100
+		lbs_collected = inputs['Gallons Collected'] * 7.75 
 
 		inputs['Expected Revenue'] = round(inputs['Oil Price'] * lbs_collected , 2)
 
@@ -55,17 +55,13 @@ class Collection():
 
 		inputs['Donation Rate'] = round(donation , 2) 
 		inputs['Expected Income'] = inputs['Service Fee'] * lbs_collected
-		inputs['Expected Donation'] = donation * lbs_collected
+		inputs['Expected Donation'] = round( donation * lbs_collected * inputs['Quality'] / 100 , 2) 
 		inputs['Collectable Material'] = lbs_collected
+		inputs["Penalty"] = round(inputs['Expected Revenue'] - (inputs['Expected Income'] + inputs['Expected Donation']) ,2)
 
-		# for i in inputs:
-		# 	print ""
-		# 	print i, inputs[i]
-		# inputs['Diesel Price'] = 
-
-		# income * weight
-
-		# inputs['Expected Donation'] = 
+		# Need to account for the penalty associated with poor quality in the income that CRES will get
+		inputs['Expected Income'] = round(inputs['Expected Income'] + inputs['Penalty'] , 2)
+		
 		
 
 		self.indict = inputs
@@ -88,13 +84,14 @@ class Collection():
 
 
 			fuel_surcharge = float(tdist)/ mpg_truck * float(diesel_price) / int(num_stops)
+			fuel_surcharge = round(fuel_surcharge , 2)
 			print "\nFuel Surcharge(): ", fuel_surcharge
 			return fuel_surcharge
 
 
 		f_surcharge = route_analizer()
 
-
+		print "\n\n THTHTHTHTHT\n\n"
 		self.indict['Fuel Surcharge'] = f_surcharge
 
 		self.indict['Miles in Route'] = self.route['Total Distance']
@@ -110,6 +107,7 @@ class Collection():
 			da = datetime.now().date()
 			self.indict['Pickup Date'] = str(da)
 			
+		print '\n\n'  , self.indict ,  "\n\n"
 		return self.indict
 
 		

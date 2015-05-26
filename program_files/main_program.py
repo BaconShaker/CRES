@@ -81,13 +81,8 @@ config = {
 
 cres_database = Sql_Writer(config)
 
-
-
-record = Keeper(locfile)
-record.update_donation_total()
-
 options = [cres_database, cres_database.names()]
-# record.update_donation_total()
+
 route_master = Route(options, locfile)
 
 # This is where you'd need to start a loop to make it so you can quit at the first screen
@@ -141,15 +136,15 @@ while menu2 != "skip":
 		menu2 = "skip"
 		# send = [ Mailer(collection).send_reciept() for collection in collections ]
 		print "\nAll the receipts were sent successfully!\n"
-		# record.write_pickups_csv( collections )
-		# record.update_donation_total()
 		[cres_database.add_row("Pickups", collection) for collection in collections]
-
+		# cres_database.sum_donations_by_restaurant()
+		# print cres_database.sum_donations_by_restaurant()
 
 	else:
 		print "\n" , menu2
 		print "Not all of the receipts were sent and you got spit back to the inputs menu or quit"
 
+cres_database.sum_donations_by_restaurant()
 
 	
 # Need to take each collect in collections and grab only the info we want to 

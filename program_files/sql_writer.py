@@ -32,8 +32,11 @@ config = {
 
 
 
+
+
 db = mysql.connector.connect(**config)
 cursor = db.cursor()
+
 
 
 class Sql_Writer():
@@ -54,6 +57,7 @@ class Sql_Writer():
 		# cursor = db.cursor()
 
 		# filter out keys that are not column names
+		# you have to add new columns in the sqladmin page
 		cursor.execute("describe %s" % tablename)
 		allowed_keys = set(row[0] for row in cursor.fetchall())
 		keys = allowed_keys.intersection(rowdict)
@@ -116,6 +120,7 @@ class Sql_Writer():
 		cursor.execute("SELECT `Name` FROM `Locations`")
 		names = [n[0] for n in cursor.fetchall()]
 		print "\nNames: ", names
+		self.names = names
 		# db.close()
 		return names
 
@@ -134,12 +139,40 @@ class Sql_Writer():
 		# to their respective Charity
 		pass
 
+	def sum_donations_by_restaurant(self):
+		print "This is sum_donations()"
+		total_donations = []
+		c = 0
+		print self.names
+		for n in self.names:
+			print "n: ", n
+			sqller = 'SELECT `Location`, SUM(`Expected Donation`), `Charity` FROM Pickups WHERE `Location` = "%s" ' % (n) 
+			cursor.execute(sqller)
+			fetcher = cursor.fetchall()
+			print fetcher
+			if fetcher[0][0] != None:
+				print fetcher[0][0], "Got added"
+				total_donations.append( (fetcher[0][0], fetcher[0][1], fetcher[0][2])  )
+		print '\n\n', total_donations , '\n\n'
 
+		total_donations = { key:(round(float(value),2) , x) for key, value, x in  total_donations }	
+		
+		# total_donations is a dictionary of donation totals using restaurant names as the keys
+		#	and the values are tuples in the for of (total, carity)
+
+		for key in total_donations:
+			doer = 'UPDATE `Locations` SET `Total Donation`= %s WHERE `Name` = "%s"' % (  total_donations[key][0], key )
+			cursor.execute(doer)
+			db.commit()
+
+			print key, total_donations[key]
+		
 
 if __name__ == '__main__':
 	print "You're running the py itself."
 	writer = Sql_Writer(config)
 # 	writer.add_row("Locations", loc)
-	writer.delete_row("Pickups", "Location", "Robby's Place")
-# 	writer.names()
+#	writer.delete_row("Pickups", "Location", "Robby's Place")
+	writer.names()
+	writer.sum_donations_by_restaurant()
 
