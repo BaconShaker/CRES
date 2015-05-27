@@ -138,6 +138,8 @@ while menu2 != "skip":
 		print "\nAll the receipts were sent successfully!\n"
 		[cres_database.add_row("Pickups", collection) for collection in collections]
 		cres_database.sum_donations_by_restaurant()
+		cres_database.last_pickup(1)
+		cres_database.next_pickup()
 
 	else:
 		print "\n" , menu2

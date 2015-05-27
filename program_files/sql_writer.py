@@ -1,9 +1,13 @@
-#!/Applications/MAMP/Library/bin/python
+#!/Users/AsianCheddar/the_matrix/bin/python
 
 # This file should write the user inputs from routebuilder in a MySQL database
 # instead of in a csv file
 
 import mysql.connector
+from datetime import *
+import numpy
+import math
+
 
 
 loc = {
@@ -36,6 +40,11 @@ config = {
 
 db = mysql.connector.connect(**config)
 cursor = db.cursor()
+
+def days_between(d1, d2):
+    d1 = datetime.strptime(d1, "%Y-%m-%d")
+    d2 = datetime.strptime(d2, "%Y-%m-%d")
+    return abs((d2 - d1).days)
 
 
 
@@ -171,11 +180,112 @@ class Sql_Writer():
 			cursor.execute(cmd)
 			db.commit()
 
-def last_pickup():
-	pass
+
+	def last_pickup(self, chk):
+		print "\nlast_pickup()..."
+		print "Passing lastpickup(0) will result in no UPDATE; passing (1) will UPDATE"
+		self.names()
+		cursor = db.cursor()
+		launch = """SELECT 
+						`Location`,
+						MAX(`Pickup Date`) AS "Last Collection",
+						`Arrival`,
+						`Departure`,
+						`Quality`,
+						`Expected Income`,
+						`Expected Donation`
+					FROM Pickups 
+					GROUP BY `Location`"""
+
+		cursor.execute(launch)
+		recent_pickups = cursor.fetchall()
+		# for t in recent_pickups:
+		# 	print t
+		self.picker = recent_pickups
+
+		if chk == 1:
+			for pickup in recent_pickups:
+				print pickup
+				admin = """UPDATE Locations SET `Last Pickup`= '%s' WHERE `Name` = "%s" """ % ( pickup[1] , pickup[0] )
+				print admin, '\n'
+				cursor.execute(admin)
+				db.commit()
+		else:
+			return recent_pickups
+
+	def collection_analysis(self):
+		# Finds the average number of days between pickups 
+		print "\n\nThis is collection_analysis()"
+		cursor = db.cursor()
+		
+		day_dict = {}
+
+		for ent in self.names():
+			finder = """SELECT 
+							`Pickup Date`,
+							`Arrival`,
+							`Departure`,
+							`Quality`,
+							`Expected Income`,
+							`Expected Donation`
+						FROM Pickups 
+						WHERE `Location` = "%s"
+						GROUP BY `Pickup Date`""" % (ent)
+			cursor.execute(finder)
+			sparks = cursor.fetchall()
+			print ent
+			cou = 0
+			day_list = []
+			for spark in sparks:
+				print cou, spark
+				cou += 1
+				
+				if cou <= len(sparks) - 1:
+					days_btw_pickups = days_between(str(sparks[cou ][0]), str(spark[0]))
+					day_list.append(days_btw_pickups)
+
+				else:
+					print day_list
+					average_fill_time = round(numpy.mean(day_list), 0)
+					print "End of the line bro!"
+					if not math.isnan(average_fill_time):
+						print "Average time between pickups: ", int(average_fill_time)
+						day_dict[ent] = average_fill_time
+			print ""
+
+			
+		print "Day_dict: ", day_dict
+
+		# Making sure self.picker is intact but not writing... 
+		self.last_pickup(0)
+
+		for key in day_dict:
+			planner = 'UPDATE Locations SET `Fill Time` = %s WHERE `Name` = "%s"' % ( day_dict[key] , key )
+			cursor.execute(planner)
+			db.commit()
+
+			print planner 
+
+			looklast = 'SELECT `Name`, `Last Pickup` from Locations where `Name` = "%s" ' % (key)
+			cursor.execute(looklast)
+			looklast = cursor.fetchall()
+			nextpick = {key: las[1]+ timedelta(day_dict[key]) for las in looklast}
+			print "nextpick: " , nextpick
+
+			next = 'UPDATE Locations SET `Next Pickup` = "%s" where `Name` = "%s" ' % (nextpick[key], key )
+			print next
+			cursor.execute(next)
+			db.commit()
+
+
+		print "\n"*5 
+		for r in day_dict:
+			print r , ": ", day_dict[r]
+
+		
+		return day_dict
+
 	
-
-
 
 
 
@@ -188,5 +298,8 @@ if __name__ == '__main__':
 #	writer.delete_row("Pickups", "Location", "Robby's Place")
 	# writer.names()
 	# writer.sum_donations_by_restaurant()
-	writer.average_donations()
+	# writer.average_donations()
+	# writer.last_pickup()
+	writer.collection_analysis()
+	
 
