@@ -97,9 +97,18 @@ class Collection():
 		self.indict['Miles in Route'] = self.route['Total Distance']
 		self.indict['Stops in Route'] = self.route['Number of Stops']
 
+		# Need to adjust expected income and donation amounts
+
+		self.indict['Expected Income'] = self.indict['Expected Income'] + f_surcharge
+		self.indict['Expected Donation'] = self.indict['Expected Donation'] - f_surcharge
+
 		
 		# print tabulate(  [ ( key , self.indict[key] ) for key in self.indict  ]  )
 
+		#This is a debugging checker.
+		# Make sure the total revenue = cres + donation + f_surcharge
+
+		# print "This 0 =", self.indict['Expected Revenue'] - self.indict['Expected Income'] - self.indict['Expected Donation'] - self.indict['Fuel Surcharge']
 
 	# Make anobject that outside programs can return and use
 	def run(self):
@@ -108,6 +117,8 @@ class Collection():
 			self.indict['Pickup Date'] = str(da)
 			
 		print '\n\n'  , self.indict ,  "\n\n"
+
+
 		return self.indict
 
 		

@@ -369,10 +369,12 @@ class Route():
 					"Quality",
 					"Duration", 
 					"Charity",
-					"Notes",  
+					"Notes", 
+					"Diesel Price", 
 					]
 		
 		# Now the list of dictionary tuples for the responses.
+		#	THESE NAMES NEED TO MATCH WITH THE INPUTS DICTIONARY
 		responses = []
 		for leg in self.legs:
 			print '\n\nleg: ', len(responses)
@@ -384,6 +386,7 @@ class Route():
 					"Duration": IntVar(value = 60),
 					"Charity": StringVar(value = str(self.route[len(responses)-1][9] )),
 					"Notes": StringVar(),
+					"Diesel Price": StringVar(value = price),
 			})
 		# responses = [ { questions[y] : IntVar() for y, x in enumerate(questions) } for leg in self.legs ]
 
@@ -456,9 +459,10 @@ class Route():
 		count = 0
 
 		for response in responses:
+			print response.keys()
 			for key in response.keys():
 				usr_inp[count][key] = response[key].get()
-				usr_inp[count]['Diesel Price'] = price
+				# usr_inp[count]['Diesel Price'] = float( response[key].get() )
 				usr_inp[count]["Total Distance"] = route_length
 				usr_inp[count]['Number of Stops'] = len(self.route)
 				usr_inp[count]["Service Fee"] = 0.15
@@ -466,6 +470,7 @@ class Route():
 				usr_inp[count]['Contact Email'] = self.route[count][6]
 				usr_inp[count]['Oil Price'] = yellow_grease_ent.get() / float(100)
 				usr_inp[count]['Location'] = self.route[count][1]
+
 			count += 1
 		
 		print "\nEnd of run_route()"

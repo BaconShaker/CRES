@@ -113,7 +113,7 @@ while menu2 != "skip":
 	# The control list for the email reciept is in Mailer
 	# Mailer sends emails to everyone about the pickup
 	for collection in collections:
-		print "\nEmail sent to: " , collection["Contact Person"] , "at" , collection['Contact Email']
+		print "\nSend email to: " , collection["Contact Person"] , "at" , collection['Contact Email']
 		print tabulate(  [ ( key , collection[key] ) for key in collection  ]  )
 
 		print "Choices are q, back, [anything, y, yes] = next"
@@ -137,14 +137,13 @@ while menu2 != "skip":
 		# send = [ Mailer(collection).send_reciept() for collection in collections ]
 		print "\nAll the receipts were sent successfully!\n"
 		[cres_database.add_row("Pickups", collection) for collection in collections]
-		# cres_database.sum_donations_by_restaurant()
-		# print cres_database.sum_donations_by_restaurant()
+		cres_database.sum_donations_by_restaurant()
 
 	else:
 		print "\n" , menu2
 		print "Not all of the receipts were sent and you got spit back to the inputs menu or quit"
 
-cres_database.sum_donations_by_restaurant()
+
 
 	
 # Need to take each collect in collections and grab only the info we want to 
