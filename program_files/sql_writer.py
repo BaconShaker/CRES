@@ -24,7 +24,7 @@ loc = {
 	"Notes" : "This is a new place, ok to delete",
 }
 
-print "hello"
+print "\nSuccessfully loaded sql_writer.py.\n"
 config = {
 	  'user': 'robby',
 	  'password': 'cres1234',
@@ -285,7 +285,7 @@ class Sql_Writer():
 		
 		return day_dict
 
-	
+
 
 
 
