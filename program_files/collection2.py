@@ -39,7 +39,7 @@ class Collection():
 		l = 48
 
 		t_vol = 0.0043290 * l * w * h
-
+		
 		inputs['Gallons Arrival'] = round(0.0043290 * l * w * inputs['Arrival'] , 2)
 		inputs['Gallons Departure'] = round(0.0043290 * l * w * inputs['Departure'] , 2)
 		inputs['Gallons Collected'] = round(inputs['Gallons Arrival'] - inputs['Gallons Departure'] , 2)
