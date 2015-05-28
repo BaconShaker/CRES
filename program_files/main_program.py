@@ -139,7 +139,7 @@ while menu2 != "skip":
 		[cres_database.add_row("Pickups", collection) for collection in collections]
 		cres_database.sum_donations_by_restaurant()
 		cres_database.last_pickup(1)
-		cres_database.next_pickup()
+		cres_database.collection_analysis()
 
 	else:
 		print "\n" , menu2
