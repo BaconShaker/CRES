@@ -81,7 +81,7 @@ config = {
 
 cres_database = Sql_Writer(config)
 
-options = [cres_database, cres_database.names()]
+options = [cres_database, cres_database.names(), cres_database.oil_on_hand()]
 
 route_master = Route(options, locfile)
 

@@ -252,8 +252,6 @@ class Sql_Writer():
 						print "Average time between pickups: ", int(average_fill_time)
 						day_dict[ent] = average_fill_time
 			print ""
-
-			
 		print "Day_dict: ", day_dict
 
 		# Making sure self.picker is intact but not writing... 
@@ -276,19 +274,21 @@ class Sql_Writer():
 			print next
 			cursor.execute(next)
 			db.commit()
-
-
 		print "\n"*5 
 		for r in day_dict:
 			print r , ": ", day_dict[r]
-
-		
 		return day_dict
 
 
+	def oil_on_hand(self):
+		# This is going to return the expected volume of oil on hand
+		seeql = """SELECT SUM(`Gallons Collected`) FROM Pickups """
+		cursor.execute(seeql)
+		volume = cursor.fetchall()
 
+		print type(volume[0][0])
 
-
+		return int(volume[0][0])
 
 
 if __name__ == '__main__':
@@ -300,6 +300,7 @@ if __name__ == '__main__':
 	# writer.sum_donations_by_restaurant()
 	# writer.average_donations()
 	# writer.last_pickup()
-	writer.collection_analysis()
+	# writer.collection_analysis()
+	print writer.oil_on_hand()
 	
 

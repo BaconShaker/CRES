@@ -46,6 +46,8 @@ class Route():
 		# Need to make a menu, with a button and see how it returns from 
 		# the loop when the window is closed... 
 
+
+
 		def add_stop(*args):
 			sel = lbox.curselection()
 			# Make sure you're only adding one place to the list at once to establilsh clear order. 
@@ -252,9 +254,10 @@ class Route():
 		new_place = ttk.Button(mainframe, text = "Add Client", command = new_client)
 		pickups = ttk.Button(mainframe, text = "List Pickups", command = pickup_lister )
 		add_charity_button = ttk.Button(mainframe, text = "Add Charity", command = add_charity)
-
+		oil_on = ttk.Label(mainframe, text = self.options[2])
 
 		# Set elements using .grid
+		oil_on.grid(column = 8, row = 6)
 		lbox.grid(column = 0, row = 0, rowspan = 6, sticky = (N,S,E,W) )
 		add_but.grid(column = 2, row = 0)
 		routebox.grid(column = 3, row = 0, rowspan = 6, sticky = (N,S,E,W) )

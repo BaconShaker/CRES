@@ -27,7 +27,7 @@ class Collection():
 	
 	def __init__(self, inputs):
 		# Bring in the input dictionary and store it to self for later reference
-		
+		print "\n\n\ninputs from Collection: " , inputs
 		self.route = {
 						"Total Distance" : inputs["Total Distance"],
 						"Number of Stops" : inputs["Number of Stops"]
@@ -49,24 +49,34 @@ class Collection():
 		# 7.75 lbs per gallon is set here
 		lbs_collected = inputs['Gallons Collected'] * 7.75 
 
-		inputs['Expected Revenue'] = round(inputs['Oil Price'] * lbs_collected , 2)
+		# Original
+		# inputs['Expected Revenue'] = round(inputs['Oil Price'] * lbs_collected , 2)
+		print "Wat the fak"
+		print lbs_collected
+		print inputs['Quality']
+
+		# New
+		lbs_adjusted = lbs_collected * inputs['Quality'] / int(100)
+		inputs['Expected Revenue'] = round(inputs['Oil Price'] * lbs_adjusted , 2)
+		inputs['Adjusted LBS'] = lbs_adjusted
+
 
 		donation = inputs['Oil Price'] - inputs['Service Fee'] 
 
 		inputs['Donation Rate'] = round(donation , 2) 
-		inputs['Expected Income'] = inputs['Service Fee'] * lbs_collected
-		inputs['Expected Donation'] = round( donation * lbs_collected * inputs['Quality'] / 100 , 2) 
-		inputs['Collectable Material'] = lbs_collected
-		inputs["Penalty"] = round(inputs['Expected Revenue'] - (inputs['Expected Income'] + inputs['Expected Donation']) ,2)
+		inputs['Expected Income'] = round(inputs['Service Fee'] * lbs_collected, 2)
+		inputs['Expected Donation'] = round( inputs['Expected Revenue'] - inputs['Expected Income'] , 2) 
+		inputs['Collectable Material'] = round(lbs_collected,2)
+		# inputs["Penalty"] = round(inputs['Expected Revenue'] - (inputs['Expected Income'] + inputs['Expected Donation']) ,2)
 
 		# Need to account for the penalty associated with poor quality in the income that CRES will get
-		inputs['Expected Income'] = round(inputs['Expected Income'] + inputs['Penalty'] , 2)
+		# Revenue - (Income + Donation) = | Excess / Penalty |
 		
 		
 
 		self.indict = inputs
 
-
+		print "\n\n INDICT: ", self.indict
 
 		def route_analizer():
 
@@ -91,7 +101,7 @@ class Collection():
 
 		f_surcharge = route_analizer()
 
-		print "\n\n THTHTHTHTHT\n\n"
+		
 		self.indict['Fuel Surcharge'] = f_surcharge
 
 		self.indict['Miles in Route'] = self.route['Total Distance']

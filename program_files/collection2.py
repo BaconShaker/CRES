@@ -39,7 +39,7 @@ class Collection():
 		l = 48
 
 		t_vol = 0.0043290 * l * w * h
-		
+
 		inputs['Gallons Arrival'] = round(0.0043290 * l * w * inputs['Arrival'] , 2)
 		inputs['Gallons Departure'] = round(0.0043290 * l * w * inputs['Departure'] , 2)
 		inputs['Gallons Collected'] = round(inputs['Gallons Arrival'] - inputs['Gallons Departure'] , 2)
@@ -49,18 +49,26 @@ class Collection():
 		# 7.75 lbs per gallon is set here
 		lbs_collected = inputs['Gallons Collected'] * 7.75 
 
-		inputs['Expected Revenue'] = round(inputs['Oil Price'] * inputs['Quality'] * lbs_collected , 2)
+		# Original
+		# inputs['Expected Revenue'] = round(inputs['Oil Price'] * lbs_collected , 2)
+
+
+		# New
+		lbs_adjusted = (inputs['Quality'] / 100) * lbs_collected
+		inputs['Expected Revenue'] = round(inputs['Oil Price'] * lbs_adjusted , 2)
+		inputs['Adjusted LBS'] = round(lbs_adjusted, 2)
+
 
 		donation = inputs['Oil Price'] - inputs['Service Fee'] 
 
 		inputs['Donation Rate'] = round(donation , 2) 
-		inputs['Expected Income'] = inputs['Service Fee'] * lbs_collected
-		inputs['Expected Donation'] = round( donation * lbs_collected * inputs['Quality'] / 100 , 2) 
-		inputs['Collectable Material'] = lbs_collected
-		inputs["Penalty"] = round(inputs['Expected Revenue'] - (inputs['Expected Income'] + inputs['Expected Donation']) ,2)
+		inputs['Expected Income'] = round(inputs['Service Fee'] * lbs_collected, 2)
+		inputs['Expected Donation'] = round( inputs['Expected Revenue'] - inputs['Expected Income'] , 2) 
+		inputs['Collectable Material'] = round(lbs_collected,2)
+		# inputs["Penalty"] = round(inputs['Expected Revenue'] - (inputs['Expected Income'] + inputs['Expected Donation']) ,2)
 
 		# Need to account for the penalty associated with poor quality in the income that CRES will get
-		inputs['Expected Income'] = round(inputs['Expected Income'] + inputs['Penalty'] , 2)
+		# Revenue - (Income + Donation) = | Excess / Penalty |
 		
 		
 
@@ -91,7 +99,7 @@ class Collection():
 
 		f_surcharge = route_analizer()
 
-		print "\n\n THTHTHTHTHT\n\n"
+		
 		self.indict['Fuel Surcharge'] = f_surcharge
 
 		self.indict['Miles in Route'] = self.route['Total Distance']
