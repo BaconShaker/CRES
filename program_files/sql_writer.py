@@ -285,9 +285,6 @@ class Sql_Writer():
 		seeql = """SELECT SUM(`Gallons Collected`) FROM Pickups """
 		cursor.execute(seeql)
 		volume = cursor.fetchall()
-
-		print type(volume[0][0])
-
 		return int(volume[0][0])
 
 
