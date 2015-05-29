@@ -51,7 +51,7 @@ class Collection():
 
 		# Original
 		# inputs['Expected Revenue'] = round(inputs['Oil Price'] * lbs_collected , 2)
-		print "Wat the fak"
+		print "Back to the future"
 		print lbs_collected
 		print inputs['Quality']
 
@@ -65,7 +65,8 @@ class Collection():
 
 		inputs['Donation Rate'] = round(donation , 2) 
 		inputs['Expected Income'] = round(inputs['Service Fee'] * lbs_collected, 2)
-		inputs['Expected Donation'] = round( inputs['Expected Revenue'] - inputs['Expected Income'] , 2) 
+		inputs['Expected Donation'] = round( lbs_adjusted * donation , 2) 
+		# inputs['Expected Donation'] = round( inputs['Expected Revenue'] - inputs['Expected Income'] , 2) 
 		inputs['Collectable Material'] = round(lbs_collected,2)
 		# inputs["Penalty"] = round(inputs['Expected Revenue'] - (inputs['Expected Income'] + inputs['Expected Donation']) ,2)
 
