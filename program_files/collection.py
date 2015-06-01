@@ -65,8 +65,8 @@ class Collection():
 
 		inputs['Donation Rate'] = round(donation , 2) 
 		inputs['Expected Income'] = round(inputs['Service Fee'] * lbs_collected, 2)
-		inputs['Expected Donation'] = round( lbs_adjusted * donation , 2) 
-		# inputs['Expected Donation'] = round( inputs['Expected Revenue'] - inputs['Expected Income'] , 2) 
+		# inputs['Expected Donation'] = round( lbs_adjusted * donation , 2) 
+		inputs['Expected Donation'] = round( inputs['Expected Revenue'] - inputs['Expected Income'] , 2) 
 		inputs['Collectable Material'] = round(lbs_collected,2)
 		# inputs["Penalty"] = round(inputs['Expected Revenue'] - (inputs['Expected Income'] + inputs['Expected Donation']) ,2)
 
@@ -79,6 +79,9 @@ class Collection():
 		self.indict = inputs
 
 		print "\n\n INDICT: ", self.indict
+
+		# Need to calculate the fuel surcharge, this is the program that
+		# takes care of that. The inputs are continued below. 
 
 		def route_analizer():
 
