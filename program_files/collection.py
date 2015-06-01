@@ -73,6 +73,7 @@ class Collection():
 		# Need to account for the penalty associated with poor quality in the income that CRES will get
 		# Revenue - (Income + Donation) = | Excess / Penalty |
 		
+		# This should dissappear
 		
 
 		self.indict = inputs
