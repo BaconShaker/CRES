@@ -159,6 +159,23 @@ class Sql_Writer():
 			db.commit()
 			# print key, total_donations[key]
 		# Now that we've got the donations totaled and updated we should make the average column...
+		return total_donations
+
+	def sum_donations_by_month(self):
+		# Return a dictionary of location : (monthly donation, charity)
+
+		# self.names()
+		doncursor = db.cursor()
+		print "\n\nThis is sum_donations_by_month()"
+		
+		monthsql = "select `Location`, SUM(`Collectable Material`) , SUM(`Gallons Collected`),  SUM(`Expected Donation`) , `charity` from Pickups where MONTHNAME(`Pickup Date`) = 'May' group by `Location`"
+
+		doncursor.execute(monthsql)
+		grabber = doncursor.fetchall()
+		print grabber
+		monthly_donations = { key:(int(lbs), int(gallons), round(float(tot_donation),2) , charity) for key, lbs, gallons, tot_donation, charity in  grabber }
+		# print "\n\nMonthly donations: " , monthly_donations
+		return monthly_donations
 		
 	def average_donations(self):
 		print "\n\nThis is average_donations()\n"
