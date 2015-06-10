@@ -1,4 +1,4 @@
-#!/Users/AsianCheddar/the_matrix/bin/python
+#!/Users/AsianCheddar/sql_try/bin/python
 
 # This is the MAIN PAGE for the CRES Program.
 
