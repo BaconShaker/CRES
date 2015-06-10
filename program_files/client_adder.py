@@ -19,7 +19,7 @@ try:
 except ImportError:
     flags = None
 
-SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
+SCOPES = 'https://www.googleapis.com/auth/calendar'
 CLIENT_SECRET_FILE = os.path.expanduser('~/client_secret.json')
 APPLICATION_NAME = 'Google Calendar API Quickstart'
 
@@ -87,6 +87,47 @@ def main():
         			# print p
         			print "		", p["displayName"], p['responseStatus']
 
+
+def make_event():
+    credentials = get_credentials()
+
+    service = build('calendar', 'v3', http=credentials.authorize(Http()))
+
+    event = {
+        'summary': '(TEST)Gotta do a pickup!',
+        'location': '800 Howard St., San Francisco, CA 94103',
+        'description': "(THIS IS A TEST)Don't forget the paper towels",
+        'start': {
+            'dateTime': '2015-06-28T09:00:00-07:00',
+            'timeZone': 'America/Los_Angeles',
+        },
+        'end': {
+            'dateTime': '2015-06-28T17:00:00-07:00',
+            'timeZone': 'America/Los_Angeles',
+        },
+        # 'recurrence': ['RRULE:FREQ=DAILY;COUNT=2'],
+        'attendees': [
+            {
+            'email': 'rshintani@gmail.com',
+            "displayName": "The Robster"
+            },
+            {
+            'email': 'mmirabelli88@gmail.com',
+            "displayName": "Mikey"
+            },
+        ],
+        'reminders': {
+            'useDefault': False,
+            'overrides': [
+                        {'method': 'email', 'minutes': 24 * 60},
+                        {'method': 'sms', 'minutes': 10},
+                        ],
+        },
+    }
+
+    event = service.events().insert(calendarId='primary', body=event).execute()
+    print 'Event created: %s' % (event.get('htmlLink'))
+
 def connect():
 	# Authorize server-to-server interactions from Google Compute Engine.
 	from oauth2client import gce
@@ -123,6 +164,7 @@ def PrintAllContacts(gd_client):
       print '    Extended Property - %s: %s' % (extended_property.name, value)
 
 if __name__ == '__main__':
-    # main()
-    PrintAllContacts(connect())
+    main()
+    # make_event()
+    # PrintAllContacts(connect())
     # PrintAllContacts(get_credentials())
