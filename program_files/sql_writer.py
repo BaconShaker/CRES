@@ -1,4 +1,4 @@
-#!/Users/AsianCheddar/the_matrix/bin/python
+#!/Users/AsianCheddar/sql_try/bin/python
 
 # This file should write the user inputs from routebuilder in a MySQL database
 # instead of in a csv file
@@ -7,6 +7,7 @@ import mysql.connector
 from datetime import *
 import numpy
 import math
+from client_adder import *
 
 
 
@@ -51,6 +52,58 @@ def days_between(d1, d2):
 class Sql_Writer():
 	def __init__(self, config):
 		self.config = config
+
+
+
+	def pickup_scheduler(self, pickup_to_schedule):
+
+		print """
+		pickup_to_schedule needs to be in the format of:
+			0 summary string
+			1 locaton (full address) string
+			2 description string
+			3 0 start date (2015-09-28)
+			  1 start time (T09:00:00-07:00)
+			4 0 end date (2015-09-28)
+			  1 end time (T17:00:00-07:00)\n\n
+
+			By default Robby and Mike are the only invitees. That can be changed later
+		"""
+
+		to_add = {
+		    'summary': pickup_to_schedule[0],
+		    'location': pickup_to_schedule[1],
+		    'description': pickup_to_schedule[2],
+		    'start': {
+		        'dateTime': pickup_to_schedule[3][0] + 'T' + pickup_to_schedule[3][1],
+		        'timeZone': 'America/Chicago',
+		    },
+		    'end': {
+		        'dateTime': pickup_to_schedule[4][0] + 'T' + pickup_to_schedule[4][1],
+		        'timeZone': 'America/Chicago',
+		    },
+		    # 'recurrence': ['RRULE:FREQ=DAILY;COUNT=2'],
+		    'attendees': [
+		        {
+		        'email': 'rshintani@gmail.com',
+		        "displayName": "Robby Shintani"
+		        },
+		        {
+		        'email': 'mmirabelli88@gmail.com',
+		        "displayName": "Michael Mirabelli"
+		        },
+		    ],
+		    'reminders': {
+		        'useDefault': False,
+		        'overrides': [
+		                    {'method': 'email', 'minutes': 24 * 60},
+		                    {'method': 'sms', 'minutes': 10},
+		                    ],
+		        },
+		    }
+		calendar = Cal_keeper()
+		calendar.list_events()
+
 		
 
 
@@ -316,5 +369,6 @@ if __name__ == '__main__':
 	# writer.last_pickup()
 	# writer.collection_analysis()
 	print writer.oil_on_hand()
+	writer.pickup_scheduler(['ro'])
 	
 

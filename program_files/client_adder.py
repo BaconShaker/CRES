@@ -6,7 +6,6 @@
 
 from datetime import datetime
 import os
-
 from apiclient.discovery import build
 from httplib2 import Http
 import oauth2client
@@ -19,9 +18,11 @@ try:
 except ImportError:
     flags = None
 
+
+
 SCOPES = 'https://www.googleapis.com/auth/calendar'
 CLIENT_SECRET_FILE = os.path.expanduser('~/client_secret.json')
-APPLICATION_NAME = 'Google Calendar API Quickstart'
+APPLICATION_NAME = 'CRES Calkeeper'
 
 
 def get_credentials():
@@ -53,80 +54,51 @@ def get_credentials():
 
     return credentials
 
-def main():
-    """Shows basic usage of the Google Calendar API.
+class Cal_keeper(object):
+    """docstring for Cal_keeper"""
+    def __init__(self):
+        
+        self.credentials = get_credentials()
+        print "\nCal_keeper initiated\n"
+        
+    def  list_events(self):
+        """
+        Lists the next 10 scheduled collections
+        """
+        credentials = self.credentials
 
-    Creates a Google Calendar API service object and outputs a list of the next
-    10 events on the user's calendar.
-    """
-    credentials = get_credentials()
+        service = build('calendar', 'v3', http=credentials.authorize(Http()))
 
-    service = build('calendar', 'v3', http=credentials.authorize(Http()))
+        now = datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
+        print 'Getting the upcoming 10 events'
+        eventsResult = service.events().list(
+            calendarId='primary', timeMin=now, maxResults=10, singleEvents=True,
+            orderBy='startTime').execute()
+        events = eventsResult.get('items', [])
 
-    now = datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-    print 'Getting the upcoming 10 events'
-    eventsResult = service.events().list(
-        calendarId='primary', timeMin=now, maxResults=10, singleEvents=True,
-        orderBy='startTime').execute()
-    events = eventsResult.get('items', [])
+        if not events:
+            print 'No upcoming events found.'
+        for event in events:
+            start = event['start'].get('dateTime', event['start'].get('date'))
+            print '\n\n', start, event['summary']
+            # print "***", event["attendees"].get('displayName') ,"***"
 
-    if not events:
-        print 'No upcoming events found.'
-    for event in events:
-        start = event['start'].get('dateTime', event['start'].get('date'))
-        print '\n\n', start, event['summary']
-        # print "***", event["attendees"].get('displayName') ,"***"
+            # attendees = event.get('attendees')
+            # print attendees
 
-        # attendees = event.get('attendees')
-        # print attendees
-
-        for thing in event:
-        	if thing == "attendees":
-        		print thing
-        		for p in event[thing]:
-        			# print p
-        			print "		", p["displayName"], p['responseStatus']
+            for thing in event:
+            	if thing == "attendees":
+            		print thing
+            		for p in event[thing]:
+            			# print p
+            			print "		", p["displayName"], p['responseStatus']
 
 
-def make_event():
-    credentials = get_credentials()
-
-    service = build('calendar', 'v3', http=credentials.authorize(Http()))
-
-    event = {
-        'summary': '(TEST)Gotta do a pickup!',
-        'location': '800 Howard St., San Francisco, CA 94103',
-        'description': "(THIS IS A TEST)Don't forget the paper towels",
-        'start': {
-            'dateTime': '2015-06-28T09:00:00-07:00',
-            'timeZone': 'America/Los_Angeles',
-        },
-        'end': {
-            'dateTime': '2015-06-28T17:00:00-07:00',
-            'timeZone': 'America/Los_Angeles',
-        },
-        # 'recurrence': ['RRULE:FREQ=DAILY;COUNT=2'],
-        'attendees': [
-            {
-            'email': 'rshintani@gmail.com',
-            "displayName": "The Robster"
-            },
-            {
-            'email': 'mmirabelli88@gmail.com',
-            "displayName": "Mikey"
-            },
-        ],
-        'reminders': {
-            'useDefault': False,
-            'overrides': [
-                        {'method': 'email', 'minutes': 24 * 60},
-                        {'method': 'sms', 'minutes': 10},
-                        ],
-        },
-    }
-
-    event = service.events().insert(calendarId='primary', body=event).execute()
-    print 'Event created: %s' % (event.get('htmlLink'))
+    def make_event(self, event):
+        credentials = get_credentials()
+        service = build('calendar', 'v3', http=credentials.authorize(Http()))
+        event = service.events().insert(calendarId='primary', body=event).execute()
+        print 'Event created: %s' % (event.get('htmlLink'))
 
 def connect():
 	# Authorize server-to-server interactions from Google Compute Engine.
@@ -164,7 +136,41 @@ def PrintAllContacts(gd_client):
       print '    Extended Property - %s: %s' % (extended_property.name, value)
 
 if __name__ == '__main__':
-    main()
-    # make_event()
+
+    demo_event = {
+    'summary': '(TEST)Gotta do a pickup!',
+    'location': '2021 w fulton st chicago il 60647',
+    'description': "(THIS IS A TEST)Don't forget the paper towels",
+    'start': {
+        'dateTime': '2015-09-28T09:00:00-07:00',
+        'timeZone': 'America/Chicago',
+    },
+    'end': {
+        'dateTime': '2015-09-28T17:00:00-07:00',
+        'timeZone': 'America/Chicago',
+    },
+    # 'recurrence': ['RRULE:FREQ=DAILY;COUNT=2'],
+    'attendees': [
+        {
+        'email': 'rshintani@gmail.com',
+        "displayName": "The Robster"
+        },
+        {
+        'email': 'mmirabelli88@gmail.com',
+        "displayName": "Mikey"
+        },
+    ],
+    'reminders': {
+        'useDefault': False,
+        'overrides': [
+                    {'method': 'email', 'minutes': 24 * 60},
+                    {'method': 'sms', 'minutes': 10},
+                    ],
+        },
+    }
+
+    main = Cal_keeper()
+    # main.list_events()
+    main.make_event(demo_event)
     # PrintAllContacts(connect())
     # PrintAllContacts(get_credentials())

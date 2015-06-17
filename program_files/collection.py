@@ -51,9 +51,9 @@ class Collection():
 
 		# Original
 		# inputs['Expected Revenue'] = round(inputs['Oil Price'] * lbs_collected , 2)
-		print "Back to the future"
-		print lbs_collected
-		print inputs['Quality']
+		print "\n******************* Back to the future ********************"
+		print "lbs_collected:", lbs_collected
+		print "Quality:", inputs['Quality'], "\n"
 
 		# New
 		lbs_adjusted = lbs_collected * inputs['Quality'] / int(100)
@@ -78,7 +78,9 @@ class Collection():
 
 		self.indict = inputs
 
-		print "\n\n INDICT: ", self.indict
+		print "\n\n 	INDICT "
+		print tabulate( [( e, self.indict[e] ) for e in self.indict] , ["Key", "Value"])
+		
 
 		# Need to calculate the fuel surcharge, this is the program that
 		# takes care of that. The inputs are continued below. 
