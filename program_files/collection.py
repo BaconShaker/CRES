@@ -40,6 +40,11 @@ class Collection():
 
 		t_vol = 0.0043290 * l * w * h
 
+		# Convert Gallons Arrivial and Departure from strings to doubles
+		inputs['Arrival'] = float(inputs['Arrival'])
+		inputs['Departure'] = float(inputs['Departure'])
+
+
 		inputs['Gallons Arrival'] = round(0.0043290 * l * w * inputs['Arrival'] , 2)
 		inputs['Gallons Departure'] = round(0.0043290 * l * w * inputs['Departure'] , 2)
 		inputs['Gallons Collected'] = round(inputs['Gallons Arrival'] - inputs['Gallons Departure'] , 2)
@@ -68,8 +73,7 @@ class Collection():
 		# inputs['Expected Donation'] = round( lbs_adjusted * donation , 2) 
 		inputs['Expected Donation'] = round( inputs['Expected Revenue'] - inputs['Expected Income'] , 2) 
 		inputs['Collectable Material'] = round(lbs_collected,2)
-		# inputs["Penalty"] = round(inputs['Expected Revenue'] - (inputs['Expected Income'] + inputs['Expected Donation']) ,2)
-
+		
 		# Need to account for the penalty associated with poor quality in the income that CRES will get
 		# Revenue - (Income + Donation) = | Excess / Penalty |
 		

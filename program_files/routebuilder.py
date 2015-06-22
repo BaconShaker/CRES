@@ -383,9 +383,9 @@ class Route():
 			print '\n\nleg: ', len(responses)
 			responses.append({
 					'Pickup Date' : StringVar(),
-					"Arrival" : IntVar(value = 1),
-					"Departure": IntVar(value = 1),
-					"Quality": IntVar(value = 80),
+					"Arrival" : StringVar(value = "1"),
+					"Departure": StringVar(value = "1"),
+					"Quality": IntVar(value = 90),
 					"Duration": IntVar(value = 60),
 					"Charity": StringVar(value = str(self.route[len(responses)-1][9] )),
 					"Notes": StringVar(),

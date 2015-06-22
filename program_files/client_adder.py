@@ -135,6 +135,9 @@ def PrintAllContacts(gd_client):
         value = extended_property.GetXmlBlob()
       print '    Extended Property - %s: %s' % (extended_property.name, value)
 
+
+
+
 if __name__ == '__main__':
 
     demo_event = {
