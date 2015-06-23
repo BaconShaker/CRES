@@ -48,11 +48,32 @@ def days_between(d1, d2):
     return abs((d2 - d1).days)
 
 
+# def average_collections():
+# 	print "\nThis is averageing the collections..."
+# 	average_sql = """SELECT `Location`, round(AVG(`Gallons Collected`) , 2) as "Average Collection" from Pickups group by `Location`"""
+# 	cursor.execute(average_sql)
+# 	collection_averages = cursor.fetchall()
+# 	for thing in collection_averages:
+# 		mean_sql = """UPDATE Locations SET `Average Collection`= %s WHERE `Name` = "%s" """ % (thing[1], thing[0])
+# 		cursor.execute(mean_sql)
+# 		db.commit()
+
 
 class Sql_Writer():
 	def __init__(self, config):
 		self.config = config
 
+		# UPDATE the average collection column in Loations table
+	def average_collections(self):
+		print "\nThis is averageing the collections..."
+		average_sql = """SELECT `Location`, round(AVG(`Gallons Collected`) , 2) as "Average Collection" from Pickups group by `Location`"""
+		cursor.execute(average_sql)
+		collection_averages = cursor.fetchall()
+		for thing in collection_averages:
+			mean_sql = """UPDATE Locations SET `Average Collection`= %s WHERE `Name` = "%s" """ % (thing[1], thing[0])
+			cursor.execute(mean_sql)
+			db.commit()
+		
 
 
 	def pickup_scheduler(self, pickup_to_schedule):
@@ -101,10 +122,12 @@ class Sql_Writer():
 		                    ],
 		        },
 		    }
+
+		# This is for the google Calendar API
 		calendar = Cal_keeper()
 		calendar.list_events()
 
-		
+	
 
 
 	def add_row(self, tablename, rowdict):
@@ -369,6 +392,11 @@ if __name__ == '__main__':
 	# writer.last_pickup()
 	# writer.collection_analysis()
 	print writer.oil_on_hand()
-	writer.pickup_scheduler(['ro'])
+
+	
+
+
+	# Doesn't work:
+	# writer.pickup_scheduler(['ro'])
 	
 

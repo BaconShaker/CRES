@@ -473,13 +473,14 @@ class Route():
 		for response in responses:
 			print response.keys()
 			for key in response.keys():
+				print "***********\n\n", self.route[count], "\n\n*************"
 				usr_inp[count][key] = response[key].get()
 				# usr_inp[count]['Diesel Price'] = float( response[key].get() )
 				usr_inp[count]["Total Distance"] = route_length
 				usr_inp[count]['Number of Stops'] = len(self.route)
 				usr_inp[count]["Service Fee"] = 0.15
-				usr_inp[count]['Contact Person'] = self.route[count][5]
-				usr_inp[count]['Contact Email'] = self.route[count][6]
+				usr_inp[count]['Contact Person'] = self.route[count][7]
+				usr_inp[count]['Contact Email'] = self.route[count][5]
 				usr_inp[count]['Oil Price'] = float(yellow_grease_ent.get()) / float(100)
 				usr_inp[count]['Location'] = self.route[count][1]
 

@@ -28,6 +28,7 @@ while mods == 1:
 		import urllib2
 		from bs4 import BeautifulSoup           # pip install BeautifulS
 		from datetime import date
+		import thread
 
 
 
@@ -80,6 +81,7 @@ config = {
 		}
 
 cres_database = Sql_Writer(config)
+
 
 options = [cres_database, cres_database.names(), cres_database.oil_on_hand()]
 
@@ -140,6 +142,7 @@ while menu2 != "skip":
 		cres_database.sum_donations_by_restaurant()
 		cres_database.last_pickup(1)
 		cres_database.collection_analysis()
+		cres_database.average_collections()
 
 	else:
 		print "\n" , menu2
