@@ -21,6 +21,8 @@ import time
 from file_writer import * # Not sure I need either of these...
 from file_writer import csv_reader
 import subprocess
+from cal_prompter import cal_prompt 
+from cal_prompter import Calendar
 
 
 class Route():
@@ -256,6 +258,7 @@ class Route():
 		add_charity_button = ttk.Button(mainframe, text = "Add Charity", command = add_charity)
 		oil_on = ttk.Label(mainframe, text = self.options[2])
 
+
 		# Set elements using .grid
 		oil_on.grid(column = 8, row = 6)
 		lbox.grid(column = 0, row = 0, rowspan = 6, sticky = (N,S,E,W) )
@@ -282,6 +285,10 @@ class Route():
 		
 		print "Are we here yet?"
 		page.mainloop()
+
+		# self.route[0] =  cal_prompt() 
+
+		print "************** ",self.route
 
 		if self.add_check == 1:
 			# Need to do some formatting on the dictionary values from string to float
@@ -332,6 +339,7 @@ class Route():
 		print "\nDiesel source:" , self.link_diesel
 		print "AMS source:" , self.link_ams , '\n'
 
+		pickup_date = cal_prompt()
 
 		# Set up main Frame for the route display to be shown on. 
 		disp = Tk()
@@ -382,7 +390,7 @@ class Route():
 		for leg in self.legs:
 			print '\n\nleg: ', len(responses)
 			responses.append({
-					'Pickup Date' : StringVar(),
+					'Pickup Date' : StringVar(value = pickup_date),
 					"Arrival" : StringVar(value = "1"),
 					"Departure": StringVar(value = "1"),
 					"Quality": IntVar(value = 90),
@@ -407,8 +415,8 @@ class Route():
 				ttk.Entry(dframe, textvariable = responses[stop][question]).grid(column = start_col + stop + 1, row = rws)
 
 		# Assign the entry variable for the AMS price we want to use for ALL of the stops on the route
-		yellow_grease_ent = IntVar()
-		yellow_grease_ent.set(21)
+		yellow_grease_ent = StringVar()
+		yellow_grease_ent.set('21.5')
 
 		# Assign names to the Labels and Buttons on the Frame
 		ams_location_text = ttk.Label(dframe, text = self.ams_location)
@@ -432,6 +440,7 @@ class Route():
 		# map_label.grid(column = 3, row = 3)
 		# Start the mainloop() for the route you just made
 		disp.mainloop()
+
 
 		# print "THIS IS THE END! HERE's self.route, it should not have icnc at the ends. " 
 		# print "\n\n"
@@ -471,7 +480,7 @@ class Route():
 				usr_inp[count]["Service Fee"] = 0.15
 				usr_inp[count]['Contact Person'] = self.route[count][5]
 				usr_inp[count]['Contact Email'] = self.route[count][6]
-				usr_inp[count]['Oil Price'] = yellow_grease_ent.get() / float(100)
+				usr_inp[count]['Oil Price'] = float(yellow_grease_ent.get()) / float(100)
 				usr_inp[count]['Location'] = self.route[count][1]
 
 			count += 1
@@ -507,13 +516,14 @@ def show_directions():
 # -----------------------------------------------------------------
 
 if __name__ == '__main__':
-	print "I'm running!"
-	locfile = os.path.expanduser( "~/GDrive/cres_sheets" )
-	keep = Keeper(locfile)
-	ops = [keep, keep.all_names(), keep.master_lister()]
-	route = Route(ops, locfile )
-	route.build()
+	# print "I'm running!"
+	# locfile = os.path.expanduser( "~/GDrive/cres_sheets" )
+	# keep = Keeper(locfile)
+	# ops = [keep, keep.all_names(), keep.master_lister()]
+	# route = Route(ops, locfile )
+	# route.build()
 
+	cal_prompt()
 
 
 	

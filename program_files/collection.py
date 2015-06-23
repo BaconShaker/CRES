@@ -43,6 +43,7 @@ class Collection():
 		# Convert Gallons Arrivial and Departure from strings to doubles
 		inputs['Arrival'] = float(inputs['Arrival'])
 		inputs['Departure'] = float(inputs['Departure'])
+		# inputs['Oil Price'] = float(inputs['Oil Price'])
 
 
 		inputs['Gallons Arrival'] = round(0.0043290 * l * w * inputs['Arrival'] , 2)
