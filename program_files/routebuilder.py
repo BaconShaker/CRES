@@ -18,8 +18,6 @@ from collection import *
 from mapper import *
 import thread
 import time
-from file_writer import * # Not sure I need either of these...
-from file_writer import csv_reader
 import subprocess
 from cal_prompter import cal_prompt 
 from cal_prompter import Calendar

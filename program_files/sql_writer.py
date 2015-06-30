@@ -124,7 +124,7 @@ class Sql_Writer():
 		    }
 
 		# This is for the google Calendar API
-		calendar = Cal_keeper()
+		calendar = GCal()
 		calendar.list_events()
 
 	
@@ -312,46 +312,77 @@ class Sql_Writer():
 		cursor = db.cursor()
 		
 		day_dict = {}
+		gal_dict = {}
 
 		for ent in self.names():
+
 			finder = """SELECT 
 							`Pickup Date`,
+							`Gallons Collected`,
 							`Arrival`,
 							`Departure`,
 							`Quality`,
 							`Expected Income`,
 							`Expected Donation`
 						FROM Pickups 
-						WHERE `Location` = "%s"
-						GROUP BY `Pickup Date`""" % (ent)
+						WHERE `Location` = "%s" """ % (ent)
 			cursor.execute(finder)
 			sparks = cursor.fetchall()
 			print ent
 			cou = 0
 			day_list = []
+			gal_list = []
+
+			# Sparks is a list of pickups from each Location
 			for spark in sparks:
 				print cou, spark
 				cou += 1
 				
 				if cou <= len(sparks) - 1:
-					days_btw_pickups = days_between(str(sparks[cou ][0]), str(spark[0]))
+					
+					days_btw_pickups = days_between(str(sparks[cou][0]), str(spark[0]))
 					day_list.append(days_btw_pickups)
 
+					gal_list.append(sparks[cou][1])
+
 				else:
-					print day_list
+					# Runs when the iterator gets to the end of the pickups/restaurant
+					# 	It's because you want the days between..
+
+					ziplist = zip(day_list, gal_list)
+					print ziplist
+					gal_per_day = []
+					for z in ziplist:
+						gal_per_day.append(z[1]/z[0])
+
+					# Predict next pickup by actual gallons collectd.
+					gal_per_day =round(numpy.mean(gal_per_day), 0)
+					print "gal_per_day", gal_per_day
+					fill_time_by_gallons = round(200/gal_per_day , 0)
+					
+
+					print "Fill Time by gallons collected: " , fill_time_by_gallons  , "days"
+					
+					# "Fill time" by actual pickups--more like actual pickup average
 					average_fill_time = round(numpy.mean(day_list), 0)
-					print "End of the line bro!"
+					
 					if not math.isnan(average_fill_time):
-						print "Average time between pickups: ", int(average_fill_time)
+						fill_time_by_gallons = int(fill_time_by_gallons)
+						print "Average time between pickups: ", int(average_fill_time), "days."
+						print "Fill Time by gallons collected: " , fill_time_by_gallons  , "days."
 						day_dict[ent] = average_fill_time
+						gal_dict[ent] = fill_time_by_gallons
 			print ""
 		print "Day_dict: ", day_dict
+		
+		print "Gal_dict: ", gal_dict
 
 		# Making sure self.picker is intact but not writing... 
 		self.last_pickup(0)
 
 		for key in day_dict:
-			planner = 'UPDATE Locations SET `Fill Time` = %s WHERE `Name` = "%s"' % ( day_dict[key] , key )
+			print key, day_dict[key], gal_dict[key]
+			planner = 'UPDATE Locations SET `Fill Time` = %s, `Fill Time Gallons` = %s WHERE `Name` = "%s"' % ( day_dict[key] , gal_dict[key], key )
 			cursor.execute(planner)
 			db.commit()
 
@@ -361,15 +392,19 @@ class Sql_Writer():
 			cursor.execute(looklast)
 			looklast = cursor.fetchall()
 			nextpick = {key: las[1]+ timedelta(day_dict[key]) for las in looklast}
+			nextpick_gal = {key: las[1]+ timedelta(gal_dict[key]) for las in looklast}
 			print "nextpick: " , nextpick
+			print "nextpick_gal: " , nextpick_gal
 
-			next = 'UPDATE Locations SET `Next Pickup` = "%s" where `Name` = "%s" ' % (nextpick[key], key )
+
+			next = """UPDATE Locations SET `Next Pickup` = "%s", `Next Pickup Gallons` = "%s" where `Name` = "%s" """ % (nextpick[key], nextpick_gal[key] ,key )
 			print next
 			cursor.execute(next)
 			db.commit()
+
 		print "\n"*5 
 		for r in day_dict:
-			print r , ": ", day_dict[r]
+			print "We go to", r , "every", day_dict[r], "but it should take ~", gal_dict[r] ,"days to fill.\n"
 		return day_dict
 
 
@@ -394,9 +429,10 @@ if __name__ == '__main__':
 	print writer.oil_on_hand()
 
 	
-
+	# writer.collection_analysis()
 
 	# Doesn't work:
-	# writer.pickup_scheduler(['ro'])
+
+	# writer.pickup_scheduler()
 	
 

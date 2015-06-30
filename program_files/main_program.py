@@ -44,7 +44,7 @@ while mods == 1:
 from routebuilder import *
 from collection import *
 from msg_reciept2 import *
-# from file_writer import *
+
 from sql_writer import *
 
 # First let's check which system is running.
