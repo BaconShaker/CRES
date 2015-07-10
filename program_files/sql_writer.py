@@ -8,6 +8,7 @@ from datetime import *
 import numpy
 import math
 from client_adder import *
+from all_restaurants import place_lookup
 
 
 
@@ -74,7 +75,8 @@ class Sql_Writer():
 			cursor.execute(mean_sql)
 			db.commit()
 		
-
+	def get_place_info(self):
+		place_lookup("Hachi's Kitchen")
 
 	def pickup_scheduler(self, pickup_to_schedule):
 
@@ -198,6 +200,23 @@ class Sql_Writer():
 		self.master_names = namer
 		return namer
 
+	def which_charity(self, address):
+		# Look up charity for Location using the address.
+		sqlly = 'SELECT `Name`, `Charity` FROM `Locations` WHERE `Address` LIKE \"%'
+		add_on =  address +'%"' 
+		sqlly = sqlly + add_on
+		print sqlly
+		cursor.execute(sqlly)
+		answer = cursor.fetchall()
+		if answer: 
+			print "Charity for", answer[0][0], ":", answer[0][1]
+			print "answer: ", answer
+			# if type(answer) is not list:
+			# 	return answer[0]
+			# else: 
+			# 	return answer
+			return answer[0][1]
+
 	def route_informer(self, place_to_lookup):
 		# Grab the Address, city zip and email... for the route maker
 		squeeky = 'SELECT `Address`, `City`, `Zip`, `Email`, `Phone Number`, `Contact`, `Last Pickup`, `Charity`, `Total Donation`, `Notes` FROM `Locations` WHERE `Name` = "%s"' % (place_to_lookup)
@@ -237,14 +256,14 @@ class Sql_Writer():
 		# Now that we've got the donations totaled and updated we should make the average column...
 		return total_donations
 
-	def sum_donations_by_month(self):
+	def sum_donations_by_month(self, month):
 		# Return a dictionary of location : (monthly donation, charity)
 
 		# self.names()
 		doncursor = db.cursor()
 		print "\n\nThis is sum_donations_by_month()"
 		
-		monthsql = "select `Location`, SUM(`Collectable Material`) , SUM(`Gallons Collected`),  SUM(`Expected Donation`) , `charity` from Pickups where MONTHNAME(`Pickup Date`) = 'May' group by `Location`"
+		monthsql = "select `Location`, SUM(`Collectable Material`) , SUM(`Gallons Collected`),  SUM(`Expected Donation`) , `charity` from Pickups where MONTHNAME(`Pickup Date`) = '%s' group by `Location`" % (month)
 
 		doncursor.execute(monthsql)
 		grabber = doncursor.fetchall()
@@ -427,6 +446,8 @@ if __name__ == '__main__':
 	# writer.last_pickup()
 	# writer.collection_analysis()
 	print writer.oil_on_hand()
+	# writer.get_place_info()
+	writer.which_charity("2021 W. Fulton Chicago")
 
 	
 	# writer.collection_analysis()

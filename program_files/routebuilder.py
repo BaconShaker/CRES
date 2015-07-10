@@ -387,13 +387,15 @@ class Route():
 		responses = []
 		for leg in self.legs:
 			print '\n\nleg: ', len(responses)
+			print '\n************************\n', len(responses), leg, self.options[0].which_charity(leg[1][0:12])
+			charity_name_only = self.options[0].which_charity(leg[1][0:8])
 			responses.append({
 					'Pickup Date' : StringVar(value = pickup_date),
 					"Arrival" : StringVar(value = "1"),
 					"Departure": StringVar(value = "1"),
 					"Quality": IntVar(value = 90),
 					"Duration": IntVar(value = 60),
-					"Charity": StringVar(value = str(self.route[len(responses)-1][9] )),
+					"Charity": StringVar(value = str(charity_name_only) ),
 					"Notes": StringVar(),
 					"Diesel Price": StringVar(value = price),
 			})
