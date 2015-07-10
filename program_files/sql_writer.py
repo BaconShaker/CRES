@@ -202,6 +202,7 @@ class Sql_Writer():
 
 	def which_charity(self, address):
 		# Look up charity for Location using the address.
+		# Returns only the name of the charity but answer is a tuple of (Name, Charity)
 		sqlly = 'SELECT `Name`, `Charity` FROM `Locations` WHERE `Address` LIKE \"%'
 		add_on =  address +'%"' 
 		sqlly = sqlly + add_on
