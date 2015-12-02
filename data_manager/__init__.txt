@@ -1,0 +1,29 @@
+This is a PLACEHOLDER for the actual __init__.py file. 
+I didn't include the actual one because it has passwords and usernames that should not be public. 
+Ask me for the real one. 
+
+It should look something like this though:
+#!/envs/CRES/bin/python
+# This is the __init__ file for the Data_Manager class 
+__robby__ = {
+	  'user': '########',
+	  'password': '##########',
+	  'host': '###############',
+	  'database': 'CRES_MAIN',
+	  'raise_on_warnings': True,
+	  'port': ####
+	}
+
+__mike__ = {
+	  'user': '#########',
+	  'password': '#############',
+	  'host': '###############',
+	  'database': 'CRES_MAIN',
+	  'raise_on_warnings': True,
+	  'port': ####
+	}
+
+__ICNC__ = "2021 W. Fulton Chicago 60612"
+
+google_api_key = '##########################'
+
