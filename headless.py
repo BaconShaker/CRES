@@ -1,0 +1,110 @@
+#!/usr/bin/python
+
+# This is the MAIN PAGE for the CRES Program.
+
+# Functionality should include:
+# 	Building a pickup route
+# 		Run the route
+# 		Add Data to CSV files
+# 		Send pickup notices/reciepts 
+# 			prior to pickup? 
+# 			post collection results
+# 	Browsing client/location details/statistics
+# 		Provide to website?
+
+
+
+
+# Cheating...
+mods = 1
+while mods == 1:
+	try:
+		# IMPORT the built-in functions first so we can handle
+		# errors. 
+		import os.path
+		import sys
+		import os
+		import time
+		import subprocess
+
+		# Check if the database is up and running. 
+		# from p_files.sql_ops import *
+		# check_sql = CRES_SQL()
+		# check_sql.is_running()
+
+		from tabulate import tabulate #makes the nice tables
+		import time #this is for any delays I want
+		import urllib
+		import urllib2
+		from bs4 import BeautifulSoup           # pip install BeautifulS
+		from datetime import date
+		import thread
+		# main_manipulator has Data_Manager()
+		from data_manager._manager import Data_Manager
+		from data_manager._get_credentials import get_credentials
+		from data_manager._route import Route_Manager 
+
+		mods = 0
+		
+
+	except ImportError as err:
+		print "You don't have all the required modules on this computer."
+		print "ERROR: ", err, "\n"
+		print  err.args
+		print "Need your password to do some installing. When you hit keys nothing will appear; you get 3 chances. "
+		raise err
+		installer = os.path.expanduser('~/GoogleDrive/all_in_one/install.command')
+		subprocess.call(['sudo', installer])
+
+		print '\n\n\nIF YOU SEE THIS GOING IN A LOOP, HIT CTRL + OPTION + "C"\n\n\n'
+		time.sleep(5)
+		# updater = os.path.expanduser('~/GoogleDrive/all_in_one/update.command')
+		# subprocess.call([updater])
+		
+		print "******	******	******"
+		print '\n' * 3
+		print "Done updating pip. \nIf you're still getting an error, the problem is with GoogleDrive."
+		print "Hit control + option + 'c' to exit. Or just close the window."
+		print "******	******	******"
+		raise err
+
+	print "\n***************\nthis is outside the try and except but inside the while "
+
+
+
+def main():
+	
+
+	# Now that all the modules are in place, create a database instance 
+	# and pass it the proper config details from the config file. 
+
+	# Use this object to do general database transactions
+	database_main = Data_Manager()
+	database_main.add_new_clients() # Check for new clients before running routes
+	# Could probably  make Routemanager below a Child of Data_manager
+	
+
+	route = Route_Manager(database_main)
+	collection_list = route.run_route() # LIST OF Collection instances
+
+
+	route.add_collections_to_db(collection_list)
+	
+	# Should set these to auto run in the mornings. 
+	database_main.average_donations()
+	database_main.set_last_pickup() # This used to be in (and also below) collection_analysis
+	database_main.collection_analysis()
+	database_main.fix_supporters()
+
+	
+	# build() needs to return something in the form of:
+	# [ stop number, name, address, city, zip, contact email, phone number, 
+	# 	contact name, date, charity, average donation, notes ]
+
+
+
+if __name__ == '__main__':
+	main()
+
+
+
